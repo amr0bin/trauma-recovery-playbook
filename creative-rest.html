@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Creative Rest</title>
+<link href="https://fonts.googleapis.com/css2?family=ASAP:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #ffffff;
+    --text: #5d5a5b;
+    --accent: #a29f9f;
+    --accent-light: #d6d3d3;
+    --accent-lighter: #f0eeee;
+    --sidebar-bg: #f7f5f5;
+    --sidebar-width: 260px;
+    --radius: 10px;
+    --transition: 0.2s ease;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    font-family: 'ASAP', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    height: 100%;
+    width: 100%;
+  }
+
+  /* Make the whole app fill the viewport regardless of GitHub Pages wrappers */
+  #app {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg);
+  }
+
+  /* ── HEADER ── */
+  #app-header {
+    height: 56px;
+    min-height: 56px;
+    border-bottom: 1px solid var(--accent-light);
+    display: flex;
+    align-items: center;
+    padding: 0 28px;
+    gap: 12px;
+    background: var(--bg);
+    z-index: 10;
+    flex-shrink: 0;
+  }
+
+  .logo {
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--text);
+  }
+
+  .logo span { color: var(--accent); font-weight: 400; }
+
+  .tagline {
+    font-size: 0.8rem;
+    color: var(--accent);
+    font-style: italic;
+    margin-left: 4px;
+  }
+
+  /* ── SHELL ── */
+  #app-shell {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    min-height: 0;
+  }
+
+  /* ── SIDEBAR ── */
+  #app-sidebar {
+    width: var(--sidebar-width);
+    min-width: var(--sidebar-width);
+    flex-shrink: 0;
+    background: var(--sidebar-bg);
+    border-right: 1px solid var(--accent-light);
+    overflow-y: auto;
+    padding: 20px 0 40px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent-light) transparent;
+  }
+
+  #app-sidebar::-webkit-scrollbar { width: 4px; }
+  #app-sidebar::-webkit-scrollbar-thumb { background: var(--accent-light); border-radius: 4px; }
+
+  .nav-section { margin-top: 20px; }
+  .nav-section:first-child { margin-top: 0; }
+
+  .nav-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    padding: 0 20px 8px;
+    display: block;
+  }
+
+  .nav-item {
+    display: block;
+    padding: 8px 20px;
+    font-size: 0.9rem;
+    font-family: 'ASAP', sans-serif;
+    color: var(--text);
+    cursor: pointer;
+    border: none;
+    border-left: 3px solid transparent;
+    background: none;
+    width: 100%;
+    text-align: left;
+    transition: all var(--transition);
+    line-height: 1.3;
+  }
+
+  .nav-item:hover {
+    background: var(--accent-lighter);
+    border-left-color: var(--accent);
+  }
+
+  .nav-item.active {
+    background: var(--accent-lighter);
+    border-left-color: var(--text);
+    font-weight: 600;
+  }
+
+  /* ── MAIN ── */
+  #app-main {
+    flex: 1;
+    overflow-y: auto;
+    padding: 48px 64px;
+    min-width: 0;
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent-light) transparent;
+  }
+
+  #app-main::-webkit-scrollbar { width: 4px; }
+  #app-main::-webkit-scrollbar-thumb { background: var(--accent-light); border-radius: 4px; }
+
+  .page { display: none; animation: fadeIn 0.25s ease; }
+  .page.active { display: block; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── PAGE HEADER ── */
+  .page-eyebrow {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+
+  h1.page-title {
+    font-size: 2.6rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    color: var(--text);
+    margin-bottom: 12px;
+  }
+
+  .page-intro {
+    font-size: 1.05rem;
+    color: var(--accent);
+    font-style: italic;
+    max-width: 560px;
+    line-height: 1.6;
+    margin-bottom: 48px;
+    border-bottom: 1px solid var(--accent-light);
+    padding-bottom: 24px;
+  }
+
+  /* ── SECTIONS ── */
+  .section { margin-bottom: 44px; }
+
+  h2.section-title {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  h2.section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--accent-light);
+  }
+
+  /* ── CARDS ── */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 14px;
+  }
+
+  .card {
+    background: var(--accent-lighter);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    border: 1px solid var(--accent-light);
+    transition: border-color var(--transition);
+  }
+
+  .card:hover { border-color: var(--accent); }
+  .card-title { font-size: 0.9rem; font-weight: 600; margin-bottom: 5px; color: var(--text); }
+  .card-desc { font-size: 0.82rem; color: var(--accent); line-height: 1.5; }
+
+  /* ── PILLS ── */
+  .pills { display: flex; flex-wrap: wrap; gap: 8px; }
+
+  .pill {
+    background: var(--accent-lighter);
+    border: 1px solid var(--accent-light);
+    border-radius: 20px;
+    padding: 5px 14px;
+    font-size: 0.83rem;
+    color: var(--text);
+  }
+
+  /* ── LINKS ── */
+  .links { display: flex; flex-direction: column; gap: 10px; }
+
+  .link-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 16px;
+    background: var(--accent-lighter);
+    border-radius: var(--radius);
+    border: 1px solid var(--accent-light);
+    transition: border-color var(--transition);
+  }
+
+  .link-item:hover { border-color: var(--accent); }
+
+  .link-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+    margin-top: 5px;
+  }
+
+  .link-content { flex: 1; }
+  .link-name { font-size: 0.9rem; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+  .link-desc { font-size: 0.8rem; color: var(--accent); line-height: 1.4; }
+
+  /* ── CHALLENGES ── */
+  .challenges {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 14px;
+  }
+
+  .challenge-card {
+    border-radius: var(--radius);
+    border: 1px solid var(--accent-light);
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color var(--transition);
+  }
+
+  .challenge-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--accent);
+    opacity: 0.4;
+  }
+
+  .challenge-card:hover { border-color: var(--accent); }
+  .challenge-num { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 6px; }
+  .challenge-title { font-size: 0.95rem; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+  .challenge-desc { font-size: 0.82rem; color: var(--accent); line-height: 1.5; }
+
+  /* ── HOME ── */
+  .home-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 16px;
+    margin-top: 8px;
+  }
+
+  .home-card {
+    padding: 22px 20px;
+    border-radius: var(--radius);
+    border: 1px solid var(--accent-light);
+    cursor: pointer;
+    transition: all var(--transition);
+    background: none;
+    font-family: 'ASAP', sans-serif;
+    text-align: left;
+    width: 100%;
+  }
+
+  .home-card:hover { border-color: var(--text); background: var(--accent-lighter); }
+  .home-card-icon { font-size: 1.6rem; margin-bottom: 10px; }
+  .home-card-name { font-size: 0.9rem; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .home-card-sub { font-size: 0.78rem; color: var(--accent); line-height: 1.4; }
+
+  .home-intro {
+    max-width: 600px;
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--accent);
+    margin-bottom: 40px;
+    font-style: italic;
+  }
+</style>
+</head>
+<body>
+
+<div id="app">
+
+  <div id="app-header">
+    <div class="logo">creative rest <span>✦</span></div>
+    <div class="tagline">no agenda. just play.</div>
+  </div>
+
+  <div id="app-shell">
+
+    <!-- SIDEBAR -->
+    <nav id="app-sidebar">
+      <div class="nav-section">
+        <span class="nav-label">Home</span>
+        <button class="nav-item active" onclick="show('home')">All Hobbies</button>
+      </div>
+      <div class="nav-section">
+        <span class="nav-label">Medicinal Plants</span>
+        <button class="nav-item" onclick="show('herbalism')">Herbalism</button>
+        <button class="nav-item" onclick="show('balcony')">Balcony Garden</button>
+        <button class="nav-item" onclick="show('bees')">Urban Beekeeping</button>
+        <button class="nav-item" onclick="show('seeds')">Local Seed Saving</button>
+        <button class="nav-item" onclick="show('pollinators')">Pollinator Tending</button>
+      </div>
+      <div class="nav-section">
+        <span class="nav-label">Music</span>
+        <button class="nav-item" onclick="show('piano')">Piano</button>
+        <button class="nav-item" onclick="show('ukulele')">Ukulele</button>
+        <button class="nav-item" onclick="show('xylophone')">Xylophone</button>
+        <button class="nav-item" onclick="show('music-theory')">Music Theory</button>
+      </div>
+      <div class="nav-section">
+        <span class="nav-label">Languages</span>
+        <button class="nav-item" onclick="show('irish')">Irish Gaelic</button>
+        <button class="nav-item" onclick="show('french')">French</button>
+        <button class="nav-item" onclick="show('asl')">ASL</button>
+      </div>
+      <div class="nav-section">
+        <span class="nav-label">Hiking & Trail Running</span>
+        <button class="nav-item" onclick="show('hiking')">Local Trails PNW</button>
+        <button class="nav-item" onclick="show('pilgrimage')">Walking Pilgrimages</button>
+        <button class="nav-item" onclick="show('forest-therapy')">Forest Therapy</button>
+        <button class="nav-item" onclick="show('wilderness')">Wilderness Skills</button>
+        <button class="nav-item" onclick="show('foraging')">Foraging</button>
+      </div>
+      <div class="nav-section">
+        <span class="nav-label">Tea</span>
+        <button class="nav-item" onclick="show('tea')">Tea Ceremony</button>
+      </div>
+      <div class="nav-section">
+        <span class="nav-label">Mind & Play</span>
+        <button class="nav-item" onclick="show('chess')">Chess</button>
+        <button class="nav-item" onclick="show('reading')">Reading</button>
+        <button class="nav-item" onclick="show('birding')">Birding</button>
+        <button class="nav-item" onclick="show('beading')">Crystal Beading</button>
+      </div>
+      <div class="nav-section">
+        <span class="nav-label">Making & Tech</span>
+        <button class="nav-item" onclick="show('visual-programming')">Visual Programming</button>
+        <button class="nav-item" onclick="show('robotics')">Robotics</button>
+      </div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <main id="app-main">
+
+      <!-- HOME -->
+      <div class="page active" id="home">
+        <div class="page-eyebrow">Welcome</div>
+        <h1 class="page-title">Creative Rest</h1>
+        <p class="home-intro">This is your personal map of things that restore you. No productivity goals, no milestones to hit — just a collection of doorways into worlds worth exploring. Wander in whenever you feel like it.</p>
+        <p class="home-intro" style="margin-top: -24px;">The thread through all of it: making things that respond to the world around them. A tincture shaped by the harvest. A walk shaped by weather. A visual shaped by sound. The practice is receptivity — quiet enough to notice what the world is doing, and then move with it.</p>
+        <div class="home-grid">
+          <button class="home-card" onclick="show('herbalism')"><div class="home-card-icon">🌿</div><div class="home-card-name">Herbalism</div><div class="home-card-sub">Teas, tinctures, at-home remedies</div></button>
+          <button class="home-card" onclick="show('balcony')"><div class="home-card-icon">🪴</div><div class="home-card-name">Balcony Garden</div><div class="home-card-sub">Celtic medicinal plants</div></button>
+          <button class="home-card" onclick="show('bees')"><div class="home-card-icon">🐝</div><div class="home-card-name">Urban Beekeeping</div><div class="home-card-sub">City hives & pollinator care</div></button>
+          <button class="home-card" onclick="show('seeds')"><div class="home-card-icon">🫘</div><div class="home-card-name">Seed Saving</div><div class="home-card-sub">Local, native varieties</div></button>
+          <button class="home-card" onclick="show('pollinators')"><div class="home-card-icon">🦋</div><div class="home-card-name">Pollinators</div><div class="home-card-sub">Neighbourhood tending</div></button>
+          <button class="home-card" onclick="show('piano')"><div class="home-card-icon">🎹</div><div class="home-card-name">Piano</div><div class="home-card-sub">Keys & melodies</div></button>
+          <button class="home-card" onclick="show('ukulele')"><div class="home-card-icon">🪕</div><div class="home-card-name">Ukulele</div><div class="home-card-sub">Strings & sun</div></button>
+          <button class="home-card" onclick="show('xylophone')"><div class="home-card-icon">🎶</div><div class="home-card-name">Xylophone</div><div class="home-card-sub">Mallet & resonance</div></button>
+          <button class="home-card" onclick="show('music-theory')"><div class="home-card-icon">🎵</div><div class="home-card-name">Music Theory</div><div class="home-card-sub">How music actually works</div></button>
+          <button class="home-card" onclick="show('irish')"><div class="home-card-icon">🍀</div><div class="home-card-name">Irish Gaelic</div><div class="home-card-sub">A beautiful endangered tongue</div></button>
+          <button class="home-card" onclick="show('french')"><div class="home-card-icon">🥐</div><div class="home-card-name">French</div><div class="home-card-sub">La langue de la douceur</div></button>
+          <button class="home-card" onclick="show('asl')"><div class="home-card-icon">🤟</div><div class="home-card-name">ASL</div><div class="home-card-sub">American Sign Language</div></button>
+          <button class="home-card" onclick="show('hiking')"><div class="home-card-icon">🥾</div><div class="home-card-name">Trails PNW</div><div class="home-card-sub">One-day local adventures</div></button>
+          <button class="home-card" onclick="show('pilgrimage')"><div class="home-card-icon">🛤️</div><div class="home-card-name">Pilgrimages</div><div class="home-card-sub">International walks</div></button>
+          <button class="home-card" onclick="show('forest-therapy')"><div class="home-card-icon">🌲</div><div class="home-card-name">Forest Therapy</div><div class="home-card-sub">Guide training & practice</div></button>
+          <button class="home-card" onclick="show('wilderness')"><div class="home-card-icon">🏕️</div><div class="home-card-name">Wilderness Skills</div><div class="home-card-sub">Survival, first aid, SAR</div></button>
+          <button class="home-card" onclick="show('foraging')"><div class="home-card-icon">🍄</div><div class="home-card-name">Foraging</div><div class="home-card-sub">Wild food & plant ID</div></button>
+          <button class="home-card" onclick="show('tea')"><div class="home-card-icon">🍵</div><div class="home-card-name">Tea Ceremony</div><div class="home-card-sub">Global traditions</div></button>
+          <button class="home-card" onclick="show('chess')"><div class="home-card-icon">♟️</div><div class="home-card-name">Chess</div><div class="home-card-sub">Strategy as play</div></button>
+          <button class="home-card" onclick="show('reading')"><div class="home-card-icon">📖</div><div class="home-card-name">Reading</div><div class="home-card-sub">Books as portals</div></button>
+          <button class="home-card" onclick="show('birding')"><div class="home-card-icon">🐦</div><div class="home-card-name">Birding</div><div class="home-card-sub">Watching & listening</div></button>
+          <button class="home-card" onclick="show('beading')"><div class="home-card-icon">💎</div><div class="home-card-name">Crystal Beading</div><div class="home-card-sub">Natural stones & patterns</div></button>
+          <button class="home-card" onclick="show('visual-programming')"><div class="home-card-icon">🖥️</div><div class="home-card-name">Visual Programming</div><div class="home-card-sub">Touch design & nodes</div></button>
+          <button class="home-card" onclick="show('robotics')"><div class="home-card-icon">🤖</div><div class="home-card-name">Robotics</div><div class="home-card-sub">Tinkering with machines</div></button>
+        </div>
+      </div>
+
+      <!-- HERBALISM -->
+      <div class="page" id="herbalism">
+        <div class="page-eyebrow">Medicinal Plants</div>
+        <h1 class="page-title">Herbalism</h1>
+        <p class="page-intro">Making things with plants — teas you brew to feel better, salves you make with your hands, tinctures aging on the shelf. This is old knowledge worth learning slowly.</p>
+        <div class="section">
+          <h2 class="section-title">Tools & Supplies</h2>
+          <div class="cards">
+            <div class="card"><div class="card-title">Kitchen & Prep</div><div class="card-desc">Double boiler, glass jars (mason jars in multiple sizes), cheesecloth or muslin, mortar & pestle, digital scale</div></div>
+            <div class="card"><div class="card-title">Tincture Making</div><div class="card-desc">Amber dropper bottles, high-proof alcohol (vodka or Everclear), labels, a dark cupboard</div></div>
+            <div class="card"><div class="card-title">Salves & Creams</div><div class="card-desc">Beeswax, carrier oils (jojoba, olive, coconut), shea butter, tins or small jars, essential oils (optional)</div></div>
+            <div class="card"><div class="card-title">Drying & Storage</div><div class="card-desc">Drying rack or hanging bundles, paper bags, airtight containers, away from light and heat</div></div>
+          </div>
+        </div>
+        <div class="section">
+          <h2 class="section-title">What I'm Making / Exploring</h2>
+          <div class="pills">
+            <span class="pill">Herbal teas & infusions</span><span class="pill">Fire cider</span><span class="pill">Elderberry syrup</span><span class="pill">Chamomile salve</span><span class="pill">St. John's Wort tincture</span><span class="pill">Yarrow wound wash</span><span class="pill">At-home first aid kit</span><span class="pill">Herbal soaps</span>
+          </div>
+        </div>
+        <div class="section">
+          <h2 class="section-title">Networks & Community</h2>
+          <div class="links">
+            <div class="link-item"><div class="link-dot"></div><div class="link-content"><div class="link-name">United Plant Savers (unitedplantsavers.org)</div><div class="link-desc">Conservation-focused herbalism network for North America</div></div></div>
+            <div class="link-item"><div class="link-dot"></div><div class="link-content"><div class="link-name">BC Herb Gathering</div><div class="link-desc">Annual BC herbalism gathering — community, workshops, plant walks</div></div></div>
+            <div class="link-item"><div class="link-dot"></div><div class="link-content"><div class="link-name">Herbalist Without Borders</div><div class="link-desc">Community herbalism with a social justice lens</div></div></div>
+            <div class="link-item"><div class="link-dot"></div><div class="link-content"><div class="link-name">Local harvest markets & apothecaries</div><div class="link-desc">Wandering into local herb shops is its own education</div></div></div>
+          </div>
+        </div>
+        <div class="section">
+          <h2 class="section-title">Learn More</h2>
+          <div class="links">
+            <div class="link-item"><div class="link-dot"></div><div class="link-content"><div class="link-name">Rosemary Gladstar — Medicinal Herbs: A Beginner's Guide</div><div class="link-desc">The gentlest, most practical starting point</div></div></div>
+            <div class="link-item"><div class="link-dot"></div><div class="link-content"><div class="link-name">The Herbal Academy (theherbalacademy.com)</div><div class="link-desc">Online courses at multiple levels, very well structured</div></div></div>
+            <div class="link-item"><div class="link-dot"></div><div class="link-content"><div class="link-name">Richo Cech — Making Plant Medicine</div><div class="link-desc">Deep reference for tinctures, extracts, and preparations</div></div></div>
+            <div class="link-item"><div class="link-dot"></div><div class="link-content"><div class="link-name">YouTube: Chestnut School of Herbal Medicine</div><div class="link-desc">Free, beautiful videos on plant profiles and preparations</div></div></div>
+          </div>
+        </div>
+        <div class="section">
+          <h2 class="section-title">Creative Challenges</h2>
+          <div class="challenges">
+            <div class="challenge-card"><div class="challenge-num">Try this</div><div class="challenge-title">One plant, one month</div><div class="challenge-desc">Pick a single herb and make three different preparations with it — tea, tincture, and a topical. Notice the differences.</div></div>
+            <div class="challenge-card"><div class="challenge-num">Try this</div><div class="challenge-title">Seasonal tea blend</div><div class="challenge-desc">Create a blend tied to the current season using only plants you can source within 100km.</div></div>
+            <div class="challenge-card"><div class="challenge-num">Try this</div><div class="challenge-title">Apothecary shelf</div><div class="challenge-desc">Build a 10-item home first aid shelf. Research, make or source each item, and document what each one does.</div></div>
+            <div class="challenge-card"><div class="challenge-num">Try this</div><div class="challenge-title">Celtic herbal kit</div><div class="challenge-desc">Research which herbs were traditionally used in Celtic/Irish healing traditions. Make one preparation from that lineage.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BALCONY GARDEN -->
+      <div class="page" id="balcony">
+        <div class="page-eyebrow">Medicinal Plants</div>
+        <h1 class="page-title">Balcony Garden</h1>
+        <p class="page-intro">A Celtic medicinal plant garden in containers. Small space, big intention. You've already done the research — here's where it lives.</p>
+        <div class="section">
+          <h2 class="section-title">Current Plant List</h2>
+          <div class="cards">
+            <div class="card"><div class="card-title">Elderflower</div><div class="card-desc">Source: Elderberry Grove, Salmon Arm BC · Cuttings</div></div>
+            <div class="card"><div class="card-title">Yarrow</div><div class="card-desc">Source: Metchosin Farm, Vancouver Island · Seeds</div></div>
+            <div class="card"><div class="card-title">Chamomile</div><div class="card-desc">Source: Metchosin Farm · Seeds</div></div>
+            <div class="card"><div class="card-title">St. John's Wort</div><div class="card-desc">Source: Metchosin Farm · Seeds</div></div>
+            <div class="card"><div class="card-title">Borage</div><div class="card-desc">Source: Metchosin Farm or Richters · Seeds</div></div>
+            <div class="card"><div class="card-title">Meadowsweet</div><div class="card-desc">Source: Richters Herbs (ships Canada-wide) · Plant or seeds</div></div>
+            <div class="card"><div class="card-title">Vervain</div><div class="card-desc">Source: Richters or Salt Spring Seeds · Seeds</div></div>
+            <div class="card"><div class="card-title">Self-Heal</div><div class="card-desc">Source: Richters Herbs · Seeds</div></div>
+            <div class="card"><div class="card-title">Mugwort</div><div class="card-desc">Source: The Incredible Seed Company · Seeds</div></div>
+            <div class="card"><div class="card-title">Valerian</div><div class="card-desc">Source: Metchosin Farm · Seeds</div></div>
+            <div class="card"><div class="card-title">Lady's Mantle</div><div class="card-desc">Source: Ferri Seeds or Gaia Organics · Seeds</div></div>
+            <div class="card"><div class="card-title">Foxglove</div><div class="card-desc">Source: GardenWorks Vancouver · Live plant</div></div>
+            <div class="card"><div class="card-title">Crabapple (Dolgo Dwarf)</div><div class="card-desc">Source: Hunters Garden Centre · Tree</div></div>
+          </div>
+        </div>
+        <div class="section">
+          <h2 class="section-title">Tools & Supplies</h2>
+          <div class="pills">
+            <span class="pill">Deep containers (30cm+ for most herbs)</span><span class="pill">Good potting mix with perlite</span><span class="pill">Liquid seaweed fertiliser</span><span class="pill">Plant markers</span><span class="pill">Watering can with a rose head</span><span class="pill">Garden journal</span><span class="pill">Trowel + pruning snips</span>
+          </div>
+        </div>
+        <div class="section">
+          <h2 class="section-title">Sources</h2>
+          <div class="links">
+            <div class="link-item"><div class="link-dot"></div><div class="link-content"><div class="link-name">Metchosin Farm (metchosinfarm.ca)</div><div class="link-desc">Vancouver Island organic seeds — yarrow, chamomile, St. John's wort, borage, valerian</div></div></div>
+            <div class="link-item"><div class="link-dot"></div><div class="link-content"><div class="link-name">Richters Herbs (richters.com)</div><div class="link-desc">Ships Canada-wide; excellent selection of medicinal herbs</div></div></div>
+            <div class="link-item"><div class="link-dot"></div><div class="link-content"><div class="link-name">Salt Spring Seeds (saltspringseeds.com)</div><div class="link-desc">BC-based, heritage and open-pollinated varieties</div></div></div>
+            <div class="link-item"><div class="link-dot"></div><div class="link-content"><div class="link-name">The Incredible Seed Company (incredibleseeds.ca)</div><div class="link-desc">Mugwort and many unusual varieties</div></div></div>
+          </div>
+        </div>
+        <div class="section">
+          <h2 class="section-title">Creative Challenges</h2>
+          <div class="challenges">
+            <div class="challenge-card"><div class="challenge-num">Try this</div><div class="challenge-title">Sketch your balcony</div><div class="challenge-desc">Draw a layout of what's growing where. Revisit it each season to see how the plants change and move.</div></div>
+            <div class="challenge-card"><div class="challenge-num">Try this</div><div class="challenge-title">Folklore research</div><div class="challenge-desc">For each plant, find one piece of Celtic or folk lore connected to it. Make a small card for each one.</div></div>
+            <div class="challenge-card"><div class="challenge-num">Try this</div><div class="challenge-title">Observe one plant weekly</div><div class="challenge-desc">Pick one plant and photograph or sketch it every Sunday for a full growing season.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- URBAN BEEKEEPING -->
+      <div class="page" id="bees">
+        <div class="page-eyebrow">Medicinal Plants</div>
+        <h1 class="page-title">Urban Beekeeping</h1>
+        <p class="page-intro">City hives, rooftop bees, balcony pollinator gardens. Learning to live alongside bees is its own quiet philosophy.</p>
+        <div class="section">
+          <h2 class="section-title">Tools to Know About</h2>
+          <div class="cards">
+            <div class="card"><div class="card-title">Hive types</div><div class="card-desc">Langstroth (most common), Warré (natural/low intervention), Top Bar (horizontal, gentler)</div></div>
+            <div class="card"><div class="card-title">Protective gear</div><div class="card-desc">Veil, gloves, bee suit — start with a full suit until you're comfortable</div></div>
+            <div class="card"><div class="card-title">Smoker</div><div class="card-desc">Calms bees during inspections. Fuel: pine needles, burlap, wood chips</div></div>
+            <div class="card"><div class="card-title">Hive tool</div><div class="card-desc">The essential pry bar of beekeeping. Always keep it clean</div></div>
+          </div>
+        </div>
+        <div class="section">
+          <h2 class="section-title">Networks & Community</h2>
+          <div class="links">
+            <div class="link-item"><div class="link-dot"></div><div class="link-content"><div class="link-name">BC Honey Producers Association (bchoney.com)</div><div class="link-desc">Clubs, courses, mentorship programs across BC</div></div></div>
+            <div class="link-item"><div class="link-dot"></div><div class="link-content"><div class="link-name">Vancouver & Area Beekeepers Association</div><div class="link-desc">Local group for urban beekeepers — mentors, swarm lists</div></div></div>
+            <div class="link-item"><div class="link-dot"></div><div class="link-content"><div class="link-name">Honeybee Centre, Surrey BC</div><div class="link-desc">Courses, equipment, and a great place to learn in person</div></div></div>
+          </div>
+        </div>
+        <div class="section">
+          <h2 class="section-title">Learn More</h2>
+          <div class="links">
+            <div class="link-item"><div class="link-dot"></div><div class="link-content"><div class="link-name">Beekeeping for Beginners — Amber Bradshaw</div><div class="link-desc">Practical and calm; good first book</div></div></div>
+            <div class="link-item"><div class="link-dot"></div><div class="link-content"><div class="link-name">HoneyBeeSuite (honeybeesuite.com)</div><div class="link-desc">Rusty Burlew's detailed, warm writing on all things bees</div></div></div>
+          </div>
+        </div>
+        <div class="section">
+          <h2 class="section-title">Creative Challenges</h2>
+          <div class="challenges">
+            <div class="challenge-card"><div class="challenge-num">Try this</div><div class="challenge-title">Attend a hive inspection</div><div class="challenge-desc">Find a local mentor or club and observe a hive inspection before getting your own bees.</div></div>
+            <div class="challenge-card"><div class="challenge-num">Try this</div><div class="challenge-title">Plant a bee buffet</div><div class="challenge-desc">Research 5 bee-friendly plants that bloom in different months and add them to your balcony or neighbourhood.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SEED SAVING -->
+      <div class="page" id="seeds">
+        <div class="page-eyebrow">Medicinal Plants</div>
+        <h1 class="page-title">Local Seed Saving</h1>
+        <p class="page-intro">Seeds are living libraries. Saving them keeps old varieties alive and connects you to the gardeners who came before.</p>
+        <div class="section">
+          <h2 class="section-title">Tools & Supplies</h2>
+          <div class="pills">
+            <span class="pill">Paper envelopes (NOT plastic)</span><span class="pill">Fine mesh screens for drying</span><span class="pill">Labels + pen</span><span class="pill">Glass jars for long-term storage</span><span class="pill">Silica gel packets</span><span class="pill">Cool, dark, dry storage spot</span>
+          </div>
+        </div>
+        <div class="section">
+          <h2 class="section-title">Networks & Seed Libraries</h2>
+          <div class="links">
+            <div class="link-item"><div class="link-dot"></div><div class="link-content"><div class="link-name">Seeds of Diversity Canada (seeds.ca)</div><div class="link-desc">National network — seed swaps, variety listings, growing guides</div></div></div>
+            <div class="link-item"><div class="link-dot"></div><div class="link-content"><div class="link-name">Vancouver Public Library Seed Library</div><div class="link-desc">Borrow seeds, grow, save, and return more than you borrowed</div></div></div>
+            <div class="link-item"><div class="link-dot"></div><div class="link-content"><div class="link-name">Salt Spring Seeds (saltspringseeds.com)</div><div class="link-desc">BC-based heritage seed company; very values-aligned</div></div></div>
+          </div>
+        </div>
+        <div class="section">
+          <h2 class="section-title">Creative Challenges</h2>
+          <div class="challenges">
+            <div class="challenge-card"><div class="challenge-num">Try this</div><div class="challenge-title">Save your first seed</div><div class="challenge-desc">Let one plant go fully to seed this season. Harvest, dry, label, and store. See if it grows next year.</div></div>
+            <div class="challenge-card"><div class="challenge-num">Try this</div><div class="challenge-title">Attend a seed swap</div><div class="challenge-desc">Bring seeds, trade seeds. Every swap is a conversation about what people love growing.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- POLLINATORS -->
+      <div class="page" id="pollinators">
+        <div class="page-eyebrow">Medicinal Plants</div>
+        <h1 class="page-title">Pollinator Tending</h1>
+        <p class="page-intro">Noticing and nurturing the small flying creatures that hold ecosystems together. Mostly this means planting things and paying attention.</p>
+        <div class="section">
+          <h2 class="section-title">What Pollinators Need</h2>
+          <div class="cards">
+            <div class="card"><div class="card-title">Food</div><div class="card-desc">Native flowering plants blooming across the whole season — not just summer</div></div>
+            <div class="card"><div class="card-title">Water</div><div class="card-desc">A shallow dish with pebbles so small insects can land safely</div></div>
+            <div class="card"><div class="card-title">Shelter</div><div class="card-desc">Leaf litter, hollow stems, bare soil patches, small bee hotels</div></div>
+            <div class="card"><div class="card-title">No pesticides</div><div class="card-desc">Even "organic" options can harm pollinators — choose carefully</div></div>
+          </div>
+        </div>
+        <div class="section">
+          <h2 class="section-title">Networks & Resources</h2>
+          <div class="links">
+            <div class="link-item"><div class="link-dot"></div><div class="link-content"><div class="link-name">iNaturalist (inaturalist.org)</div><div class="link-desc">Identify and log what you observe. Contributes to real science.</div></div></div>
+            <div class="link-item"><div class="link-dot"></div><div class="link-content"><div class="link-name">Pollinator Partnership Canada (pollinator.ca)</div><div class="link-desc">Planting guides by region, community programs</div></div></div>
+          </div>
+        </div>
+        <div class="section">
+          <h2 class="section-title">Creative Challenges</h2>
+          <div class="challenges">
+            <div class="challenge-card"><div class="challenge-num">Try this</div><div class="challenge-title">Pollinator count</div><div class="challenge-desc">Sit outside for 20 minutes and count every type of pollinator you see. Try it across different seasons.</div></div>
+            <div class="challenge-card"><div class="challenge-num">Try this</div><div class="challenge-title">Adopt a patch</div><div class="challenge-desc">Find a neglected patch of land nearby. Learn what grows there. Advocate for less mowing, more wildflowers.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PIANO -->
+      <div class="page" id="piano">
+        <div class="page-eyebrow">Music</div>
+        <h1 class="page-title">Piano</h1>
+        <p class="page-intro">There's no rush here. Playing piano is already the point. A few minutes a day of just messing around counts.</p>
+        <div class="section">
+          <h2 class="section-title">Tools</h2>
+          <div class="pills">
+            <span class="pill">Acoustic or digital piano</span><span class="pill">Sustain pedal</span><span class="pill">Metronome app</span><span class="pill">Staff paper or notation app</span><span class="pill">Good bench height</span>
+          </div>
+        </div>
+        <div class="section">
+          <h2 class="section-title">Learn More</h2>
+          <div class="links">
+            <div class="link-item"><div class="link-dot"></div><div class="link-content"><div class="link-name">Playground Sessions (playgroundsessions.com)</div><div class="link-desc">Gamified piano learning — good for adult beginners who want to play songs</div></div></div>
+            <div class="link-item"><div class="link-dot"></div><div class="link-content"><div class="link-name">Musicnotes (musicnotes.com)</div><div class="link-desc">Sheet music for almost anything you want to play</div></div></div>
+            <div class="link-item"><div class="link-dot"></div><div class="link-content"><div class="link-name">YouTube: Paul Barton</div><div class="link-desc">Beautiful playing and thoughtful teaching — great for inspiration</div></div></div>
+          </div>
+        </div>
+        <div class="section">
+          <h2 class="section-title">Creative Challenges</h2>
+          <div class="challenges">
+            <div class="challenge-card"><div class="challenge-num">Try this</div><div class="challenge-title">Play by ear</div><div class="challenge-desc">Pick a song you love and try to find it on the keys without sheet music. Start with just the melody.</div></div>
+            <div class="challenge-card"><div class="challenge-num">Try this</div><div class="challenge-title">5-minute improv</div><div class="challenge-desc">Set a timer for 5 minutes and just play. No wrong notes, no judgment. See what comes out.</div></div>
+            <div class="challenge-card"><div class="challenge-num">Try this</div><div class="challenge-title">Learn one Celtic tune</div><div class="challenge-desc">Find a simple Irish or Scottish air and learn it slowly. They're often beautiful and short.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- UKULELE -->
+      <div class="page" id="ukulele">
+        <div class="page-eyebrow">Music</div>
+        <h1 class="page-title">Ukulele</h1>
+        <p class="page-intro">Four strings and endless cheerfulness. The uke is a portal to songs you actually want to sing.</p>
+        <div class="section">
+          <h2 class="section-title">Tools</h2>
+          <div class="pills">
+            <span class="pill">Soprano or concert ukulele</span><span class="pill">Clip-on tuner</span><span class="pill">Extra strings (Aquila or Worth)</span><span class="pill">Chord chart (on the wall)</span><span class="pill">Capo (optional)</span>
+          </div>
+        </div>
+        <div class="section">
+          <h2 class="section-title">Learn More</h2>
+          <div class="links">
+            <div class="link-item"><div class="link-dot"></div><div class="link-content"><div class="link-name">Ukulele Underground (ukuleleunderground.com)</div><div class="link-desc">Lessons, community, tabs — the best free uke resource</div></div></div>
+            <div class="link-item"><div class="link-dot"></div><div class="link-content"><div class="link-name">The Ukulele Site (theukulelesite.com)</div><div class="link-desc">Great for tutorials and gear if you ever want to upgrade</div></div></div>
+          </div>
+        </div>
+        <div class="section">
+          <h2 class="section-title">Creative Challenges</h2>
+          <div class="challenges">
+            <div class="challenge-card"><div class="challenge-num">Try this</div><div class="challenge-title">Three-chord campfire set</div><div class="challenge-desc">Learn 5 songs you love that only use C, Am, F, and G. You'll be able to play forever with those four.</div></div>
+            <div class="challenge-card"><div class="challenge-num">Try this</div><div class="challenge-title">Write a tiny song</div><div class="challenge-desc">Pick two chords and hum something over them. Lyrics don't have to make sense. Record it on your phone.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- XYLOPHONE -->
+      <div class="page" id="xylophone">
+        <div class="page-eyebrow">Music</div>
+        <h1 class="page-title">Xylophone</h1>
+        <p class="page-intro">Percussion with melody. Mallet instruments are meditative in a completely different way from strings or keys.</p>
+        <div class="section">
+          <h2 class="section-title">Tools</h2>
+          <div class="pills">
+            <span class="pill">Xylophone or glockenspiel</span><span class="pill">Assorted mallets (hard, soft, medium)</span><span class="pill">Resonator box or stand</span>
+          </div>
+        </div>
+        <div class="section">
+          <h2 class="section-title">Creative Challenges</h2>
+          <div class="challenges">
+            <div class="challenge-card"><div class="challenge-num">Try this</div><div class="challenge-title">Mallet texture play</div><div class="challenge-desc">Same note, three different mallets. Notice how completely different it sounds. Explore the full range of colour available.</div></div>
+            <div class="challenge-card"><div class="challenge-num">Try this</div><div class="challenge-title">Pentatonic improv</div><div class="challenge-desc">Remove any two bars to leave a pentatonic scale. You literally cannot play a wrong note. Just explore.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MUSIC THEORY -->
+      <div class="page" id="music-theory">
+        <div class="page-eyebrow">Music</div>
+        <h1 class="page-title">Music Theory</h1>
+        <p class="page-intro">Not to pass a test — just to understand why music makes you feel things. It's a hidden language worth peeking into.</p>
+        <div class="section">
+          <h2 class="section-title">Learn More</h2>
+          <div class="links">
+            <div class="link-item"><div class="link-dot"></div><div class="link-content"><div class="link-name">musictheory.net</div><div class="link-desc">Free, calm, well-sequenced lessons from the basics up</div></div></div>
+            <div class="link-item"><div class="link-dot"></div><div class="link-content"><div class="link-name">YouTube: Adam Neely</div><div class="link-desc">Deep dives into why music works — genuinely fascinating</div></div></div>
+            <div class="link-item"><div class="link-dot"></div><div class="link-content"><div class="link-name">How to Listen to Music playlist</div><div class="link-desc">Your own saved playlist — a great starting point</div></div></div>
+            <div class="link-item"><div class="link-dot"></div><div class="link-content"><div class="link-name">YouTube: 12tone</div><div class="link-desc">Song analysis that makes theory feel alive</div></div></div>
+          </div>
+        </div>
+        <div class="section">
+          <h2 class="section-title">Creative Challenges</h2>
+          <div class="challenges">
+            <div class="challenge-card"><div class="challenge-num">Try this</div><div class="challenge-title">Find the key</div><div class="challenge-desc">Pick a song you love and try to figure out what key it's in and what chords it uses.</div></div>
+            <div class="challenge-card"><div class="challenge-num">Try this</div><div class="challenge-title">Listen with new ears</div><div class="challenge-desc">Choose one piece of music and listen to it three times: once for melody, once for rhythm, once for harmony only.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- IRISH GAELIC -->
+      <div class="page" id="irish">
+        <div class="page-eyebrow">Languages</div>
+        <h1 class="page-title">Irish Gaelic</h1>
+        <p class="page-intro">One of the oldest living languages in Europe, spoken in rain and stone and song. Learning even a little feels like remembering something ancient.</p>
+        <div class="section">
+          <h2 class="section-title">Tools</h2>
+          <div class="pills">
+            <span class="pill">Duolingo Irish (good for consistency)</span><span class="pill">Teanglann.ie (best Irish dictionary)</span><span class="pill">A notebook for phrases</span><span class="pill">Irish music to listen to</span>
+          </div>
+        </div>
+        <div class="section">
+          <h2 class="section-title">Networks & Community</h2>
+          <div class="links">
+            <div class="link-item"><div class="link-dot"></div><div class="link-content"><div class="link-name">Conradh na Gaeilge (gaeilge.ie)</div><div class="link-desc">Global organisation for Irish language learners — local circles exist in many cities</div></div></div>
+            <div class="link-item"><div class="link-dot"></div><div class="link-content"><div class="link-name">Irish Gaelic Trail (Facebook group)</div><div class="link-desc">Friendly online learner community</div></div></div>
+            <div class="link-item"><div class="link-dot"></div><div class="link-content"><div class="link-name">TG4 (tg4.ie)</div><div class="link-desc">Irish-language TV — immersive, beautiful, and free to stream</div></div></div>
+          </div>
+        </div>
+        <div class="section">
+          <h2 class="section-title">Creative Challenges</h2>
+          <div class="challenges">
+            <div class="challenge-card"><div class="challenge-num">Try this</div><div class="challenge-title">Learn 10 greetings</div><div class="challenge-desc">Dia dhuit. Conas atá tú? Start with the phrases you'd use if you met someone. Say them out loud every morning for a week.</div></div>
+            <div class="challenge-card"><div class="challenge-num">Try this</div><div class="challenge-title">Learn one song</div><div class="challenge-desc">Find a simple Irish song you love and learn the words phonetically first. Then learn what they mean.</div></div>
+            <div class="challenge-card"><div class="challenge-num">Try this</div><div class="challenge-title">Name the plants</div><div class="challenge-desc">Look up the Irish names for the plants on your balcony. caisearbhán (dandelion). seamróg (shamrock). Build vocabulary from what you love.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FRENCH -->
+      <div class="page" id="french">
+        <div class="page-eyebrow">Languages</div>
+        <h1 class="page-title">French</h1>
+        <p class="page-intro">La langue de la douceur. Already present in Vancouver, in Quebec, in the food and the streets. A language worth living alongside.</p>
+        <div class="section">
+          <h2 class="section-title">Tools</h2>
+          <div class="pills">
+            <span class="pill">Anki (spaced repetition flashcards)</span><span class="pill">Assimil French (book + audio)</span><span class="pill">RFI Savoirs (rfi.fr)</span><span class="pill">Cairn.info (French essays)</span>
+          </div>
+        </div>
+        <div class="section">
+          <h2 class="section-title">Immersion Ideas in Vancouver</h2>
+          <div class="links">
+            <div class="link-item"><div class="link-dot"></div><div class="link-content"><div class="link-name">Alliance Française Vancouver</div><div class="link-desc">Conversation groups, events, films — in-person community</div></div></div>
+            <div class="link-item"><div class="link-dot"></div><div class="link-content"><div class="link-name">French-language films at VIFF</div><div class="link-desc">Watch films you enjoy in the language you're learning</div></div></div>
+            <div class="link-item"><div class="link-dot"></div><div class="link-content"><div class="link-name">Radio-Canada (ici.radio-canada.ca)</div><div class="link-desc">Canadian French news and podcasts — natural, real speech</div></div></div>
+          </div>
+        </div>
+        <div class="section">
+          <h2 class="section-title">Creative Challenges</h2>
+          <div class="challenges">
+            <div class="challenge-card"><div class="challenge-num">Try this</div><div class="challenge-title">Tea in French</div><div class="challenge-desc">Learn the vocabulary around your tea practice in French. Une théière. Une tasse. Le thé de camomille. Make it sensory.</div></div>
+            <div class="challenge-card"><div class="challenge-num">Try this</div><div class="challenge-title">Write a weekly sentence</div><div class="challenge-desc">One sentence in French every week about something that happened. Keep them all. Read back monthly.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ASL -->
+      <div class="page" id="asl">
+        <div class="page-eyebrow">Languages</div>
+        <h1 class="page-title">ASL</h1>
+        <p class="page-intro">American Sign Language is a complete, beautiful, visual language. Not a code for English — its own world entirely.</p>
+        <div class="section">
+          <h2 class="section-title">Tools</h2>
+          <div class="pills">
+            <span class="pill">Handspeak (handspeak.com)</span><span class="pill">ASL-LEX (lexical database)</span><span class="pill">A mirror (for checking your form)</span><span class="pill">Video recording yourself</span>
+          </div>
+        </div>
+        <div class="section">
+          <h2 class="section-title">Networks & Community</h2>
+          <div class="links">
+            <div class="link-item"><div class="link-dot"></div><div class="link-content"><div class="link-name">Western Institute for the Deaf and Hard of Hearing (widhh.com)</div><div class="link-desc">Vancouver-based — programs, events, community</div></div></div>
+            <div class="link-item"><div class="link-dot"></div><div class="link-content"><div class="link-name">Deaf community coffees & events</div><div class="link-desc">Search for Deaf social events in Vancouver — real immersion requires Deaf community</div></div></div>
+          </div>
+        </div>
+        <div class="section">
+          <h2 class="section-title">Creative Challenges</h2>
+          <div class="challenges">
+            <div class="challenge-card"><div class="challenge-num">Try this</div><div class="challenge-title">Fingerspell your world</div><div class="challenge-desc">Practise fingerspelling the names of everything in your home. It builds muscle memory and spelling confidence simultaneously.</div></div>
+            <div class="challenge-card"><div class="challenge-num">Try this</div><div class="challenge-title">Watch without sound</div><div class="challenge-desc">Find ASL storytelling videos on YouTube and watch with sound off. See how much you understand from expression and body language alone.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LOCAL TRAILS -->
+      <div class="page" id="hiking">
+        <div class="page-eyebrow">Hiking & Trail Running</div>
+        <h1 class="page-title">Local Trails PNW</h1>
+        <p class="page-intro">One-day adventures within reach of Vancouver. The mountains, the forest, the sea — all close enough to visit before dinner.</p>
+        <div class="section">
+          <h2 class="section-title">Favourites & Ones to Try</h2>
+          <div class="cards">
+            <div class="card"><div class="card-title">Garibaldi Lake</div><div class="card-desc">Classic BC alpine. 18km return. Worth every step in summer.</div></div>
+            <div class="card"><div class="card-title">Howe Sound Crest Trail</div><div class="card-desc">Long ridge walk with sea views. 29km one-way. Car shuttle needed.</div></div>
+            <div class="card"><div class="card-title">Lynn Headwaters</div><div class="card-desc">Close to the city, forested, beautiful. Many options from easy to hard.</div></div>
+            <div class="card"><div class="card-title">Golden Ears</div><div class="card-desc">Old growth, rivers, ridges. Great for multi-stop days.</div></div>
+            <div class="card"><div class="card-title">Mount Seymour</div><div class="card-desc">Year-round access; great for short outings or longer summit hikes.</div></div>
+          </div>
+        </div>
+        <div class="section">
+          <h2 class="section-title">Trail Running Resources</h2>
+          <div class="links">
+            <div class="link-item"><div class="link-dot"></div><div class="link-content"><div class="link-name">North Shore Athletics (northshoreathletics.ca)</div><div class="link-desc">Trail running clinics in Vancouver — group runs and coaching</div></div></div>
+            <div class="link-item"><div class="link-dot"></div><div class="link-content"><div class="link-name">Trail Run Project (trailrunproject.com)</div><div class="link-desc">Searchable trail database with reviews and maps</div></div></div>
+            <div class="link-item"><div class="link-dot"></div><div class="link-content"><div class="link-name">AllTrails (alltrails.com)</div><div class="link-desc">Crowd-sourced reviews and GPS maps — essential for new trails</div></div></div>
+          </div>
+        </div>
+        <div class="section">
+          <h2 class="section-title">Creative Challenges</h2>
+          <div class="challenges">
+            <div class="challenge-card"><div class="challenge-num">Try this</div><div class="challenge-title">Seasonal trail</div><div class="challenge-desc">Walk the same trail in all four seasons. Notice what changes. Take one photo from the same spot each time.</div></div>
+            <div class="challenge-card"><div class="challenge-num">Try this</div><div class="challenge-title">Plant ID walk</div><div class="challenge-desc">Take iNaturalist on a trail walk and identify every plant you can. See how many you get in a single outing.</div></div>
+            <div class="challenge-card"><div class="challenge-num">Try this</div><div class="challenge-title">Slow walk</div><div class="challenge-desc">Walk a short trail in twice the usual time. Stop constantly. Eat a snack in the middle of the forest. No destination agenda.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PILGRIMAGE -->
+      <div class="page" id="pilgrimage">
+        <div class="page-eyebrow">Hiking & Trail Running</div>
+        <h1 class="page-title">Walking Pilgrimages</h1>
+        <p class="page-intro">Multi-day walks that move you through landscape and through something inside yourself. The Camino is just the beginning.</p>
+        <div class="section">
+          <h2 class="section-title">Routes to Dream About</h2>
+          <div class="cards">
+            <div class="card"><div class="card-title">Camino Francés</div><div class="card-desc">800km across Spain to Santiago. The classic. Deeply social.</div></div>
+            <div class="card"><div class="card-title">St. Cuthbert's Way</div><div class="card-desc">100km through the Scottish Borders. Celtic Christianity landscapes.</div></div>
+            <div class="card"><div class="card-title">Via Francigena</div><div class="card-desc">Canterbury to Rome. Ancient pilgrimage road through Europe.</div></div>
+            <div class="card"><div class="card-title">Tōkai Nature Trail (Japan)</div><div class="card-desc">1,697km. Tokyo to Osaka through mountain forests.</div></div>
+            <div class="card"><div class="card-title">West Highland Way (Scotland)</div><div class="card-desc">154km through highland scenery. Doable in 7–10 days.</div></div>
+          </div>
+        </div>
+        <div class="section">
+          <h2 class="section-title">Learn More</h2>
+          <div class="links">
+            <div class="link-item"><div class="link-dot"></div><div class="link-content"><div class="link-name">The Camino Guide (pilgrim.es)</div><div class="link-desc">Official pilgrim passport, route info, and credential offices</div></div></div>
+            <div class="link-item"><div class="link-dot"></div><div class="link-content"><div class="link-name">Walking the Camino (film, 2013)</div><div class="link-desc">Beautiful documentary following six pilgrims</div></div></div>
+          </div>
+        </div>
+        <div class="section">
+          <h2 class="section-title">Creative Challenges</h2>
+          <div class="challenges">
+            <div class="challenge-card"><div class="challenge-num">Try this</div><div class="challenge-title">Local pilgrimage</div><div class="challenge-desc">Design a one-day walking route that means something to you. Walk it with intention. It doesn't need a cathedral at the end.</div></div>
+            <div class="challenge-card"><div class="challenge-num">Try this</div><div class="challenge-title">Research one route deeply</div><div class="challenge-desc">Pick one international route and spend an evening learning its history, culture, terrain, and what people carry.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FOREST THERAPY -->
+      <div class="page" id="forest-therapy">
+        <div class="page-eyebrow">Hiking & Trail Running</div>
+        <h1 class="page-title">Forest Therapy</h1>
+        <p class="page-intro">Shinrin-yoku — forest bathing — is the practice of being in forest with all senses open. Slow, sensory, restorative. Guide training takes it further.</p>
+        <div class="section">
+          <h2 class="section-title">Learn More</h2>
+          <div class="links">
+            <div class="link-item"><div class="link-dot"></div><div class="link-content"><div class="link-name">ANFT (Association of Nature & Forest Therapy)</div><div class="link-desc">The main certification body for forest therapy guides — training programs, guide directory</div></div></div>
+            <div class="link-item"><div class="link-dot"></div><div class="link-content"><div class="link-name">Your Forest is Calling (BC-based guides)</div><div class="link-desc">Take a guided walk before becoming a guide — see the practice from the inside</div></div></div>
+            <div class="link-item"><div class="link-dot"></div><div class="link-content"><div class="link-name">Into the Forest — Dr. Qing Li</div><div class="link-desc">The foundational science book on forest bathing</div></div></div>
+          </div>
+        </div>
+        <div class="section">
+          <h2 class="section-title">Creative Challenges</h2>
+          <div class="challenges">
+            <div class="challenge-card"><div class="challenge-num">Try this</div><div class="challenge-title">20-minute invitation</div><div class="challenge-desc">Go to a forest or park. Set a timer for 20 minutes. Move slower than usual. Follow whatever catches your attention without deciding where to go.</div></div>
+            <div class="challenge-card"><div class="challenge-num">Try this</div><div class="challenge-title">Sit spot practice</div><div class="challenge-desc">Return to the same spot in nature weekly. Just sit and observe for 15 minutes. Keep a simple log of what you notice changing.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- WILDERNESS -->
+      <div class="page" id="wilderness">
+        <div class="page-eyebrow">Hiking & Trail Running</div>
+        <h1 class="page-title">Wilderness Skills</h1>
+        <p class="page-intro">Survival training, wilderness first aid, search and rescue. Learning to be safe and useful in wild places.</p>
+        <div class="section">
+          <h2 class="section-title">Skills to Develop</h2>
+          <div class="cards">
+            <div class="card"><div class="card-title">Wilderness First Aid (WFA/WFR)</div><div class="card-desc">Weekend to week-long courses. Wilderness First Responder (WFR) is the gold standard for trip leaders.</div></div>
+            <div class="card"><div class="card-title">Navigation</div><div class="card-desc">Map and compass — don't rely only on GPS. Orienteering is a fun way to practice.</div></div>
+            <div class="card"><div class="card-title">Shelter & Fire</div><div class="card-desc">Tarp setups, debris shelters, fire starting in wet conditions</div></div>
+            <div class="card"><div class="card-title">Search & Rescue</div><div class="card-desc">BCSAR (BC Search and Rescue Association) — volunteer teams, training programs, community service</div></div>
+          </div>
+        </div>
+        <div class="section">
+          <h2 class="section-title">Networks</h2>
+          <div class="links">
+            <div class="link-item"><div class="link-dot"></div><div class="link-content"><div class="link-name">BCSAR (bcsara.com)</div><div class="link-desc">BC Search and Rescue — volunteer, train, serve</div></div></div>
+            <div class="link-item"><div class="link-dot"></div><div class="link-content"><div class="link-name">NOLS Wilderness Medicine (nols.edu)</div><div class="link-desc">Gold standard wilderness first aid training, offered across North America</div></div></div>
+          </div>
+        </div>
+        <div class="section">
+          <h2 class="section-title">Creative Challenges</h2>
+          <div class="challenges">
+            <div class="challenge-card"><div class="challenge-num">Try this</div><div class="challenge-title">Navigation exercise</div><div class="challenge-desc">Print a topo map of a trail you know well. Walk it using only the map and compass. No phone.</div></div>
+            <div class="challenge-card"><div class="challenge-num">Try this</div><div class="challenge-title">10 essentials audit</div><div class="challenge-desc">Pull out your pack and check the ten essentials. Update anything old or missing. Know what everything does.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FORAGING -->
+      <div class="page" id="foraging">
+        <div class="page-eyebrow">Hiking & Trail Running</div>
+        <h1 class="page-title">Foraging</h1>
+        <p class="page-intro">Learning to read the land as a pantry and pharmacy. Start slowly, be certain before you eat anything, and enjoy the looking even when you don't collect.</p>
+        <div class="section">
+          <h2 class="section-title">Tools</h2>
+          <div class="pills">
+            <span class="pill">Field guides (Pacific Northwest specific)</span><span class="pill">iNaturalist for ID help</span><span class="pill">Paper bags for collecting</span><span class="pill">Hand lens / loupe</span><span class="pill">Foraging basket</span>
+          </div>
+        </div>
+        <div class="section">
+          <h2 class="section-title">Learn More</h2>
+          <div class="links">
+            <div class="link-item"><div class="link-dot"></div><div class="link-content"><div class="link-name">Plants of Coastal British Columbia — Pojar & MacKinnon</div><div class="link-desc">The essential PNW field guide. Heavy but worth it.</div></div></div>
+            <div class="link-item"><div class="link-dot"></div><div class="link-content"><div class="link-name">Forage Vancouver (foragevancouver.com)</div><div class="link-desc">Local guided walks with an expert — safest way to start</div></div></div>
+            <div class="link-item"><div class="link-dot"></div><div class="link-content"><div class="link-name">Samuel Thayer — The Forager's Harvest</div><div class="link-desc">Detailed, trustworthy, beautifully written plant profiles</div></div></div>
+          </div>
+        </div>
+        <div class="section">
+          <h2 class="section-title">Creative Challenges</h2>
+          <div class="challenges">
+            <div class="challenge-card"><div class="challenge-num">Try this</div><div class="challenge-title">Know 10 plants</div><div class="challenge-desc">Pick 10 local plants you can identify with 100% certainty. Start with the obviously distinctive ones: blackberry, dandelion, rose.</div></div>
+            <div class="challenge-card"><div class="challenge-num">Try this</div><div class="challenge-title">Eat one wild thing</div><div class="challenge-desc">Go on a guided walk and eat one thing you've foraged with confidence. Note the taste, texture, context.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TEA -->
+      <div class="page" id="tea">
+        <div class="page-eyebrow">Tea</div>
+        <h1 class="page-title">Tea Ceremony</h1>
+        <p class="page-intro">Tea as a whole practice — gongfu, chado, British high tea, Moroccan mint. Each tradition is a world. A tea sommelier sees them all without hierarchy.</p>
+        <div class="section">
+          <h2 class="section-title">Tools</h2>
+          <div class="cards">
+            <div class="card"><div class="card-title">Gongfu setup</div><div class="card-desc">Gaiwan or small teapot, fairness pitcher (chahai), small cups, tea tray or drip tray, kettle with temperature control</div></div>
+            <div class="card"><div class="card-title">Tasting</div><div class="card-desc">White porcelain tasting cups (show colour well), tea journal, aroma cup (wenxiangbei)</div></div>
+            <div class="card"><div class="card-title">General</div><div class="card-desc">Filtered water (matters more than most equipment), scale for measuring, timer</div></div>
+          </div>
+        </div>
+        <div class="section">
+          <h2 class="section-title">Traditions to Explore</h2>
+          <div class="pills">
+            <span class="pill">Gongfu cha (Chinese)</span><span class="pill">Chado / chanoyu (Japanese)</span><span class="pill">Tibetan butter tea</span><span class="pill">Moroccan atay</span><span class="pill">British afternoon tea</span><span class="pill">Korean dado</span><span class="pill">Taiwanese high mountain oolongs</span><span class="pill">Masala chai</span>
+          </div>
+        </div>
+        <div class="section">
+          <h2 class="section-title">Networks & Places</h2>
+          <div class="links">
+            <div class="link-item"><div class="link-dot"></div><div class="link-content"><div class="link-name">Tea Sparrow / Vancouver tea community</div><div class="link-desc">Local tastings, subscription boxes, community events</div></div></div>
+            <div class="link-item"><div class="link-dot"></div><div class="link-content"><div class="link-name">Global Tea Hut (globalteahut.org)</div><div class="link-desc">Monthly tea magazine + community with deep Chan/Zen sensibility</div></div></div>
+            <div class="link-item"><div class="link-dot"></div><div class="link-content"><div class="link-name">Tea Sommelier program — Tea & Herbal Association of Canada</div><div class="link-desc">Canadian professional tea sommelier training</div></div></div>
+          </div>
+        </div>
+        <div class="section">
+          <h2 class="section-title">Creative Challenges</h2>
+          <div class="challenges">
+            <div class="challenge-card"><div class="challenge-num">Try this</div><div class="challenge-title">Tea journal</div><div class="challenge-desc">Note every tea you drink for a month — leaf, water temp, steep time, colour, smell, taste, how it made you feel.</div></div>
+            <div class="challenge-card"><div class="challenge-num">Try this</div><div class="challenge-title">Learn one ceremony</div><div class="challenge-desc">Choose one tradition and learn its specific steps. Practice the sequence until it becomes a moving meditation.</div></div>
+            <div class="challenge-card"><div class="challenge-num">Try this</div><div class="challenge-title">Blind tasting</div><div class="challenge-desc">Have a friend brew you two teas without telling you what they are. Try to identify category, origin, anything you can.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CHESS -->
+      <div class="page" id="chess">
+        <div class="page-eyebrow">Mind & Play</div>
+        <h1 class="page-title">Chess</h1>
+        <p class="page-intro">A game that rewards patience, creativity, and the willingness to be wrong. Endlessly deep, never boring.</p>
+        <div class="section">
+          <h2 class="section-title">Tools</h2>
+          <div class="pills">
+            <span class="pill">A physical board you enjoy using</span><span class="pill">Chess.com or Lichess account</span><span class="pill">Puzzle trainer (daily puzzles)</span><span class="pill">A notebook for recording games</span>
+          </div>
+        </div>
+        <div class="section">
+          <h2 class="section-title">Learn More</h2>
+          <div class="links">
+            <div class="link-item"><div class="link-dot"></div><div class="link-content"><div class="link-name">Lichess.org</div><div class="link-desc">Free, open-source, no ads — the best place to play online</div></div></div>
+            <div class="link-item"><div class="link-dot"></div><div class="link-content"><div class="link-name">YouTube: GothamChess (Levy Rozman)</div><div class="link-desc">Entertaining, educational, genuinely good for all levels</div></div></div>
+            <div class="link-item"><div class="link-dot"></div><div class="link-content"><div class="link-name">Chess Tempo (chesstempo.com)</div><div class="link-desc">Tactical puzzles — the most efficient way to improve pattern recognition</div></div></div>
+          </div>
+        </div>
+        <div class="section">
+          <h2 class="section-title">Creative Challenges</h2>
+          <div class="challenges">
+            <div class="challenge-card"><div class="challenge-num">Try this</div><div class="challenge-title">Play without taking back</div><div class="challenge-desc">Commit to every move. No take-backs. The mistake is the lesson.</div></div>
+            <div class="challenge-card"><div class="challenge-num">Try this</div><div class="challenge-title">Puzzle a day</div><div class="challenge-desc">One chess puzzle every morning before looking at your phone. Five minutes. Builds pattern recognition quietly over time.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- READING -->
+      <div class="page" id="reading">
+        <div class="page-eyebrow">Mind & Play</div>
+        <h1 class="page-title">Reading</h1>
+        <p class="page-intro">Books as portals, companions, and slow teachers. No reading list to finish — just whatever calls to you.</p>
+        <div class="section">
+          <h2 class="section-title">Tools</h2>
+          <div class="pills">
+            <span class="pill">A lamp you love</span><span class="pill">Libby app (Vancouver Public Library)</span><span class="pill">A reading journal (optional)</span><span class="pill">Bookmarks you enjoy</span><span class="pill">Physical books whenever possible</span>
+          </div>
+        </div>
+        <div class="section">
+          <h2 class="section-title">Themes to Wander Into</h2>
+          <div class="pills">
+            <span class="pill">Celtic mythology & folklore</span><span class="pill">Herbalism & plant knowledge</span><span class="pill">Nature writing</span><span class="pill">Pilgrimage & walking narratives</span><span class="pill">Tea history & culture</span><span class="pill">Language & linguistics</span><span class="pill">Wilderness memoir</span><span class="pill">Music biography</span>
+          </div>
+        </div>
+        <div class="section">
+          <h2 class="section-title">Creative Challenges</h2>
+          <div class="challenges">
+            <div class="challenge-card"><div class="challenge-num">Try this</div><div class="challenge-title">Read across your hobbies</div><div class="challenge-desc">Pick one book that connects two things in this creative rest collection. Tea + Japan. Plants + Celtic folklore. Hiking + memoir.</div></div>
+            <div class="challenge-card"><div class="challenge-num">Try this</div><div class="challenge-title">Read one page outside</div><div class="challenge-desc">Take whatever you're reading and read at least one page outside. Even in rain. Notice how the environment changes the words.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BIRDING -->
+      <div class="page" id="birding">
+        <div class="page-eyebrow">Mind & Play</div>
+        <h1 class="page-title">Birding</h1>
+        <p class="page-intro">Learning to notice birds transforms how you move through the world. Suddenly everywhere is full of life you were walking past.</p>
+        <div class="section">
+          <h2 class="section-title">Tools</h2>
+          <div class="cards">
+            <div class="card"><div class="card-title">Binoculars</div><div class="card-desc">8x42 is the classic general-purpose spec. Nikon Prostaff or Vortex Diamondback are great starting points.</div></div>
+            <div class="card"><div class="card-title">Merlin Bird ID</div><div class="card-desc">Free Cornell Lab app — identifies birds by sound or photo. It's genuinely magic.</div></div>
+            <div class="card"><div class="card-title">Field guide</div><div class="card-desc">Sibley Birds West for PNW — or the BC-specific Birds of British Columbia</div></div>
+            <div class="card"><div class="card-title">eBird</div><div class="card-desc">Log your sightings, find hotspots nearby, contribute to real citizen science</div></div>
+          </div>
+        </div>
+        <div class="section">
+          <h2 class="section-title">Good Spots in Vancouver</h2>
+          <div class="pills">
+            <span class="pill">Boundary Bay (epic shorebirds)</span><span class="pill">Reifel Migratory Bird Sanctuary</span><span class="pill">Stanley Park (owls in winter)</span><span class="pill">Iona Beach Regional Park</span><span class="pill">Colony Farm (raptors)</span>
+          </div>
+        </div>
+        <div class="section">
+          <h2 class="section-title">Creative Challenges</h2>
+          <div class="challenges">
+            <div class="challenge-card"><div class="challenge-num">Try this</div><div class="challenge-title">Morning window sit</div><div class="challenge-desc">Spend 20 minutes at a window or balcony with your coffee and just watch. Log every bird species you see.</div></div>
+            <div class="challenge-card"><div class="challenge-num">Try this</div><div class="challenge-title">Sound-first birding</div><div class="challenge-desc">Go for a walk with Merlin's Sound ID running. Let the birds find you with their voices instead of you searching with eyes.</div></div>
+            <div class="challenge-card"><div class="challenge-num">Try this</div><div class="challenge-title">Sketch a bird</div><div class="challenge-desc">Try to sketch a bird you've seen this week from memory or from a photo. It doesn't need to be good. It just makes you look harder.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CRYSTAL BEADING -->
+      <div class="page" id="beading">
+        <div class="page-eyebrow">Mind & Play</div>
+        <h1 class="page-title">Natural Crystal Beading</h1>
+        <p class="page-intro">Making jewellery and objects from natural stones. Slow, tactile, and quietly absorbing. Each stone has a history.</p>
+        <div class="section">
+          <h2 class="section-title">Tools & Supplies</h2>
+          <div class="cards">
+            <div class="card"><div class="card-title">Wire & thread</div><div class="card-desc">Beading wire (Beadalon), silk thread for knotted styles, nylon for stretchy bracelets</div></div>
+            <div class="card"><div class="card-title">Findings</div><div class="card-desc">Clasps, crimp beads, jump rings, headpins — sterling or gold-filled if you want longevity</div></div>
+            <div class="card"><div class="card-title">Tools</div><div class="card-desc">Flat-nose pliers, round-nose pliers, wire cutters, beading board for layout</div></div>
+            <div class="card"><div class="card-title">Stones</div><div class="card-desc">Source ethically — look for vendors with transparent supply chains. Local gem shows are a pleasure.</div></div>
+          </div>
+        </div>
+        <div class="section">
+          <h2 class="section-title">Stones to Explore</h2>
+          <div class="pills">
+            <span class="pill">Labradorite (PNW energy)</span><span class="pill">Amethyst</span><span class="pill">Moss agate</span><span class="pill">Moonstone</span><span class="pill">Malachite</span><span class="pill">Prehnite</span><span class="pill">Tourmaline</span><span class="pill">Unakite (earthy, Celtic vibes)</span>
+          </div>
+        </div>
+        <div class="section">
+          <h2 class="section-title">Creative Challenges</h2>
+          <div class="challenges">
+            <div class="challenge-card"><div class="challenge-num">Try this</div><div class="challenge-title">Seasonal piece</div><div class="challenge-desc">Design a piece that captures the current season in colour and stone. What does November feel like? What does June?</div></div>
+            <div class="challenge-card"><div class="challenge-num">Try this</div><div class="challenge-title">Make something to give</div><div class="challenge-desc">Create a piece specifically for someone you love. Think about what stones or colours feel like them.</div></div>
+            <div class="challenge-card"><div class="challenge-num">Try this</div><div class="challenge-title">Celtic knotwork inspiration</div><div class="challenge-desc">Look at Celtic knotwork patterns and try to create a bead pattern that echoes their symmetry and weave.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- VISUAL PROGRAMMING -->
+      <div class="page" id="visual-programming">
+        <div class="page-eyebrow">Making & Tech</div>
+        <h1 class="page-title">Visual Programming & Touch Design</h1>
+        <p class="page-intro">Making things that move and respond — without necessarily writing traditional code. Node-based, tactile, often beautiful.</p>
+        <div class="section">
+          <h2 class="section-title">Tools to Explore</h2>
+          <div class="cards">
+            <div class="card"><div class="card-title">TouchDesigner</div><div class="card-desc">Visual programming for interactive multimedia. Used in installations, live visuals, projections. Free for non-commercial use.</div></div>
+            <div class="card"><div class="card-title">Max/MSP</div><div class="card-desc">Node-based environment for sound and visuals. Deep music integration.</div></div>
+            <div class="card"><div class="card-title">vvvv</div><div class="card-desc">Visual live-programming for large media environments. Open source.</div></div>
+            <div class="card"><div class="card-title">Processing / p5.js</div><div class="card-desc">Code-but-visual — beginner friendly, huge creative community. p5.js works in the browser.</div></div>
+          </div>
+        </div>
+        <div class="section">
+          <h2 class="section-title">Learn More</h2>
+          <div class="links">
+            <div class="link-item"><div class="link-dot"></div><div class="link-content"><div class="link-name">The Interactive & Immersive HQ (YouTube)</div><div class="link-desc">TouchDesigner tutorials from the best teachers in the community</div></div></div>
+            <div class="link-item"><div class="link-dot"></div><div class="link-content"><div class="link-name">p5js.org</div><div class="link-desc">Free, in-browser, beginner creative coding. Great starting point.</div></div></div>
+            <div class="link-item"><div class="link-dot"></div><div class="link-content"><div class="link-name">Creative Applications Network (creativeapplications.net)</div><div class="link-desc">Curated creative technology projects — excellent for inspiration</div></div></div>
+          </div>
+        </div>
+        <div class="section">
+          <h2 class="section-title">Creative Challenges</h2>
+          <div class="challenges">
+            <div class="challenge-card"><div class="challenge-num">Try this</div><div class="challenge-title">Visualise sound</div><div class="challenge-desc">Take an audio input — your voice, music, ambient sound — and make something that moves in response to it.</div></div>
+            <div class="challenge-card"><div class="challenge-num">Try this</div><div class="challenge-title">Generative nature</div><div class="challenge-desc">Create a visual that generates something organic — flowing, branching, or growing — using simple rules.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ROBOTICS -->
+      <div class="page" id="robotics">
+        <div class="page-eyebrow">Making & Tech</div>
+        <h1 class="page-title">Robotics</h1>
+        <p class="page-intro">Machines you build yourself that do things in the physical world. Tinkering, breaking, fixing, delighting. The best kind of puzzle.</p>
+        <div class="section">
+          <h2 class="section-title">Entry Points</h2>
+          <div class="cards">
+            <div class="card"><div class="card-title">Arduino</div><div class="card-desc">Open-source microcontroller. Huge community. Great for sensors, motors, lights. Very hackable.</div></div>
+            <div class="card"><div class="card-title">Raspberry Pi</div><div class="card-desc">Full Linux computer in a tiny board. Good for camera projects, AI at the edge, more complex logic.</div></div>
+            <div class="card"><div class="card-title">LEGO Mindstorms / Spike</div><div class="card-desc">Genuinely satisfying and not just for kids. Good for learning control systems and mechanics without soldering.</div></div>
+            <div class="card"><div class="card-title">3D Printing</div><div class="card-desc">Design and print parts for your robots. Bambu Lab or Prusa are solid starter printers.</div></div>
+          </div>
+        </div>
+        <div class="section">
+          <h2 class="section-title">Community</h2>
+          <div class="links">
+            <div class="link-item"><div class="link-dot"></div><div class="link-content"><div class="link-name">Vancouver Hackspace (vanhack.ca)</div><div class="link-desc">Local makerspace — equipment, community, skill sharing</div></div></div>
+            <div class="link-item"><div class="link-dot"></div><div class="link-content"><div class="link-name">Instructables (instructables.com)</div><div class="link-desc">Step-by-step project guides for every skill level</div></div></div>
+            <div class="link-item"><div class="link-dot"></div><div class="link-content"><div class="link-name">Hackster.io</div><div class="link-desc">Hardware project community with tutorials and inspiration</div></div></div>
+          </div>
+        </div>
+        <div class="section">
+          <h2 class="section-title">Creative Challenges</h2>
+          <div class="challenges">
+            <div class="challenge-card"><div class="challenge-num">Try this</div><div class="challenge-title">Blinking light</div><div class="challenge-desc">Classic first Arduino project — but change the pattern to match a rhythm you're learning on piano or ukulele.</div></div>
+            <div class="challenge-card"><div class="challenge-num">Try this</div><div class="challenge-title">Garden sensor</div><div class="challenge-desc">Build a simple soil moisture sensor for your balcony garden. When does your elderflower actually need water?</div></div>
+            <div class="challenge-card"><div class="challenge-num">Try this</div><div class="challenge-title">Nature + machine</div><div class="challenge-desc">Make a small machine that responds to something in the natural world — light levels, temperature, sound. Let nature be the input.</div></div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script>
+  function show(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    const page = document.getElementById(id);
+    if (page) page.classList.add('active');
+    document.querySelectorAll('.nav-item').forEach(n => {
+      if (n.getAttribute('onclick') === "show('" + id + "')") n.classList.add('active');
+    });
+    document.getElementById('app-main').scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+
+</body>
+</html>
