@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2090 Comox St — layout</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Asap:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#5d5a5b;
+    --accent:#a29f9f;
+    --paper:#ffffff;
+    --fill:#f6f5f5;
+    --fill-on:#e7e5e5;
+    --hair:#d8d6d6;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Asap',system-ui,sans-serif;
+    font-weight:400;
+    line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+  }
+  .sheet{max-width:1000px;margin:0 auto;padding:48px 28px 64px}
+  header{border-bottom:1px solid var(--hair);padding-bottom:20px;margin-bottom:24px}
+  h1{font-size:24px;font-weight:500;margin:0 0 4px;letter-spacing:.01em}
+  .sub{font-size:14px;color:var(--accent);margin:0}
+  .modes{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+  .mode{
+    font-family:inherit;font-size:14px;color:var(--ink);
+    background:var(--paper);border:1px solid var(--hair);
+    border-radius:2px;padding:7px 16px;cursor:pointer;
+  }
+  .mode:hover{border-color:var(--accent)}
+  .mode[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  .mode:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+  .plan{width:100%;height:auto;display:block}
+  .rm{fill:var(--fill);cursor:pointer}
+  .rm:hover{fill:#efeded}
+  .rm.on{fill:var(--fill-on)}
+  .rm:focus-visible{outline:none}
+  .rm:focus-visible+.hit{stroke:var(--ink);stroke-width:2}
+  .wall{stroke:var(--ink);stroke-width:2;stroke-linecap:square}
+  .win{stroke:var(--ink);stroke-width:5;stroke-linecap:butt}
+  .mir{stroke:var(--accent);stroke-width:5;stroke-linecap:butt}
+  .fu{fill:none;stroke:var(--ink);stroke-width:1}
+  .soft{fill:none;stroke:var(--accent);stroke-width:1;stroke-dasharray:3 3}
+  .art{fill:var(--accent)}
+  .lb{font-family:'Asap',sans-serif;font-size:14px;fill:var(--ink)}
+  .lbs{font-family:'Asap',sans-serif;font-size:12px;fill:var(--accent)}
+  .legend{display:flex;flex-wrap:wrap;gap:18px 28px;margin:20px 0 0;font-size:13px;color:var(--accent)}
+  .legend span{display:flex;align-items:center;gap:8px}
+  .swatch{width:22px;height:0;border-top:4px solid var(--ink)}
+  .swatch.a{border-top-color:var(--accent)}
+  .sq{width:10px;height:10px;background:var(--accent)}
+  .box{width:20px;height:12px;border:1px solid var(--ink)}
+  #panel{margin-top:28px;border-top:1px solid var(--hair);padding-top:22px;min-height:210px}
+  #panel h2{font-size:17px;font-weight:500;margin:0 0 10px}
+  #panel ul{margin:0 0 14px;padding-left:18px}
+  #panel li{font-size:15px;margin-bottom:3px}
+  #panel .note{font-size:14px;color:var(--accent);max-width:62ch}
+  footer{margin-top:36px;border-top:1px solid var(--hair);padding-top:16px;font-size:13px;color:var(--accent)}
+  @media (prefers-reduced-motion: no-preference){
+    .rm,.mode,.fu{transition:fill .18s ease, x .35s ease, y .35s ease, opacity .25s ease}
+  }
+  @media (max-width:640px){
+    .sheet{padding:32px 18px 48px}
+    h1{font-size:21px}
+  }
+</style>
+</head>
+<body>
+<div class="sheet">
+
+<header>
+  <h1>2090 Comox St — one bedroom, approximately 650 sq ft</h1>
+  <p class="sub">Layout and furnishing decisions. Dimensions inferred from listing photographs; confirm on site.</p>
+</header>
+
+<div class="modes">
+  <button class="mode" id="m-day" aria-pressed="true" onclick="setMode('day')">Everyday</button>
+  <button class="mode" id="m-din" aria-pressed="false" onclick="setMode('dinner')">Dinner for eight</button>
+</div>
+
+<svg class="plan" viewBox="0 0 800 680" role="img" aria-label="Floorplan showing living room, dining alcove, kitchen, bathroom, hall, entry and bedroom with furniture in place">
+<title>Floorplan with furniture</title>
+<desc>Living room occupies the tree-facing corner with two window walls, opening to a dining alcove and galley kitchen. A hall connects the entry to the bathroom and bedroom. The bedroom faces the street.</desc>
+
+<rect class="rm" id="r-living" x="60" y="60" width="408" height="312" onclick="pick('living')" tabindex="0" onkeydown="if(event.key==='Enter')pick('living')"/>
+<rect class="rm" id="r-dining" x="468" y="60" width="144" height="216" onclick="pick('dining')" tabindex="0" onkeydown="if(event.key==='Enter')pick('dining')"/>
+<rect class="rm" id="r-kitchen" x="612" y="60" width="120" height="264" onclick="pick('kitchen')" tabindex="0" onkeydown="if(event.key==='Enter')pick('kitchen')"/>
+<rect class="rm" id="r-bath" x="612" y="324" width="120" height="168" onclick="pick('bath')" tabindex="0" onkeydown="if(event.key==='Enter')pick('bath')"/>
+<rect class="rm" id="r-hall" x="468" y="276" width="144" height="216" onclick="pick('hall')" tabindex="0" onkeydown="if(event.key==='Enter')pick('hall')"/>
+<rect class="rm" id="r-entry" x="468" y="492" width="264" height="120" onclick="pick('entry')" tabindex="0" onkeydown="if(event.key==='Enter')pick('entry')"/>
+<rect class="rm" id="r-bedroom" x="60" y="372" width="408" height="240" onclick="pick('bedroom')" tabindex="0" onkeydown="if(event.key==='Enter')pick('bedroom')"/>
+
+<line class="wall" x1="60" y1="60" x2="732" y2="60"/>
+<line class="wall" x1="60" y1="60" x2="60" y2="612"/>
+<line class="wall" x1="60" y1="612" x2="732" y2="612"/>
+<line class="wall" x1="732" y1="60" x2="732" y2="530"/>
+<line class="wall" x1="732" y1="590" x2="732" y2="612"/>
+
+<line class="wall" x1="468" y1="276" x2="612" y2="276"/>
+<line class="wall" x1="468" y1="276" x2="468" y2="300"/>
+<line class="wall" x1="468" y1="348" x2="468" y2="400"/>
+<line class="wall" x1="468" y1="450" x2="468" y2="612"/>
+<line class="wall" x1="60" y1="372" x2="468" y2="372"/>
+<line class="wall" x1="612" y1="60" x2="612" y2="100"/>
+<line class="wall" x1="612" y1="180" x2="612" y2="380"/>
+<line class="wall" x1="612" y1="430" x2="612" y2="492"/>
+<line class="wall" x1="612" y1="324" x2="732" y2="324"/>
+<line class="wall" x1="540" y1="492" x2="732" y2="492"/>
+
+<line class="win" x1="90" y1="60" x2="440" y2="60"/>
+<line class="win" x1="60" y1="90" x2="60" y2="340"/>
+<line class="win" x1="480" y1="60" x2="600" y2="60"/>
+<line class="win" x1="630" y1="60" x2="715" y2="60"/>
+<line class="win" x1="130" y1="612" x2="400" y2="612"/>
+
+<line class="mir" x1="648" y1="496" x2="722" y2="496"/>
+<line class="mir" x1="608" y1="330" x2="608" y2="374"/>
+
+<rect class="soft" x="95" y="88" width="320" height="118" rx="2"/>
+<rect class="fu" id="sofa" x="110" y="112" width="288" height="70" rx="2"/>
+<line class="fu" x1="182" y1="112" x2="182" y2="182"/>
+<line class="fu" x1="254" y1="112" x2="254" y2="182"/>
+<line class="fu" x1="326" y1="112" x2="326" y2="182"/>
+<rect class="fu" id="tbl1" x="120" y="196" width="132" height="70" rx="2"/>
+<rect class="fu" id="tbl2" x="256" y="196" width="132" height="70" rx="2"/>
+<g id="seats" opacity="0">
+<circle class="fu" cx="176" cy="152" r="11"/><circle class="fu" cx="216" cy="152" r="11"/>
+<circle class="fu" cx="256" cy="152" r="11"/><circle class="fu" cx="296" cy="152" r="11"/>
+<circle class="fu" cx="176" cy="300" r="11"/><circle class="fu" cx="216" cy="300" r="11"/>
+<circle class="fu" cx="256" cy="300" r="11"/><circle class="fu" cx="296" cy="300" r="11"/>
+</g>
+
+<rect class="fu" x="90" y="348" width="58" height="24"/>
+<rect class="fu" x="150" y="348" width="58" height="24"/>
+<rect class="fu" x="210" y="348" width="58" height="24"/>
+<rect class="fu" x="270" y="348" width="58" height="24"/>
+<rect class="fu" x="340" y="348" width="112" height="24"/>
+
+<circle class="fu" cx="540" cy="140" r="36"/>
+<circle class="fu" cx="502" cy="118" r="11"/>
+<circle class="fu" cx="578" cy="118" r="11"/>
+<circle class="fu" cx="540" cy="192" r="11"/>
+<rect class="fu" x="478" y="242" width="122" height="28"/>
+
+<rect class="fu" x="616" y="80" width="26" height="176"/>
+<rect class="fu" x="702" y="80" width="28" height="176"/>
+<rect class="fu" x="700" y="272" width="30" height="46"/>
+
+<rect class="fu" x="616" y="332" width="110" height="56" rx="2"/>
+<rect class="fu" x="618" y="402" width="42" height="26"/>
+<rect class="fu" x="692" y="420" width="34" height="42" rx="2"/>
+<rect class="fu" x="616" y="472" width="76" height="24"/>
+
+<rect class="fu" x="470" y="280" width="140" height="26"/>
+
+<rect class="fu" x="486" y="580" width="146" height="28"/>
+
+<rect class="soft" x="118" y="382" width="176" height="196" rx="2"/>
+<rect class="fu" x="152" y="392" width="108" height="156" rx="2"/>
+<rect class="fu" x="352" y="376" width="86" height="46"/>
+
+<rect class="art" x="298" y="366" width="12" height="12"/>
+<rect class="art" x="472" y="456" width="12" height="12"/>
+<rect class="art" x="600" y="196" width="12" height="12"/>
+<rect class="art" x="474" y="496" width="12" height="12"/>
+
+<text class="lb" x="264" y="290" text-anchor="middle">Living room</text>
+<text class="lb" x="540" y="216" text-anchor="middle">Dining</text>
+<text class="lb" x="672" y="290" text-anchor="middle">Kitchen</text>
+<text class="lb" x="672" y="446" text-anchor="middle">Bath</text>
+<text class="lb" x="540" y="360" text-anchor="middle">Hall</text>
+<text class="lb" x="600" y="548" text-anchor="middle">Entry</text>
+<text class="lb" x="360" y="480" text-anchor="middle">Bedroom</text>
+
+<text class="lbs" x="60" y="644">Trees</text>
+<text class="lbs" x="732" y="644" text-anchor="end">Street</text>
+<text class="lbs" x="60" y="666">Select any room for its contents</text>
+</svg>
+
+<div class="legend">
+  <span><i class="swatch"></i>Window</span>
+  <span><i class="swatch a"></i>Mirror</span>
+  <span><i class="sq"></i>Art by friends</span>
+  <span><i class="box"></i>Furniture</span>
+</div>
+
+<div id="panel"></div>
+
+<footer>
+  Room dimensions and wall positions are inferred from listing photographs and typical proportions for the period. Confirm ceiling height first, then the dining alcove, before ordering.
+</footer>
+
+</div>
+
+<script>
+var D = {
+  living: {
+    t: "Living room — approximately 17 × 13 ft",
+    i: [
+      "Two Frame 66 in. oak tables, side by side, as worktables",
+      "Four Movie Night armless chairs, backs to the tables, facing the windows",
+      "Four Stairway 96 in. bookcases, sized to the books, plus closed storage alongside",
+      "Washable wool rug beneath the seating",
+      "White linen curtains on ceiling track",
+      "Task lamps at the tables; one soft floor lamp for evening"
+    ],
+    n: "Windows on two walls. Task lamps on makes this a studio; task lamps off and the floor lamp on makes it a reading room. The mode change costs a switch rather than a rearrangement."
+  },
+  dining: {
+    t: "Dining alcove — approximately 6 × 9 ft",
+    i: [
+      "Trefoil 90 cm round oak table, three Tasca aluminium seats",
+      "USM credenza as the tea and coffee station",
+      "One small work by a friend on the kitchen wall"
+    ],
+    n: "The tea station sits where people arrive rather than where you cook, and no longer occupies half a kitchen counter."
+  },
+  kitchen: {
+    t: "Kitchen — galley, approximately 5 × 11 ft",
+    i: [
+      "Unchanged; window and radiator on the exterior wall",
+      "Openings to both the dining alcove and the hall"
+    ],
+    n: "Confirm the range hood vents outside rather than recirculating."
+  },
+  bath: {
+    t: "Bathroom — approximately 5 × 7 ft",
+    i: [
+      "No window; one small existing cabinet",
+      "One low closed unit for linens and supplies"
+    ],
+    n: "The only room with no daylight and no linen storage. Closed storage is a day-one requirement, not a later refinement. Confirm the extract fan vents outside."
+  },
+  hall: {
+    t: "Hall — approximately 6 × 9 ft",
+    i: [
+      "Closed modular storage along the full wall",
+      "Art materials, paper, paint, records, cleaning supplies",
+      "One mirror, opposite the storage run",
+      "One small work by a friend"
+    ],
+    n: "This wall decides whether every other room stays clear. It is also the reason a guest can reach the bathroom without crossing the bedroom."
+  },
+  entry: {
+    t: "Entry — approximately 11 × 5 ft",
+    i: [
+      "Low closed unit for shoes, with hooks above and the hamper inside",
+      "Full-width mirror on the facing wall",
+      "One small work by a friend"
+    ],
+    n: "The arrival sequence has a place to happen: clothes into the hamper, into linen, kettle filled. Ask whether a basement storage locker comes with the unit."
+  },
+  bedroom: {
+    t: "Bedroom — approximately 17 × 10 ft",
+    i: [
+      "Bed against the interior wall, away from the window",
+      "Everyday oak armoire, if the existing closet proves inadequate",
+      "Washable wool rug",
+      "White linen curtains with a blackout layer behind",
+      "One low warm lamp; no overhead light after dark"
+    ],
+    n: "This room faces the street rather than the trees, so privacy and darkness are day-one items. Under one lux while sleeping is the figure worth designing to."
+  }
+};
+
+function pick(k){
+  var d = D[k];
+  var all = document.querySelectorAll('.rm');
+  for (var i = 0; i < all.length; i++) all[i].classList.remove('on');
+  document.getElementById('r-' + k).classList.add('on');
+  var h = '<h2>' + d.t + '</h2><ul>';
+  for (var n = 0; n < d.i.length; n++) h += '<li>' + d.i[n] + '</li>';
+  h += '</ul><p class="note">' + d.n + '</p>';
+  document.getElementById('panel').innerHTML = h;
+}
+
+function setMode(m){
+  var dinner = (m === 'dinner');
+  var t1 = document.getElementById('tbl1');
+  var t2 = document.getElementById('tbl2');
+  if (dinner){
+    t1.setAttribute('x', 198); t1.setAttribute('y', 178);
+    t2.setAttribute('x', 198); t2.setAttribute('y', 248);
+  } else {
+    t1.setAttribute('x', 120); t1.setAttribute('y', 196);
+    t2.setAttribute('x', 256); t2.setAttribute('y', 196);
+  }
+  document.getElementById('seats').setAttribute('opacity', dinner ? 1 : 0);
+  document.getElementById('sofa').setAttribute('opacity', dinner ? 0.25 : 1);
+  document.getElementById('m-day').setAttribute('aria-pressed', String(!dinner));
+  document.getElementById('m-din').setAttribute('aria-pressed', String(dinner));
+}
+
+pick('living');
+</script>
+</body>
+</html>
