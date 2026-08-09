@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Circles of Intimacy</title>
+<link href="https://fonts.googleapis.com/css2?family=Asap:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root{
+    --paper:#ffffff; --ink:#5d5a5b; --ink-strong:#454344; --stone:#a29f9f;
+    --hair:#e8e5e3; --hair-soft:#efedeb; --panel:#faf9f8; --panel-2:#f7f6f4;
+    --ease:cubic-bezier(.22,.61,.36,1);
+  }
+
+  body{
+    font-family:'Asap',system-ui,-apple-system,sans-serif;
+    background:var(--paper); color:var(--ink);
+    font-size:14px; line-height:1.6; -webkit-font-smoothing:antialiased;
+    padding:0 0 96px;
+  }
+  .wrap{ max-width:1000px; margin:0 auto; padding:0 56px; }
+
+  /* ── HERO ── */
+  .eyebrow{
+    display:flex; align-items:center; gap:11px; font-size:11px; letter-spacing:.2em;
+    text-transform:uppercase; color:var(--stone); font-weight:700; margin:0 0 18px;
+  }
+  .eyebrow .rule{ height:1px; width:26px; background:var(--stone); opacity:.6; }
+  .page-hero{ padding:52px 0 8px; }
+  h1.page-title{
+    font-weight:500; font-size:clamp(30px,4.4vw,46px); line-height:1.08;
+    letter-spacing:-.015em; color:var(--ink-strong); margin:0 0 20px; max-width:15ch;
+  }
+  h1.page-title em{ font-style:italic; font-weight:400; color:var(--ink); }
+  .lede{ font-size:17px; line-height:1.6; color:var(--ink); max-width:62ch; }
+  .hr{ border:none; border-top:1px solid var(--hair); margin:34px 0; }
+
+  /* ── SECTIONS ── */
+  .kicker{
+    font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--stone);
+    font-weight:700; margin:44px 0 14px;
+  }
+  .section-sub{ font-size:13px; color:var(--stone); margin:0 0 22px; max-width:62ch; }
+
+  /* ── PRINCIPLES ── */
+  .principles{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin:0 0 8px; }
+  .principle{ background:var(--panel); border:1px solid var(--hair); border-left:2px solid var(--stone);
+    border-radius:8px; padding:16px 18px; }
+  .principle b{ display:block; font-size:13.5px; font-weight:600; color:var(--ink-strong); margin-bottom:5px; }
+  .principle span{ font-size:12.5px; color:var(--stone); line-height:1.55; }
+
+  /* ── DIAGRAM + LEGEND ── */
+  .maproot{ display:grid; grid-template-columns:1fr 300px; gap:34px; align-items:start; }
+  .mapwrap{ border:1px solid var(--hair); border-radius:10px; background:var(--panel); padding:18px 18px 10px; }
+  .mapsvg{ width:100%; height:auto; display:block; }
+  .map-caption{ font-size:11.5px; color:var(--stone); text-align:center; margin-top:4px; }
+
+  .ring{ cursor:pointer; transition:fill-opacity .2s var(--ease), stroke .2s var(--ease); outline:none; }
+  .ring-line{ fill:none; stroke:var(--hair); stroke-width:1; vector-effect:non-scaling-stroke;
+    pointer-events:none; transition:stroke .2s var(--ease), stroke-width .2s var(--ease); }
+  .rnum{ fill:var(--stone); font-size:10.5px; font-weight:600; text-anchor:middle;
+    pointer-events:none; transition:fill .2s var(--ease); }
+  g.on .ring-line{ stroke:var(--ink-strong); stroke-width:1.6; }
+  g.on .rnum{ fill:var(--ink-strong); }
+  g.dim{ opacity:.35; }
+  .ring:focus-visible + .ring-line{ stroke:var(--ink-strong); stroke-width:1.6; }
+  .restricted rect{ fill:var(--paper); stroke:var(--stone); stroke-width:1; stroke-dasharray:3 4;
+    vector-effect:non-scaling-stroke; cursor:pointer; transition:stroke .2s var(--ease), fill .2s var(--ease); }
+  .restricted text{ fill:var(--stone); font-size:10.5px; font-weight:700; letter-spacing:.14em;
+    text-anchor:middle; text-transform:uppercase; pointer-events:none; }
+  .restricted.on rect{ stroke:var(--ink-strong); fill:var(--panel-2); }
+  .restricted.on text{ fill:var(--ink-strong); }
+
+  .legend{ display:flex; flex-direction:column; }
+  .lg{ display:grid; grid-template-columns:22px 1fr auto; gap:10px; align-items:baseline;
+    padding:11px 10px; border:none; border-bottom:1px solid var(--hair); background:none;
+    font-family:inherit; text-align:left; cursor:pointer; width:100%;
+    transition:background .15s var(--ease); }
+  .lg:hover{ background:var(--panel-2); }
+  .lg .i{ font-size:11.5px; color:var(--stone); font-variant-numeric:tabular-nums; }
+  .lg .nm{ font-size:13.5px; color:var(--ink); }
+  .lg .lv{ font-size:10.5px; color:var(--stone); letter-spacing:.04em; }
+  .lg.on{ background:var(--panel-2); }
+  .lg.on .nm{ font-weight:600; color:var(--ink-strong); }
+  .lg.on .i{ color:var(--ink-strong); }
+  .lg.res{ border-bottom:none; margin-top:8px; border:1px dashed var(--hair); border-radius:8px; }
+
+  /* ── DETAIL ── */
+  .detail{ margin-top:26px; border:1px solid var(--hair); border-radius:10px; background:var(--panel); padding:24px 26px; }
+  .detail-head{ display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:4px; }
+  .detail-idx{ font-size:11px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--stone); }
+  .detail-name{ font-size:19px; font-weight:600; color:var(--ink-strong); letter-spacing:-.005em; }
+  .detail-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:22px; margin-top:20px; }
+  .df-label{ font-size:10px; font-weight:700; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--stone); margin-bottom:7px; }
+  .df-body{ font-size:13.5px; color:var(--ink); line-height:1.6; }
+  .df-body .lvtag{ display:inline-block; font-size:11px; font-weight:700; letter-spacing:.06em;
+    color:var(--ink-strong); border:1px solid var(--hair); background:var(--paper);
+    border-radius:100px; padding:2px 10px; margin-bottom:6px; }
+  .segset{ margin-left:auto; display:flex; border:1px solid var(--hair); border-radius:100px;
+    overflow:hidden; background:var(--paper); }
+  .seg{ font-family:inherit; font-size:11px; font-weight:600; letter-spacing:.04em;
+    color:var(--stone); background:none; border:none; padding:5px 13px; cursor:pointer;
+    transition:background .18s var(--ease), color .18s var(--ease); }
+  .seg + .seg{ border-left:1px solid var(--hair); }
+  .seg:hover{ background:var(--panel-2); }
+  .seg.on{ background:var(--panel-2); color:var(--ink-strong); }
+  .detail-mn{ margin-top:18px; padding-top:14px; border-top:1px solid var(--hair);
+    font-size:13px; color:var(--stone); line-height:1.6; }
+  .detail-mn b{ color:var(--ink-strong); font-weight:600; }
+  .mn-label{ font-size:9.5px; font-weight:700; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--stone); border:1px solid var(--hair); background:var(--paper);
+    border-radius:100px; padding:2px 9px; margin-right:9px; }
+  .detail-note + .detail-mn{ border-top:none; padding-top:6px; margin-top:8px; }
+  .detail-note{ margin-top:20px; padding-top:16px; border-top:1px solid var(--hair);
+    font-size:13px; color:var(--stone); line-height:1.6; max-width:74ch; }
+
+  /* ── LADDER ── */
+  .ladderwrap{ display:grid; grid-template-columns:1fr 250px; gap:34px; align-items:start; }
+  .ladder{ border-top:1px solid var(--hair); }
+  .lr{ display:grid; grid-template-columns:34px 1fr; gap:12px; align-items:baseline; width:100%;
+    padding:15px 10px; background:none; border:none; border-bottom:1px solid var(--hair);
+    font-family:inherit; text-align:left; cursor:pointer; transition:background .15s var(--ease); }
+  .lr:hover{ background:var(--panel-2); }
+  .lr .num{ font-size:16px; font-weight:500; color:var(--hair); font-variant-numeric:tabular-nums;
+    transition:color .2s var(--ease); }
+  .lr .t{ font-size:14px; font-weight:600; color:var(--ink-strong); display:block; margin-bottom:3px; }
+  .lr .d{ font-size:13px; color:var(--stone); line-height:1.55; }
+  .lr.reached .num{ color:var(--ink-strong); }
+  .lr.reached{ background:var(--panel-2); }
+  .lr.sel .t{ text-decoration:underline; text-underline-offset:3px; text-decoration-color:var(--stone); }
+
+  .ladderside{ background:var(--panel); border:1px solid var(--hair); border-radius:8px; padding:18px 20px; }
+  .ladderside .df-label{ margin-bottom:10px; }
+  .chips{ display:flex; flex-wrap:wrap; gap:6px; }
+  .chip{ font-size:11.5px; color:var(--stone); border:1px solid var(--hair); background:var(--paper);
+    border-radius:100px; padding:3px 11px; transition:all .2s var(--ease); }
+  .chip.on{ color:var(--ink-strong); border-color:var(--stone); font-weight:600; }
+  .ladderside p{ font-size:12.5px; color:var(--stone); line-height:1.55; margin-top:14px;
+    padding-top:14px; border-top:1px solid var(--hair); }
+
+  /* ── LISTS / CARDS ── */
+  .grid2{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .card{ background:var(--panel); border:1px solid var(--hair); border-radius:8px; padding:20px 22px; }
+  .card-title{ font-size:14.5px; font-weight:600; color:var(--ink-strong); margin-bottom:10px; }
+  ul.plain{ list-style:none; display:flex; flex-direction:column; gap:9px; }
+  ul.plain li{ position:relative; padding-left:17px; font-size:13.5px; color:var(--ink); line-height:1.6; }
+  ul.plain li::before{ content:""; position:absolute; left:2px; top:9px; width:5px; height:5px;
+    border-radius:50%; background:var(--stone); }
+  ul.plain li b{ color:var(--ink-strong); font-weight:600; }
+
+  .lines{ display:flex; flex-direction:column; }
+  .line{ font-size:14px; color:var(--ink-strong); padding:13px 0; border-bottom:1px solid var(--hair); }
+  .line:last-child{ border-bottom:none; }
+  .line em{ font-style:italic; color:var(--stone); font-size:12.5px; display:block; margin-top:3px; }
+
+  .callout{ background:var(--panel); border:1px solid var(--hair); border-left:2px solid var(--stone);
+    border-radius:8px; padding:18px 22px; max-width:74ch; }
+  .callout p{ font-size:13.5px; color:var(--ink); line-height:1.65; margin-bottom:9px; }
+  .callout p:last-child{ margin-bottom:0; }
+  .callout b{ color:var(--ink-strong); font-weight:600; }
+
+  footer{ margin-top:56px; padding-top:20px; border-top:1px solid var(--hair);
+    font-size:11.5px; color:var(--stone); }
+
+  @media (max-width:900px){
+    .wrap{ padding:0 22px; }
+    .maproot,.ladderwrap,.grid2{ grid-template-columns:1fr; gap:24px; }
+    .principles{ grid-template-columns:1fr; }
+    .detail-grid{ grid-template-columns:1fr 1fr; }
+  }
+  @media (max-width:560px){ .detail-grid{ grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="page-hero">
+    <div class="eyebrow"><span class="rule"></span>Reference · relational boundaries</div>
+    <h1 class="page-title">Circles of <em>intimacy</em></h1>
+    <p class="lede">A working map of who sits where, what I share at each distance, and what I can hold. Select any ring or ladder step to cross-reference the two.</p>
+  </div>
+
+  <hr class="hr">
+
+  <div class="principles">
+    <div class="principle">
+      <b>Honesty and disclosure are separate</b>
+      <span>Honesty is not saying false things. Disclosure is how many true things I say. A correctly sized answer is not a lie.</span>
+    </div>
+    <div class="principle">
+      <b>Depth is earned, not granted</b>
+      <span>Closeness is built through reciprocal disclosure over time. Sharing past someone's level does not create a container; it removes one.</span>
+    </div>
+    <div class="principle">
+      <b>Placement follows behaviour</b>
+      <span>A person's wish for closeness is not a claim on a circle. What they have done, repeatedly, sets the position.</span>
+    </div>
+  </div>
+
+  <div class="kicker">The circles</div>
+  <p class="section-sub">Centre outward. Each ring names who belongs there, the setting I see them in, my disclosure ceiling, and the boundary available to me.</p>
+
+  <div class="maproot">
+    <div class="mapwrap">
+      <svg class="mapsvg" viewBox="0 0 460 480" role="img" aria-label="Concentric circles of intimacy, centre outward, with a detached restricted category">
+        <g id="rings"></g>
+        <g class="restricted" id="resGroup" tabindex="0" role="button" aria-label="Restricted, off map">
+          <rect x="148" y="432" width="164" height="34" rx="17"></rect>
+          <text x="230" y="454">Restricted</text>
+        </g>
+      </svg>
+      <div class="map-caption">Centre is me. Off-map sits outside the system entirely.</div>
+    </div>
+
+    <div class="legend" id="legend"></div>
+  </div>
+
+  <div class="detail" id="detail" aria-live="polite"></div>
+
+  <div class="kicker">The disclosure ladder</div>
+  <p class="section-sub">Six levels of personal information. Selecting a level shows every circle that reaches it. Selecting a circle above marks every level it receives.</p>
+
+  <div class="ladderwrap">
+    <div class="ladder" id="ladder"></div>
+    <div class="ladderside">
+      <div class="df-label" id="sideLabel">Circles reaching this level</div>
+      <div class="chips" id="chips"></div>
+      <p id="sideNote">Circle 5 is the exception: the ceiling is not fixed. I go one level above whatever they last offered, and only after they have offered.</p>
+    </div>
+  </div>
+
+  <div class="kicker">Movement between circles</div>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title">Inward — slow, on evidence</div>
+      <ul class="plain">
+        <li>They reciprocate disclosure at a similar depth.</li>
+        <li>They hold what I gave them without repeating or using it.</li>
+        <li>They behave well when it costs them something — when I am inconvenient, when I say no, when I am not doing well.</li>
+        <li><b>The third is the test.</b> Many people are warm to a version of me that asks for nothing.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-title">Outward — fast, no hearing required</div>
+      <ul class="plain">
+        <li>One breach of confidence moves a person out.</li>
+        <li>Repeated pressure past a stated no moves a person out.</li>
+        <li>I owe no notice, explanation, or final conversation.</li>
+        <li>Demotion is a placement decision, not a verdict on their character.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="kicker">The intermittent pattern</div>
+  <div class="callout">
+    <p>Someone hostile three quarters of the time and warm the rest is not ambivalent. This is an intermittent pattern, and it holds attention more firmly than consistent unkindness because the unpredictable warmth keeps me reassessing.</p>
+    <p><b>Placement:</b> Circle 4 at most. Defined context only. Ceiling level 3.</p>
+    <p id="beastLine"><b>Stand-in:</b> the Beast, before the change. Tenderness, then rage, then tenderness. The story asks Belle to stay and read it as potential. I am not obliged to.</p>
+    <p id="cheshireLine" hidden><b>Stand-in:</b> the Cheshire Cat. Sometimes the only help in Wonderland, sometimes the reason she is standing before the Queen. Alice keeps going back because she cannot predict which.</p>
+    <p><b>Method:</b> fix the placement for a set period and stop recalculating per interaction. Genuine change would be evident across twelve consistent months without my monitoring for it.</p>
+  </div>
+
+  <div class="kicker">Language for holding a ceiling</div>
+  <div class="lines">
+    <div class="line">That's a longer story than I have in me today.<em>Redirects without denying there is a story.</em></div>
+    <div class="line">I'm still sorting that one out, so I'm keeping it close for now.<em>Names the boundary as temporary and mine.</em></div>
+    <div class="line">Not something I talk about much — how has your week been?<em>Closes and hands the turn back.</em></div>
+    <div class="line">Rough patch, but I'm handling it.<em>A complete sentence. It requires no continuation.</em></div>
+    <div class="line">Silence, after a redirect.<em>Pressure past a soft no is information about placement.</em></div>
+  </div>
+
+  <footer>Personal reference. Not clinical guidance.</footer>
+</div>
+
+<script>
+const CIRCLES = [
+  { i:"0", name:"Mine alone", max:6,
+    who:"Me. A therapist or a journal, if I want one.",
+    where:"No setting required.",
+    ceiling:"All levels",
+    bound:"Some things stay with me. Holding something privately is not keeping a secret.",
+    mn:"Mulan, at the mirror", mnw:"A self that exists before anyone is shown it.", mn2:"Bambi at the pond", mnw2:"First self-recognition, with no one watching." },
+  { i:"1", name:"Intimates", max:6,
+    who:"One to three people. My closest friend. A partner, if there is one.",
+    where:"Any setting, any state, unplanned.",
+    ceiling:"Level 6",
+    bound:"Mutual. I can be unfinished, need things, disagree, and take up space.",
+    mn:"Baymax", mnw:"Cannot be driven off by the state I arrive in.", mn2:"Timothy Q. Mouse", mnw2:"Stays when the entire circus has decided against Dumbo." },
+  { i:"2", name:"Confidants", max:5,
+    who:"Close friends who have held what I gave them and behaved well under cost.",
+    where:"Chosen time together. Real conversation.",
+    ceiling:"Level 5",
+    bound:"I ask for support directly. I decline without explaining.",
+    mn:"Genie", mnw:"Knows who Aladdin actually is, keeps it, and says the hard thing anyway.", mn2:"Bagheera", mnw2:"Holds what Mowgli is, tells him what he does not want to hear, and pays for it." },
+  { i:"3", name:"Companions", max:4,
+    who:"People I do things with. The hours are not yet logged.",
+    where:"Activities, groups, planned social time.",
+    ceiling:"Level 4",
+    bound:"I decline invitations freely. Absences need no account.",
+    mn:"Timon and Pumbaa", mnw:"Genuine company for years. Simba still never tells them.", mn2:"Baloo", mnw2:"Real affection, no capacity for the hard conversation. He could not have been the one to tell Mowgli." },
+  { i:"4", name:"Role relationships", max:3,
+    who:"Coworkers, neighbours, service providers, people I see through a shared context.",
+    where:"The defined context only.",
+    ceiling:"Level 3",
+    bound:"Warm inside the role, closed outside it. I redirect personal questions without apologising.",
+    mn:"Lumière", mnw:"Complete hospitality, entirely inside the role.", mn2:"Jock and Trusty", mnw2:"Neighbours. Warm across the fence, bounded by the yard." },
+  { i:"5", name:"Candidates", max:4,
+    who:"New people I like and want to know.",
+    where:"Repeated low-stakes contact.",
+    ceiling:"Matched",
+    bound:"One level above what they last offered, and only after they offer. Depth follows evidence, not chemistry.",
+    mn:"Flynn Rider, early", mnw:"Rapunzel likes him immediately and still meters access until he earns it.", mn2:"Tramp", mnw2:"Charming and plausible on arrival. The film is the vetting period." },
+  { i:"6", name:"Dormant ties", max:2,
+    who:"People I once knew. Circumstances moved.",
+    where:"Occasional and incidental.",
+    ceiling:"Level 2",
+    bound:"Shared history is not a current claim.",
+    mn:"Wendy Darling", mnw:"The fondness holds. The thread does not.", mn2:"Copper and Tod", mnw2:"Once inseparable. The warmth survives; the life together does not." },
+  { i:"7", name:"Public", max:1,
+    who:"Strangers.",
+    where:"In passing.",
+    ceiling:"Level 1",
+    bound:"Warmth costs me nothing and grants nothing.",
+    mn:"The village at Bonjour", mnw:"Greeting everyone, telling no one anything.", mn2:"The Twilight Bark", mnw2:"A whole network passing word across the country. None of them know each other." }
+];
+
+const RESTRICTED = { i:"—", name:"Restricted", max:0,
+  who:"People who have harmed me, or shown hostility or untrustworthiness.",
+  where:"Avoided. Where contact is unavoidable: brief, public, and short.",
+  ceiling:"None",
+  bound:"No access. No explanation owed. No reassessment per interaction.",
+  mn:"Hans", mnw:"Presentation was excellent. It was not evidence.", mn2:"Honest John", mnw2:"A fox who takes Pinocchio twice. The name was on the label.",
+  note:"Neutral facts are included in the ceiling. Information given here tends to be repurposed." };
+
+const LEVELS = [
+  { n:1, t:"Observable facts", d:"Weather, logistics, where I went, what I did." },
+  { n:2, t:"Preferences and opinions", d:"Tastes and views on low-stakes matters." },
+  { n:3, t:"Current circumstances", d:"Workload, a move, a sick pet, a busy month." },
+  { n:4, t:"Difficulty, named", d:"The category without the contents. \u201CFamily things. It's hard.\u201D" },
+  { n:5, t:"Difficulty, explored", d:"The contents, in real time, before I have resolved them." },
+  { n:6, t:"History and exposure", d:"What I fear, what I carry shame about, what could be used against me." }
+];
+
+const CX = 230, CY = 218;
+const RADII = [0, 32, 58, 84, 110, 136, 160, 182, 202];
+const OPACITY = [.17,.14,.115,.095,.075,.055,.038,.022];
+
+let sel = 0, selLevel = null, mset = 1;
+
+function setMn(n){
+  mset = n;
+  document.querySelectorAll("#beastLine, #cheshireLine").forEach(el => el.hidden = true);
+  document.getElementById(n === 2 ? "cheshireLine" : "beastLine").hidden = false;
+  select(sel === null ? 0 : sel);
+}
+
+function annulus(r1, r2){
+  const o = `M ${CX} ${CY-r2} A ${r2} ${r2} 0 1 0 ${CX} ${CY+r2} A ${r2} ${r2} 0 1 0 ${CX} ${CY-r2} Z`;
+  if (r1 === 0) return o;
+  return o + ` M ${CX} ${CY-r1} A ${r1} ${r1} 0 1 0 ${CX} ${CY+r1} A ${r1} ${r1} 0 1 0 ${CX} ${CY-r1} Z`;
+}
+
+const NS = "http://www.w3.org/2000/svg";
+const ringsG = document.getElementById("rings");
+
+CIRCLES.forEach((c, idx) => {
+  const r1 = RADII[idx], r2 = RADII[idx+1];
+  const g = document.createElementNS(NS, "g");
+  g.dataset.idx = idx;
+
+  const p = document.createElementNS(NS, "path");
+  p.setAttribute("class", "ring");
+  p.setAttribute("d", annulus(r1, r2));
+  p.setAttribute("fill", "#a29f9f");
+  p.setAttribute("fill-opacity", OPACITY[idx]);
+  p.setAttribute("fill-rule", "evenodd");
+  p.setAttribute("tabindex", "0");
+  p.setAttribute("role", "button");
+  p.setAttribute("aria-label", `Circle ${c.i}, ${c.name}`);
+
+  const line = document.createElementNS(NS, "circle");
+  line.setAttribute("class", "ring-line");
+  line.setAttribute("cx", CX); line.setAttribute("cy", CY); line.setAttribute("r", r2);
+
+  const num = document.createElementNS(NS, "text");
+  num.setAttribute("class", "rnum");
+  num.setAttribute("x", CX);
+  num.setAttribute("y", CY - (r1 + r2) / 2 + 4);
+  num.textContent = c.i;
+
+  g.append(p, line, num);
+  ringsG.appendChild(g);
+
+  const act = () => select(idx);
+  p.addEventListener("click", act);
+  p.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); act(); }});
+});
+
+const resGroup = document.getElementById("resGroup");
+resGroup.addEventListener("click", () => select("R"));
+resGroup.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); select("R"); }});
+
+const legend = document.getElementById("legend");
+CIRCLES.forEach((c, idx) => {
+  const b = document.createElement("button");
+  b.className = "lg"; b.dataset.idx = idx;
+  b.innerHTML = `<span class="i">${c.i}</span><span class="nm">${c.name}</span><span class="lv">${c.ceiling}</span>`;
+  b.addEventListener("click", () => select(idx));
+  legend.appendChild(b);
+});
+const rb = document.createElement("button");
+rb.className = "lg res"; rb.dataset.idx = "R";
+rb.innerHTML = `<span class="i">—</span><span class="nm">Restricted</span><span class="lv">None</span>`;
+rb.addEventListener("click", () => select("R"));
+legend.appendChild(rb);
+
+const ladder = document.getElementById("ladder");
+LEVELS.forEach(l => {
+  const b = document.createElement("button");
+  b.className = "lr"; b.dataset.n = l.n;
+  b.innerHTML = `<span class="num">${l.n}</span><span><span class="t">${l.t}</span><span class="d">${l.d}</span></span>`;
+  b.addEventListener("click", () => selectLevel(l.n));
+  ladder.appendChild(b);
+});
+
+function data(k){ return k === "R" ? RESTRICTED : CIRCLES[k]; }
+
+function select(k){
+  sel = k; selLevel = null;
+  const c = data(k);
+
+  document.querySelectorAll("#rings g").forEach(g => g.classList.toggle("on", g.dataset.idx == k));
+  resGroup.classList.toggle("on", k === "R");
+  document.querySelectorAll(".lg").forEach(b => b.classList.toggle("on", b.dataset.idx == k));
+
+  document.getElementById("detail").innerHTML = `
+    <div class="detail-head">
+      <span class="detail-idx">${k === "R" ? "Off map" : "Circle " + c.i}</span>
+      <span class="detail-name">${c.name}</span>
+      <span class="segset" role="group" aria-label="Stand-in set">
+        <button class="seg${mset===1?" on":""}" onclick="setMn(1)">Mixed</button>
+        <button class="seg${mset===2?" on":""}" onclick="setMn(2)">Classic animals</button>
+      </span>
+    </div>
+    <div class="detail-grid">
+      <div><div class="df-label">Who</div><div class="df-body">${c.who}</div></div>
+      <div><div class="df-label">Where</div><div class="df-body">${c.where}</div></div>
+      <div><div class="df-label">Disclosure ceiling</div><div class="df-body"><span class="lvtag">${c.ceiling}</span></div></div>
+      <div><div class="df-label">Boundary I hold</div><div class="df-body">${c.bound}</div></div>
+    </div>
+    ${c.note ? `<div class="detail-note">${c.note}</div>` : ""}
+    ${c.mn ? `<div class="detail-mn"><span class="mn-label">Stand-in</span><b>${mset===2?c.mn2:c.mn}</b> \u2014 ${mset===2?c.mnw2:c.mnw}</div>` : ""}`;
+
+  document.querySelectorAll(".lr").forEach(r => {
+    r.classList.toggle("reached", Number(r.dataset.n) <= c.max);
+    r.classList.remove("sel");
+  });
+  document.getElementById("sideLabel").textContent = "Levels this circle receives";
+  document.getElementById("chips").innerHTML = LEVELS
+    .map(l => `<span class="chip${l.n <= c.max ? " on" : ""}">${l.n}</span>`).join("");
+  document.getElementById("sideNote").textContent = k === 5
+    ? "Circle 5 has no fixed ceiling. I go one level above whatever they last offered, and only after they have offered."
+    : "Select a ladder step to reverse the view.";
+}
+
+function selectLevel(n){
+  selLevel = n; sel = null;
+  document.querySelectorAll(".lr").forEach(r => {
+    r.classList.toggle("sel", Number(r.dataset.n) === n);
+    r.classList.toggle("reached", Number(r.dataset.n) <= n);
+  });
+  document.querySelectorAll("#rings g").forEach(g => {
+    const c = CIRCLES[g.dataset.idx];
+    g.classList.toggle("on", c.max >= n);
+    g.classList.toggle("dim", c.max < n);
+  });
+  resGroup.classList.remove("on");
+  document.querySelectorAll(".lg").forEach(b => {
+    const c = data(b.dataset.idx);
+    b.classList.toggle("on", c.max >= n);
+  });
+  document.getElementById("sideLabel").textContent = `Circles receiving level ${n}`;
+  document.getElementById("chips").innerHTML = CIRCLES
+    .filter(c => c.max >= n).map(c => `<span class="chip on">${c.i} · ${c.name}</span>`).join("")
+    || `<span class="chip">None</span>`;
+  document.getElementById("sideNote").textContent =
+    "Circle 5 appears by its working maximum. In practice its ceiling tracks what the other person has already offered.";
+}
+
+select(0);
+</script>
+</body>
+</html>
