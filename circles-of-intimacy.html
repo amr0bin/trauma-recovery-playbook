@@ -148,6 +148,31 @@
     border-radius:50%; background:var(--stone); }
   ul.plain li b{ color:var(--ink-strong); font-weight:600; }
 
+  /* ── THREE READS ── */
+  .grid3{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+  .read{ background:var(--panel); border:1px solid var(--hair); border-radius:8px; padding:20px 22px; }
+  .read-idx{ font-size:10px; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--stone); margin-bottom:7px; }
+  .read-name{ font-size:16px; font-weight:600; color:var(--ink-strong); margin-bottom:12px; }
+  .read-q{ font-size:13.5px; font-style:italic; color:var(--ink); line-height:1.55;
+    padding-bottom:13px; border-bottom:1px solid var(--hair); }
+  .read-row{ margin-top:12px; }
+  .read-row .df-label{ margin-bottom:5px; }
+  .read-row div:last-child{ font-size:13px; color:var(--ink); line-height:1.6; }
+
+  /* ── MATRIX ── */
+  .tablewrap{ overflow-x:auto; }
+  .matrix{ width:100%; border-collapse:collapse; min-width:640px; }
+  .matrix th{ text-align:left; font-size:10px; font-weight:700; letter-spacing:.12em;
+    text-transform:uppercase; color:var(--stone); padding:0 16px 10px 0; border-bottom:1px solid var(--hair); }
+  .matrix td{ font-size:13.5px; color:var(--ink); line-height:1.6; vertical-align:top;
+    padding:14px 16px 14px 0; border-bottom:1px solid var(--hair); }
+  .matrix td:first-child{ color:var(--ink-strong); font-weight:600; width:32%; }
+  .matrix td:nth-child(2){ width:22%; font-size:12.5px; color:var(--stone); }
+  .matrix tr:last-child td{ border-bottom:none; }
+  .matrix tr.key td{ background:var(--panel); }
+  .matrix tr.key td:first-child{ box-shadow:inset 2px 0 0 var(--c24); padding-left:14px; }
+
   /* ── MUTUALITY BANDS ── */
   .bands{ display:grid; grid-template-columns:repeat(4,1fr); gap:14px; }
   .band{ background:var(--panel); border:1px solid var(--hair); border-top:2px solid var(--c14);
@@ -156,6 +181,10 @@
   .band:nth-child(2){ border-top-color:var(--c14); }
   .band:nth-child(3){ border-top-color:var(--c6); }
   .band:nth-child(4){ border-top-color:var(--c0); }
+  .bands.three{ grid-template-columns:repeat(3,1fr); }
+  .bands.three .band:nth-child(1){ border-top-color:var(--c24); }
+  .bands.three .band:nth-child(2){ border-top-color:var(--c10); }
+  .bands.three .band:nth-child(3){ border-top-color:var(--c0); }
   .band-name{ font-size:14px; font-weight:600; color:var(--ink-strong); margin-bottom:8px; }
   .band-quote{ font-size:12.5px; font-style:italic; color:var(--stone); line-height:1.55; }
   .band-do{ margin-top:11px; padding-top:11px; border-top:1px solid var(--hair);
@@ -168,6 +197,9 @@
   .line{ font-size:14px; color:var(--ink-strong); padding:13px 0; border-bottom:1px solid var(--hair); }
   .line:last-child{ border-bottom:none; }
   .line em{ font-style:italic; color:var(--stone); font-size:12.5px; display:block; margin-top:3px; }
+  .qtag{ display:inline-block; font-size:9.5px; font-weight:700; letter-spacing:.12em;
+    text-transform:uppercase; color:var(--stone); border:1px solid var(--hair);
+    border-radius:100px; padding:2px 9px; margin-right:10px; vertical-align:2px; }
 
   .callout{ background:var(--panel); border:1px solid var(--hair); border-left:2px solid var(--c14);
     border-radius:8px; padding:18px 22px; max-width:74ch; }
@@ -182,10 +214,11 @@
     .wrap{ padding:0 22px; }
     .maproot,.ladderwrap,.grid2{ grid-template-columns:1fr; gap:24px; }
     .principles{ grid-template-columns:1fr; }
-    .bands{ grid-template-columns:1fr 1fr; }
+    .grid3{ grid-template-columns:1fr; }
+    .bands,.bands.three{ grid-template-columns:1fr 1fr; }
     .detail-grid{ grid-template-columns:1fr 1fr; }
   }
-  @media (max-width:560px){ .detail-grid,.bands{ grid-template-columns:1fr; } }
+  @media (max-width:560px){ .detail-grid,.bands,.bands.three{ grid-template-columns:1fr; } }
 </style>
 </head>
 <body>
@@ -213,8 +246,8 @@
       <span>A person's wish for closeness is not a claim on a circle. What they have done, repeatedly, sets the position.</span>
     </div>
     <div class="principle">
-      <b>Intimacy and mutuality are separate</b>
-      <span>Someone can hold decades, affection, and family standing and still have little capacity for my complexity. Closeness does not oblige me to seek every kind of understanding there.</span>
+      <b>Care, capacity and safety are three variables</b>
+      <span>How much someone loves me, how much room they have for my complexity, and how safe it is to be exposed with them are independent. Decades and affection settle none of the three.</span>
     </div>
   </div>
 
@@ -250,8 +283,40 @@
     </div>
   </div>
 
-  <div class="kicker">The mutuality axis</div>
-  <p class="section-sub">The circle sets how much I say. This sets what I bring. A ceiling is not only what someone can receive — it is what happens when I am complicated, hurt, disagreeing, or inconvenient.</p>
+  <div class="kicker">Three reads</div>
+  <p class="section-sub">Separate questions with separate answers. Read them in this order; the old mistake was reading care first and letting it answer the other two.</p>
+
+  <div class="grid3">
+    <div class="read">
+      <div class="read-idx">Read one</div>
+      <div class="read-name">Care</div>
+      <div class="read-q">“How much does this person care about me?”</div>
+      <div class="read-row"><div class="df-label">Tells me</div><div>Something real about them, and what the loss would cost me.</div></div>
+      <div class="read-row"><div class="df-label">Licenses</div><div>Nothing. It does not raise a ceiling, excuse a breach, or oblige me to keep offering what isn't received.</div></div>
+    </div>
+    <div class="read">
+      <div class="read-idx">Read two</div>
+      <div class="read-name">Capacity</div>
+      <div class="read-q">“What happens when I am complicated, hurt, disagreeing, or inconvenient?”</div>
+      <div class="read-row"><div class="df-label">Tells me</div><div>What I bring, and how often.</div></div>
+      <div class="read-row"><div class="df-label">Doesn't tell me</div><div>Whether they love me, or whether they are safe. Curiosity is not the same as trustworthiness.</div></div>
+    </div>
+    <div class="read">
+      <div class="read-idx">Read three</div>
+      <div class="read-name">Safety</div>
+      <div class="read-q">“What happens to what I hand over, and to a no?”</div>
+      <div class="read-row"><div class="df-label">Tells me</div><div>My ceiling. This read outranks the other two.</div></div>
+      <div class="read-row"><div class="df-label">Doesn't tell me</div><div>How warm they are. Warmth and safety are unrelated.</div></div>
+    </div>
+  </div>
+
+  <div class="callout" style="margin-top:16px">
+    <p><b>Safety sets the ceiling. Capacity sets what I bring. Care sets neither</b> — it only sets what I would grieve.</p>
+    <p>Where the reads conflict, the lowest one governs. High care never overrides low safety; high capacity never overrides low safety.</p>
+  </div>
+
+  <div class="kicker">Read two — the capacity bands</div>
+  <p class="section-sub">The circle sets how much I say. Capacity sets what I bring, and how often. These bands describe behaviour under complexity — not affection, and not trustworthiness.</p>
 
   <div class="bands">
     <div class="band">
@@ -285,6 +350,65 @@
     <p>I do not need to establish intent or prove malice. The pattern is enough to set the ceiling, and the ceiling is a placement decision, not a verdict on the person.</p>
   </div>
 
+  <div class="kicker">Read three — the safety states</div>
+  <p class="section-sub">Three states. This read governs: it can lower a ceiling that care and capacity would otherwise raise.</p>
+
+  <div class="bands three">
+    <div class="band">
+      <div class="band-name">Safe</div>
+      <div class="band-quote">“What I gave them stayed with them. The no was taken the first time.”</div>
+      <div class="band-do">Ceiling as placed. Exposure is possible here — being unfinished, needing something, being wrong out loud. <b>Demonstrated across cost, not stated as reassurance.</b></div>
+      <div class="band-ceiling">Ceiling: as placed</div>
+    </div>
+    <div class="band">
+      <div class="band-name">Unproven</div>
+      <div class="band-quote">“Nothing has gone wrong. Nothing has been tested either.”</div>
+      <div class="band-do">Matched disclosure only — one level above what they last offered. <b>Not a deficit. The default for anyone new, however good the chemistry.</b></div>
+      <div class="band-ceiling">Ceiling: matched</div>
+    </div>
+    <div class="band">
+      <div class="band-name">Unsafe</div>
+      <div class="band-quote">“It came back to me. Or the no had to be said three times.”</div>
+      <div class="band-do">Ceiling drops to level 1–2 immediately, whatever the warmth, history, or curiosity. <b>No hearing required, no explanation owed.</b></div>
+      <div class="band-ceiling">Ceiling: level 1–2</div>
+    </div>
+  </div>
+
+  <div class="kicker">When the reads disagree</div>
+  <p class="section-sub">The combinations that used to confuse me. Naming the pattern is what makes the response obvious.</p>
+  <div class="tablewrap">
+    <table class="matrix">
+      <thead><tr><th>What I observe</th><th>The reads</th><th>What I do</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Loves me enormously, no room for my complexity</td>
+          <td>Care high · capacity limited · safety fine</td>
+          <td>Keep the affection and take the complexity elsewhere. Grieve the gap without prosecuting them for it.</td>
+        </tr>
+        <tr>
+          <td>Sharp and genuinely curious, but what I share comes back at me</td>
+          <td>Capacity high · safety low</td>
+          <td>Ideas yes, interior no. Safety governs, so the ceiling sits at 2–3 no matter how good the conversation is.</td>
+        </tr>
+        <tr>
+          <td>Warm and affectionate, repeatedly past my no</td>
+          <td>Care high · safety low</td>
+          <td>Warmth does not restore access. Placement moves outward on the behaviour, not on how the warmth feels.</td>
+        </tr>
+        <tr>
+          <td>Little bandwidth, entirely trustworthy</td>
+          <td>Capacity intermittent · safety high</td>
+          <td>Placement holds. Ask less often, not less deeply. Bandwidth is not a character read.</td>
+        </tr>
+        <tr class="key">
+          <td>Curious about me and safe with what I give</td>
+          <td>Capacity reciprocal · safety high</td>
+          <td>This is where the scarce energy goes. Levels 5 and 6 live here, and I can be the one who initiates.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
   <div class="kicker">Movement between circles</div>
   <div class="grid2">
     <div class="card">
@@ -316,13 +440,13 @@
   </div>
 
   <div class="kicker">The read, after an interaction</div>
-  <p class="section-sub">Five questions. The answers set the band, not my feelings about the person.</p>
+  <p class="section-sub">Five questions, tagged by which read they answer. They set the band, not my feelings about the person.</p>
   <div class="lines">
-    <div class="line">Did I leave feeling understood, or managed?<em>Managed is a placement fact, not an accusation.</em></div>
-    <div class="line">When I brought something complicated, did they move toward it?<em>Once is chance. A pattern is the answer.</em></div>
-    <div class="line">Could either of us say “I might be wrong”?<em>What I want is mutual reality-testing, not agreement.</em></div>
-    <div class="line">Did I shrink to keep the peace?<em>If yes, the ceiling I am using is too high for this person.</em></div>
-    <div class="line">Was I explaining why I deserve to be understood?<em>That is an audition. The move is to stop it, not to win it.</em></div>
+    <div class="line"><span class="qtag">Capacity</span>Did I leave feeling understood, or managed?<em>Managed is a placement fact, not an accusation.</em></div>
+    <div class="line"><span class="qtag">Capacity</span>When I brought something complicated, did they move toward it?<em>Once is chance. A pattern is the answer.</em></div>
+    <div class="line"><span class="qtag">Capacity</span>Could either of us say “I might be wrong”?<em>What I want is mutual reality-testing, not agreement.</em></div>
+    <div class="line"><span class="qtag">Safety</span>Did I shrink to keep the peace?<em>If yes, the ceiling I am using is too high for this person.</em></div>
+    <div class="line"><span class="qtag">Care</span>Was I explaining why I deserve to be understood?<em>That is an audition. The move is to stop it, not to win it.</em></div>
   </div>
 
   <div class="kicker">My part</div>
@@ -389,7 +513,7 @@ const CIRCLES = [
     where:"Chosen time together. Real conversation.",
     ceiling:"Level 5",
     bound:"I ask for support directly. I decline without explaining.",
-    note:"History and affection alone do not place someone here. If the mutuality band is limited or managing, the person sits at 3 or 4 however long I have known them." },
+    note:"History and affection alone do not place someone here. All three reads have to clear: safe, reciprocal or reliably intermittent, and demonstrated under cost. Any one of them low, and the person sits at 3 or 4 however long I have known them." },
   { i:"3", name:"Companions", max:4,
     who:"People I do things with. The hours are not yet logged.",
     where:"Activities, groups, planned social time.",
