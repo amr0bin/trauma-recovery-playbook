@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Feeling Constellations</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Asap:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --c0:#767677; --c6:#807379; --c10:#86717a; --c14:#8b6f7b; --c18:#926c7c; --c24:#9a687e;
+    --paper:#fff; --panel:#faf9f8; --panel2:#f7f6f4;
+    --ink:#5d5a5b; --ink-strong:#454344; --stone:#a29f9f;
+    --hair:#e8e5e3; --hair-soft:#f0eeec;
+    --ease:cubic-bezier(.22,.61,.36,1);
+  }
+  html{-webkit-text-size-adjust:100%}
+  body{font-family:'Asap',system-ui,-apple-system,sans-serif;background:var(--paper);
+    color:var(--ink);font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1240px;margin:0 auto;padding:0 40px 90px}
+
+  header{padding:44px 0 0}
+  .title{font-size:26px;font-weight:500;letter-spacing:-.015em;color:var(--ink-strong);line-height:1.2}
+  .sub{font-size:14px;color:var(--stone);margin-top:6px;max-width:62ch}
+  nav{display:flex;gap:2px;margin:26px 0 0;border-bottom:1px solid var(--hair);flex-wrap:wrap}
+  nav button{font:inherit;font-size:13px;background:none;border:none;cursor:pointer;color:var(--stone);
+    padding:9px 14px;margin-bottom:-1px;border-bottom:1.5px solid transparent;
+    transition:color .18s var(--ease),border-color .18s var(--ease)}
+  nav button:hover{color:var(--ink)}
+  nav button[aria-selected="true"]{color:var(--ink-strong);font-weight:500;border-bottom-color:var(--c18)}
+  nav button:focus-visible{outline:2px solid var(--c18);outline-offset:2px;border-radius:3px}
+  .view{display:none;padding-top:30px}
+  .view.on{display:block}
+
+  .stage{display:grid;grid-template-columns:minmax(0,580px) minmax(0,1fr);gap:44px;align-items:start}
+  .wheelbox{position:sticky;top:20px}
+  svg.wheel{width:100%;height:auto;display:block;overflow:visible}
+  .ringkey{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;margin-top:12px;
+    font-size:11px;color:var(--stone)}
+  .ringkey b{font-weight:500;color:var(--ink)}
+
+  .seg{cursor:pointer}
+  .seg .sh{stroke:#fff;stroke-width:1.3;transition:fill-opacity .18s var(--ease)}
+  .seg:hover .sh{fill-opacity:var(--ho)}
+  .seg:focus{outline:none}
+  .seg:focus-visible .sh{stroke:var(--c24);stroke-width:2.4}
+  .seg text{fill:var(--ink-strong);font-family:'Asap',sans-serif;font-weight:500;
+    text-anchor:middle;dominant-baseline:middle;pointer-events:none}
+  .seg.r0 text{font-size:10.5px}
+  .seg.r1 text{font-size:8.4px;font-weight:400}
+  .seg.r2 text{font-size:8.4px;font-weight:400;font-style:italic}
+  .seg.sel text{font-weight:600}
+  .hub{cursor:pointer}
+  .hub circle{fill:var(--panel2);stroke:var(--stone);stroke-width:1;stroke-dasharray:2 3}
+  .hub text{fill:var(--ink);font-size:11px;font-weight:500;text-anchor:middle;
+    dominant-baseline:middle;pointer-events:none}
+  .hub:hover circle{fill:var(--panel);stroke:var(--c18)}
+  .hub:focus-visible circle{stroke:var(--c24);stroke-width:2.2}
+  .mineband{fill:none;stroke:var(--stone);stroke-width:.9;stroke-dasharray:3 5;opacity:.55}
+  .bandg{cursor:pointer}
+  .bandg:hover .mineband{opacity:1;stroke:var(--c18)}
+  .mineplus{fill:var(--stone);text-anchor:middle;cursor:pointer;font-weight:500}
+  .mineplus:hover{fill:var(--c18)}
+
+  .panel{min-height:460px}
+  .empty{border:1px solid var(--hair);border-radius:10px;background:var(--panel);
+    padding:30px 28px;max-width:58ch}
+  .empty p{font-size:14px;color:var(--ink);margin-bottom:12px}
+  .empty p:last-child{margin:0;color:var(--stone);font-size:13px}
+
+  .crumb{font-size:11.5px;color:var(--stone);margin-bottom:8px}
+  .crumb span+span::before{content:" / ";color:var(--hair)}
+  .crumb span:last-child{color:var(--ink)}
+  h2.feel{font-size:29px;font-weight:500;letter-spacing:-.015em;color:var(--ink-strong);
+    line-height:1.15;margin-bottom:6px}
+  h2.feel em{font-style:italic;font-weight:400}
+  .glossline{font-size:13px;color:var(--stone);margin-bottom:20px;max-width:60ch}
+
+  .companion{border:1px solid var(--hair);border-left:2px solid var(--c14);border-radius:0 8px 8px 0;
+    background:var(--panel);padding:16px 20px;margin-bottom:22px;max-width:62ch}
+  .companion .lab{font-size:10.5px;font-weight:600;letter-spacing:.1em;text-transform:lowercase;
+    color:var(--c18);margin-bottom:5px}
+  .companion p{font-size:13.5px;line-height:1.65;color:var(--ink)}
+  .companion .attr{font-size:11.5px;color:var(--stone);margin-top:7px}
+
+  .block{margin-bottom:20px;max-width:62ch}
+  .block h3{font-size:12px;font-weight:600;color:var(--c18);margin-bottom:5px}
+  .block p{font-size:14px;line-height:1.65;color:var(--ink)}
+  .tailor{background:var(--panel2);border-radius:6px;padding:12px 16px;margin-bottom:22px;max-width:62ch}
+  .tailor p{font-size:13.5px;color:var(--ink);line-height:1.6}
+
+  .sevenhead{font-size:12px;font-weight:600;color:var(--c18);margin:28px 0 2px;
+    padding-top:20px;border-top:1px solid var(--hair);max-width:62ch}
+  .sevensub{font-size:12.5px;color:var(--stone);margin-bottom:14px;max-width:62ch}
+  ol.seven{list-style:none;max-width:62ch}
+  ol.seven li{display:grid;grid-template-columns:74px 1fr;gap:14px;padding:13px 0;
+    border-bottom:1px solid var(--hair-soft)}
+  ol.seven li:last-child{border-bottom:none}
+  ol.seven .k{font-size:12.5px;font-weight:600;color:var(--ink-strong);padding-top:1px}
+  ol.seven .v{font-size:13.5px;line-height:1.6;color:var(--ink)}
+  .closer{margin-top:24px;padding-top:16px;border-top:1px solid var(--hair);
+    font-size:12.5px;color:var(--stone);max-width:62ch;font-style:italic}
+
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:22px;max-width:62ch}
+  .mini{border:1px solid var(--hair);border-radius:8px;padding:14px 16px}
+  .mini h4{font-size:12px;font-weight:600;color:var(--ink-strong);margin-bottom:4px}
+  .mini p{font-size:12.5px;color:var(--stone);line-height:1.55}
+
+  input.wordin,textarea.wordin{font:inherit;font-size:14px;width:100%;max-width:52ch;
+    border:1px solid var(--hair);border-radius:6px;padding:10px 12px;color:var(--ink-strong);
+    background:var(--paper);margin-bottom:10px;resize:vertical}
+  input.wordin:focus,textarea.wordin:focus{outline:none;border-color:var(--c18)}
+  select.wordin{font:inherit;font-size:14px;border:1px solid var(--hair);border-radius:6px;
+    padding:10px 12px;color:var(--ink-strong);background:var(--paper);margin-bottom:10px;max-width:52ch;width:100%}
+  .btn{font:inherit;font-size:13px;font-weight:500;border:1px solid var(--c18);background:var(--c18);
+    color:#fff;border-radius:6px;padding:9px 18px;cursor:pointer;margin-right:8px}
+  .btn.ghost{background:none;color:var(--ink);border-color:var(--hair)}
+  .btn:hover{opacity:.88}
+
+  .lede{font-size:16px;line-height:1.6;color:var(--ink);max-width:60ch;margin-bottom:28px}
+  .sec{margin-bottom:32px;max-width:66ch}
+  .sec h3{font-size:15px;font-weight:600;color:var(--ink-strong);margin-bottom:8px}
+  .sec p{font-size:14px;line-height:1.7;margin-bottom:12px}
+  .sec p:last-child{margin-bottom:0}
+  .sec em{color:var(--ink-strong);font-style:italic}
+
+  .known{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:32px}
+  .kbox{border:1px solid var(--hair);border-radius:8px;padding:18px 20px;background:var(--panel)}
+  .kbox h4{font-size:12px;font-weight:600;color:var(--c18);margin-bottom:8px}
+  .kbox li{list-style:none;font-size:13px;line-height:1.6;color:var(--ink);
+    padding-left:15px;position:relative;margin-bottom:9px}
+  .kbox li:last-child{margin-bottom:0}
+  .kbox li::before{content:"";position:absolute;left:0;top:8px;width:5px;height:5px;
+    border-radius:50%;background:var(--c14)}
+
+  .seven-def{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:28px}
+  .sd{border:1px solid var(--hair);border-radius:8px;padding:18px 20px}
+  .sd h4{font-size:14px;font-weight:600;color:var(--ink-strong);margin-bottom:5px}
+  .sd p{font-size:13px;line-height:1.6;color:var(--ink);margin-bottom:8px}
+  .sd .src{font-size:11.5px;color:var(--stone);line-height:1.5}
+
+  .tongue{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:28px}
+  .tw{border:1px solid var(--hair);border-radius:8px;padding:16px 18px}
+  .tw b{display:block;font-size:15px;font-weight:600;color:var(--ink-strong);margin-bottom:2px}
+  .tw .lang{font-size:11px;color:var(--c18);font-weight:500;margin-bottom:7px;display:block}
+  .tw p{font-size:13px;line-height:1.6;color:var(--ink)}
+  .tw i{display:block;font-size:11.5px;color:var(--stone);margin-top:7px;font-style:normal}
+
+  .note{border:1px solid var(--hair);border-left:2px solid var(--c18);border-radius:0 8px 8px 0;
+    background:var(--panel);padding:18px 22px;max-width:66ch;margin-bottom:28px}
+  .note p{font-size:13.5px;line-height:1.65;color:var(--ink);margin-bottom:10px}
+  .note p:last-child{margin:0}
+
+  .refs{max-width:78ch}
+  .refgroup{margin-bottom:24px}
+  .refgroup h4{font-size:12px;font-weight:600;color:var(--c18);margin-bottom:10px;
+    padding-bottom:6px;border-bottom:1px solid var(--hair)}
+  .ref{font-size:13px;line-height:1.6;color:var(--ink);padding:8px 0 8px 20px;text-indent:-20px}
+  .ref a{color:var(--ink-strong);text-decoration:none;border-bottom:1px solid var(--hair)}
+  .ref a:hover{border-bottom-color:var(--c18)}
+  .ref .anno{display:block;text-indent:0;color:var(--stone);font-size:12px;margin-top:3px}
+
+  @media (max-width:1040px){
+    .stage{grid-template-columns:1fr;gap:32px}
+    .wheelbox{position:static;max-width:580px;margin:0 auto}
+    .known,.seven-def,.tongue,.grid2{grid-template-columns:1fr}
+  }
+  @media (max-width:600px){
+    .wrap{padding:0 20px 70px}
+    h2.feel{font-size:24px}
+    ol.seven li{grid-template-columns:1fr;gap:3px}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="title">Feeling constellations</div>
+  <p class="sub">Affect at the centre, twelve constellations, fifty-eight named states, an open edge. Built on the Other Bodies deck. Nothing here is aimed at making a feeling stop.</p>
+  <nav role="tablist">
+    <button role="tab" aria-selected="true" data-v="wheel">Wheel</button>
+    <button role="tab" aria-selected="false" data-v="seven">The seven</button>
+    <button role="tab" aria-selected="false" data-v="tongues">Other tongues</button>
+    <button role="tab" aria-selected="false" data-v="about">What this is</button>
+    <button role="tab" aria-selected="false" data-v="sources">Sources</button>
+  </nav>
+</header>
+
+<section class="view on" id="v-wheel">
+  <div class="stage">
+    <div class="wheelbox">
+      <svg class="wheel" id="svg" viewBox="0 0 620 620" role="group"
+        aria-label="Feeling wheel. Affect at the centre, twelve constellations, named states, and an open outer edge."></svg>
+      <div class="ringkey">
+        <span><b>Centre</b> affect, before a word</span>
+        <span><b>Inner ring</b> constellations</span>
+        <span><b>Outer ring</b> the 52 cards</span>
+        <span><b>Dashed edge</b> words I make</span>
+      </div>
+    </div>
+    <div class="panel" id="panel">
+      <div class="empty">
+        <p>Start at the centre if there is no word yet. Pleasant or unpleasant, high or low energy. That much is always available.</p>
+        <p>Start at a constellation if the texture is clear but the word is not. Start at the outer ring if a word is already there.</p>
+        <p>If nothing fits, that is the most useful outcome. It means there is a distinction here that English handed me no word for, and one can be built at the edge.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="view" id="v-seven">
+  <p class="lede">Seven channels, offered for every constellation. Routes, not instructions. None of them is trying to return me to calm.</p>
+  <div class="note">
+    <p>The frame comes from Emily and Amelia Nagoski's account of the stress response as a physiological arc that runs whether or not the situation causing it has resolved. Their seven are physical activity, breathing, positive social interaction, laughter, affection, crying, and creative expression.</p>
+    <p>Three of those need another person. Because I wanted a set that stays entirely within my own control, the social three are replaced here with <em>touch</em>, <em>name</em>, and <em>space</em>, each with its own evidence below. That substitution is mine, not the Nagoskis'.</p>
+    <p>The seven sit at the constellation level rather than the card level, because action tendency is a family-level property. There is no evidence that betrayal and jealousy need different breathing. Each card adds its own natural body and one line of specificity instead.</p>
+  </div>
+  <div class="seven-def">
+    <div class="sd"><h4>Body</h4><p>Movement gives an activated state somewhere to land. The least controversial item here; physical activity has broad, well-replicated effects on mood and stress physiology.</p><p class="src">Nagoski &amp; Nagoski (2019). Levine (1997) on discharge and titration.</p></div>
+    <div class="sd"><h4>Breath</h4><p>Slower breathing with a lengthened exhale. In a randomised comparison of five-minute daily practices, exhale-emphasised cyclic sighing improved mood and lowered respiratory rate more than mindfulness meditation over a month.</p><p class="src">Balban et al. (2023). One trial, 108 participants, short duration.</p></div>
+    <div class="sd"><h4>Touch</h4><p>Hand on heart, hand on belly, arms around shoulders. In a randomised trial, self-soothing touch lowered cortisol after a lab stressor about as much as being hugged. Heart rate and self-reported stress did not differ, so there is a measurable physiological effect that may not be a felt one.</p><p class="src">Dreisoerner et al. (2021). Neff (2003) on self-compassion.</p></div>
+    <div class="sd"><h4>Name</h4><p>Putting the state into words. Affect labelling reduces amygdala response and raises right ventrolateral prefrontal activity. The direction has replicated well; the mechanism is still argued over.</p><p class="src">Lieberman et al. (2007). Brach's RAIN is the practice version.</p></div>
+    <div class="sd"><h4>Page</h4><p>Writing without an audience. The largest meta-analysis of expressive writing found a real but small average effect, r = .075, across 146 randomised studies, varying a lot by circumstance.</p><p class="src">Pennebaker &amp; Beall (1986); Frattaroli (2006). Honest summary: modest, and it depends.</p></div>
+    <div class="sd"><h4>Space</h4><p>Changing the room, the light, the sightline, or simply orienting. Turning the head and letting the eyes find where I actually am.</p><p class="src">Kaplan (1995) on restorative environments. Levine (1997) on orienting. Decent for restoration, weaker for specific protocols.</p></div>
+    <div class="sd"><h4>Make</h4><p>Expression with no message and no audience. This is the channel Other Bodies is entirely built on, and the deck's own instruction is the best version of it: make something honest, not something good.</p><p class="src">Nagoski &amp; Nagoski (2019). Lorde (1977/1984). Robin, <em>Other Bodies</em> (2026).</p></div>
+    <div class="sd"><h4>On not finishing</h4><p>Any of these can be abandoned partway. Thirty seconds is not a failed attempt. Capacity, rather than intensity of expression, is what the current trauma literature associates with recovery, so going small is not a lesser version of the practice.</p><p class="src">See <em>What this is</em> for how confident that claim should be.</p></div>
+  </div>
+</section>
+
+<section class="view" id="v-tongues">
+  <p class="lede">English is the narrow part. These are states other languages named and English did not, placed in the constellation each belongs to.</p>
+  <div class="note">
+    <p>Jackson and colleagues estimated emotion semantics across 2,474 spoken languages using colexification, where a language names two related concepts with one word. They found substantial variation in what emotion words mean between language families, predicted by geographic proximity, with only valence and arousal holding steady throughout.</p>
+    <p>So a wheel built in one language has a ceiling built into it. These words are here to mark where the ceiling is. Every gloss below is an approximation by definition, some are academically contested, and none of them is a translation.</p>
+  </div>
+  <div class="tongue" id="tonguelist"></div>
+</section>
+
+<section class="view" id="v-about">
+  <p class="lede">What this is standing on, and where it is standing on less than it looks.</p>
+  <div class="known">
+    <div class="kbox"><h4>Reasonably well established</h4><ul>
+      <li>Naming a state in words changes measurable brain activity, in the direction of reduced limbic response.</li>
+      <li>Physical activity and lengthened-exhale breathing reliably affect stress physiology.</li>
+      <li>Self-directed touch lowers cortisol after a stressor.</li>
+      <li>Expressive writing has a small positive average effect.</li>
+      <li>Emotional granularity, having more precise words available, is associated with better regulation outcomes.</li>
+      <li>Emotion word meanings vary substantially across languages, with valence and arousal the stable exception.</li>
+    </ul></div>
+    <div class="kbox"><h4>Contested or unknown</h4><ul>
+      <li>Whether there is any set of basic emotions at all. Core affect, primary-process circuits, and constructionism disagree about what the question means.</li>
+      <li>Whether any specific emotion has its own body signature. A meta-analysis of 202 studies found no reliable autonomic fingerprint for discrete categories.</li>
+      <li>Polyvagal theory's physiological premises, which have been directly challenged and defended in the peer-reviewed literature.</li>
+      <li>Whether Panksepp's seven mammalian circuits map onto human felt experience. Most of that evidence is animal.</li>
+      <li>Whether a stress response completes in a definable window. The framing is useful; the timing claims are not established.</li>
+      <li>Whether any of this works for one particular person. That is an n of 1 and no study answers it.</li>
+    </ul></div>
+  </div>
+  <div class="note">
+    <p><em>The most important caveat.</em> Every bodily description here is written as commonly reported, never as diagnostic. Siegel and colleagues analysed 202 studies of autonomic activity during induced emotion and found enough variation within each category that the idea of an emotion-specific fingerprint does not hold up.</p>
+    <p>So if my body does something different from what a panel describes, the panel is wrong about me. Not the other way round.</p>
+  </div>
+  <div class="sec">
+    <h3>Why there are no basic emotions at the centre</h3>
+    <p>The centre of this wheel is affect, not an emotion. That is a commitment: valence and arousal are treated as the ingredients, and everything outside the hub is a learned concept rather than a primitive. Which means the constellation ring is not a set of basic emotions. It is the coarsest useful grouping, and it could have been drawn differently.</p>
+    <p>Three positions are live in the field and they disagree. Russell's core affect says the primitives are two dimensions. Panksepp's affective neuroscience says there are seven subcortical circuits shared across mammals: SEEKING, RAGE, FEAR, LUST, CARE, PANIC/GRIEF, PLAY, mapped by brain stimulation and lesion work, mostly in animals. Barrett's constructionism says there are no basic emotions, only affect plus concepts that are learned and language-specific. None of these hands you a set of words for a wheel, and Panksepp's own list has neither disgust nor shame on it.</p>
+    <p>An earlier version of this wheel used Gloria Willcox's six. Those were arrived at by taking a folk four and splitting one of them into three, published in 1982 as a communication aid. Good tool, never validated as a taxonomy, and organised by pleasantness, which is why states like ambivalence, nostalgia and awe had nowhere to sit.</p>
+  </div>
+  <div class="sec">
+    <h3>Where the twelve come from</h3>
+    <p>Ten of them are the feeling constellations from <em>Other Bodies</em>, kept as written, organised by quality and texture and how a state moves through the body rather than by whether it feels good. That organising principle is closer to how contemporary affective science groups things than any six-emotion wheel is.</p>
+    <p>Two were added here and are not from the deck. <em>Aversive</em>, because disgust and contempt appear in nearly every taxonomy, have their own action tendency of expelling rather than attacking or withdrawing, and were absent. <em>Appetitive</em>, because wanting as such had no family; longing sat under Relational and curiosity under Expansive, and neither covers appetite. Neither new constellation has cards yet.</p>
+    <p>The constellation slices are unequal because the card counts are unequal. That is left visible rather than padded. Some regions of feeling are more densely named than others, which is true, and which is also Cowen and Keltner's finding about the shape of the space.</p>
+  </div>
+  <div class="sec">
+    <h3>What this is not</h3>
+    <p>Not therapy, not diagnosis, not crisis care. The deck says this in its own front matter and it holds here. A wheel cannot tell whether a feeling is proportionate, whether a situation is safe, or whether something needs more attention than one person can give it alone.</p>
+    <p>If a state stops moving, constant across weeks, arriving without a stimulus, or bringing thoughts of harm, this stops being the right tool. Reaching for a professional is a competency, not a failure.</p>
+  </div>
+</section>
+
+<section class="view" id="v-sources">
+  <p class="lede">Everything cited here is independently verifiable. Where a claim rests on a single study, that is said so.</p>
+  <div class="refs">
+    <div class="refgroup"><h4>This wheel's own material</h4>
+      <div class="ref">Robin, A. (2026). <em>Other Bodies: 52 creative care prompts.</em> therapeuticstudio.ca<span class="anno">Source of the ten constellations, the 52 named states, and every natural body companion. Credits Shauna Kaendo, the Erotics of Liberation, and the ohHEY Creative Care Community.</span></div>
+      <div class="ref">Willcox, G. (1982). The Feeling Wheel. <em>Transactional Analysis Journal, 12</em>(4), 274–276. <a href="https://doi.org/10.1177/036215378201200411">doi:10.1177/036215378201200411</a><span class="anno">The six-word wheel this replaced. Retained here for the record.</span></div>
+    </div>
+    <div class="refgroup"><h4>What emotions are, and whether bodies agree</h4>
+      <div class="ref">Siegel, E. H., Sands, M. K., Van den Noortgate, W., Condon, P., Chang, Y., Dy, J., Quigley, K. S., &amp; Barrett, L. F. (2018). Emotion fingerprints or emotion populations? <em>Psychological Bulletin, 144</em>(4), 343–393. <a href="https://doi.org/10.1037/bul0000128">doi:10.1037/bul0000128</a><span class="anno">202 studies. The basis for treating all physiological description here as commonly reported.</span></div>
+      <div class="ref">Russell, J. A. (1980). A circumplex model of affect. <em>JPSP, 39</em>(6), 1161–1178. — and (2003). Core affect and the psychological construction of emotion. <em>Psychological Review, 110</em>(1), 145–172.<span class="anno">Source of the valence-by-arousal hub.</span></div>
+      <div class="ref">Barrett, L. F. (2017). The theory of constructed emotion. <em>SCAN, 12</em>(1), 1–23. <a href="https://doi.org/10.1093/scan/nsw154">doi:10.1093/scan/nsw154</a> — and <em>How Emotions Are Made</em> (2017).</div>
+      <div class="ref">Panksepp, J. (1998). <em>Affective Neuroscience.</em> Oxford University Press. — Panksepp, J., &amp; Biven, L. (2012). <em>The Archaeology of Mind.</em> Norton.<span class="anno">The seven primary-process systems. Strongest as comparative mammalian neuroscience; the inference to human felt experience is disputed by constructionists.</span></div>
+      <div class="ref">Cowen, A. S., &amp; Keltner, D. (2017). Self-report captures 27 distinct categories of emotion bridged by continuous gradients. <em>PNAS, 114</em>(38), E7900–E7909. <a href="https://doi.org/10.1073/pnas.1702247114">doi:10.1073/pnas.1702247114</a><span class="anno">Many-and-graded rather than few-and-discrete. Their stimuli were short silent videos, which could not evoke anger or shame, so the taxonomy is bounded by its method.</span></div>
+      <div class="ref">Ekman, P. (1992). An argument for basic emotions. <em>Cognition and Emotion, 6</em>(3–4), 169–200.<span class="anno">Included because the disagreement is genuine and unresolved.</span></div>
+    </div>
+    <div class="refgroup"><h4>Language and the limits of one vocabulary</h4>
+      <div class="ref">Jackson, J. C., Watts, J., Henry, T. R., List, J.-M., Forkel, R., Mucha, P. J., Greenhill, S. J., Gray, R. D., &amp; Lindquist, K. A. (2019). Emotion semantics show both cultural variation and universal structure. <em>Science, 366</em>(6472), 1517–1522. <a href="https://doi.org/10.1126/science.aaw8160">doi:10.1126/science.aaw8160</a></div>
+      <div class="ref">Wierzbicka, A. (1999). <em>Emotions Across Languages and Cultures.</em> Cambridge University Press.</div>
+      <div class="ref">Lomas, T. (2016). Towards a positive cross-cultural lexicography. <em>Journal of Positive Psychology, 11</em>(5), 546–558.</div>
+      <div class="ref">Watt Smith, T. (2015). <em>The Book of Human Emotions.</em> Profile Books.<span class="anno">Source for awumbuk and several others. Popular scholarship, well sourced, not peer-reviewed.</span></div>
+      <div class="ref">Doi, T. (1973). <em>The Anatomy of Dependence.</em> Kodansha. — Rosaldo, M. (1980). <em>Knowledge and Passion.</em> Cambridge University Press.<span class="anno">Amae and liget respectively.</span></div>
+    </div>
+    <div class="refgroup"><h4>The seven responses</h4>
+      <div class="ref">Nagoski, E., &amp; Nagoski, A. (2019). <em>Burnout: The Secret to Unlocking the Stress Cycle.</em> Ballantine.<span class="anno">A synthesis rather than new trials; strength of evidence varies by component.</span></div>
+      <div class="ref">Lieberman, M. D., et al. (2007). Putting feelings into words. <em>Psychological Science, 18</em>(5), 421–428. <a href="https://doi.org/10.1111/j.1467-9280.2007.01916.x">doi:10.1111/j.1467-9280.2007.01916.x</a></div>
+      <div class="ref">Balban, M. Y., et al. (2023). Brief structured respiration practices enhance mood and reduce physiological arousal. <em>Cell Reports Medicine, 4</em>(1), 100895. <a href="https://doi.org/10.1016/j.xcrm.2022.100895">doi:10.1016/j.xcrm.2022.100895</a></div>
+      <div class="ref">Dreisoerner, A., et al. (2021). Self-soothing touch and being hugged reduce cortisol responses to stress. <em>Comprehensive Psychoneuroendocrinology, 8</em>, 100091. <a href="https://doi.org/10.1016/j.cpnec.2021.100091">doi:10.1016/j.cpnec.2021.100091</a><span class="anno">Cortisol dropped; heart rate and self-reported stress did not.</span></div>
+      <div class="ref">Frattaroli, J. (2006). Experimental disclosure and its moderators. <em>Psychological Bulletin, 132</em>(6), 823–865. <a href="https://doi.org/10.1037/0033-2909.132.6.823">doi:10.1037/0033-2909.132.6.823</a><span class="anno">146 studies; average r = .075.</span></div>
+      <div class="ref">Pennebaker, J. W., &amp; Beall, S. K. (1986). Confronting a traumatic event. <em>Journal of Abnormal Psychology, 95</em>(3), 274–281. — Kaplan, S. (1995). The restorative benefits of nature. <em>Journal of Environmental Psychology, 15</em>(3), 169–182.</div>
+    </div>
+    <div class="refgroup"><h4>Compassion, attention, and staying with</h4>
+      <div class="ref">Neff, K. D. (2003). Self-compassion. <em>Self and Identity, 2</em>(2), 85–101. — Neff &amp; Germer (2013). <em>Journal of Clinical Psychology, 69</em>(1), 28–44.</div>
+      <div class="ref">Brach, T. (2003). <em>Radical Acceptance.</em> Bantam. — (2019) <em>Radical Compassion.</em> Viking.<span class="anno">RAIN. Practice literature, presented here as practice rather than as trial evidence.</span></div>
+      <div class="ref">Levine, P. A. (1997). <em>Waking the Tiger.</em> North Atlantic Books. — Gendlin, E. T. (1978). <em>Focusing.</em> Everest House.</div>
+      <div class="ref">Lorde, A. (1984). Poetry Is Not a Luxury; Uses of the Erotic. In <em>Sister Outsider.</em> Crossing Press.</div>
+      <div class="ref">Menakem, R. (2017). <em>My Grandmother's Hands.</em> Central Recovery Press. — brown, a. m. (2019). <em>Pleasure Activism.</em> AK Press. — hooks, b. (2000). <em>All About Love.</em> William Morrow. — Hemphill, P. (2024). <em>What It Takes to Heal.</em> Random House.</div>
+    </div>
+    <div class="refgroup"><h4>Where the field disagrees with itself</h4>
+      <div class="ref">Grossman, P. (2023). Fundamental challenges and likely refutations of the five basic premises of the polyvagal theory. <em>Biological Psychology, 180</em>, 108589. <a href="https://doi.org/10.1016/j.biopsycho.2023.108589">doi:10.1016/j.biopsycho.2023.108589</a><span class="anno">Porges has published responses; unresolved. This wheel avoids polyvagal vocabulary for that reason.</span></div>
+    </div>
+  </div>
+</section>
+
+</div>
+<script>
+const K=['Body','Breath','Touch','Name','Page','Space','Make'];
+
+/* ── twelve constellations, in loop order ─────────────────────────
+   Ten are from Other Bodies, kept as written. Aversive and
+   Appetitive are additions and are marked as such. ─────────────── */
+const CONST=[
+{id:'activated',label:'Activated',full:'Activated States',
+ gloss:'The emotions that move fast, that carry heat, that push against edges. Energy looking for a direction.',
+ happening:'High arousal with a forward pull. Commonly reported as heat, a set jaw, gripped hands, difficulty sitting still, speech that speeds up. No reliable body-signature separates these from each other or from excitement.',
+ pointing:'Toward something obstructing, threatening, or demanding. This family is usually accurate about the pressure and unreliable about what to do next.',
+ seven:[
+ 'Give the charge a target that finishes. Both palms hard into a wall for ten seconds, release, three times. Or stairs, fast, until the breath changes. Effort, not damage.',
+ 'Let the exhale run longer than the inhale without shortening the inhale. If lengthening feels like clamping down, breathe normally and watch instead.',
+ 'One hand on the sternum, one on the belly. Not to settle the charge. To stay in the body while it runs.',
+ 'Say it out loud with its object. I am ___ about ___. Then, if it is true, this makes sense. Nothing after that.',
+ 'Write the uncensored version at speed. No audience, no fairness, no editing. Decide separately, later, whether any of it goes anywhere.',
+ 'Change the room. Activation held in the square metre where it started tends to loop.',
+ 'Fast heavy marks, wet paint pushed hard, loud sound. Expression with no message and no picture at the end of it.']},
+
+{id:'aversive',label:'Aversive',full:'Aversive States',added:true,
+ gloss:'The emotions that expel. What the body wants away from itself, and what the mind builds on top of that.',
+ happening:'A withdrawal reflex with a judgement attached. Commonly reported as a curl in the upper lip or nose, nausea, a held breath high in the chest, an urge to wash or move away.',
+ pointing:'Toward a boundary. Disgust reports contamination, contempt reports a judgement about worth, and the second is far more corrosive than the first.',
+ seven:[
+ 'The tendency here is out, not toward. Wash the hands, open a window, move away. Let the body complete the gesture it is already making.',
+ 'Exhale through the mouth, longer than feels necessary. Aversion holds breath in the upper chest.',
+ 'Rinse hands and forearms at whatever temperature is comfortable. Attention to the skin, which is where this family tends to sit.',
+ 'Separate the object from the judgement. What is repellent, and what am I concluding about it or about them. The second is doing more work than it looks.',
+ 'Write what boundary was crossed. Aversion is nearly always a boundary report, and it reads as clearer on the page than in the throat.',
+ 'Physical distance, even a few metres. Then decide separately whether the distance needs to be permanent.',
+ 'Something deliberately ugly. Aversion held without expression tends to harden into contempt, which is the version that costs the most.']},
+
+{id:'protective',label:'Protective',full:'Protective States',
+ gloss:'The emotions that draw us inward, build walls, or go quiet. Not broken responses. Wise ones.',
+ happening:'Fast and defensive. Heart rate commonly rises, attention narrows, breath moves higher in the chest. Or the opposite: everything goes flat and far away. Both are protection, and the second is not the absence of the first.',
+ pointing:'Toward something that matters and feels unprotected. This family is a forecast, not a verdict. It reports what my system expects, which is a different question from what is true.',
+ seven:[
+ 'Small and contained rather than large. Shake out the hands, roll the shoulders, press the feet down and feel the floor press back.',
+ 'Two inhales through the nose, a full one then a short top-up, then a long exhale through the mouth. Stop if it raises the alarm rather than easing it.',
+ 'Firm, not light. A hand gripping the opposite forearm. Light touch can register as unsafe when a system is scanning.',
+ 'Two questions kept apart. What am I protecting against, and what is actually here. Write both. Do not argue with the first.',
+ 'List what is unknown, then mark each item knowable now, knowable later, unknowable. This family often shrinks to its real size once sorted.',
+ 'Orient. Turn the head slowly, let the eyes land on five things, find the door and the light. Let the body confirm where it is.',
+ 'Draw the shape or the size of it without words. These states are often more accurately rendered than described.']},
+
+{id:'heavy',label:'Heavy',full:'Heavy States',
+ gloss:'The emotions that ask us to slow down, to be with what is hard, to let weight be weight.',
+ happening:'Low energy and downward. Commonly reported as heaviness through the chest and limbs, a pull inward, narrowed interest, tiredness that sleep does not fix. Part of why this family cannot be acted out of, and part of why it may not need to be.',
+ pointing:'Toward loss, and toward the size of what was lost. Weight here is proportionate to what mattered, which makes it information rather than malfunction.',
+ seven:[
+ 'Weight-bearing and slow rather than effortful. Walking. Carrying something. Lying flat and letting the ground take it.',
+ 'Do not manage it. Let it be shallow, uneven, catching. Smoothing grief breath tends to push the grief back down.',
+ 'Both arms across the chest, hands on opposite shoulders, a full minute. Or warmth over the sternum, which is enough.',
+ 'Name the loss, not the mood. Not I feel low, but I miss ___, or I have lost ___. Precision is the whole practice here.',
+ 'Write one true detail. Not the whole story. One detail is a complete act.',
+ 'Let the room match, briefly. Lower light, fewer inputs, a blanket. Then set a soft limit so matching does not become residence.',
+ 'Slowness rather than silence. One long note. One line. One photograph of something ordinary.']},
+
+{id:'selfdirected',label:'Self-directed',full:'Self-directed States',
+ gloss:'The emotions we turn on ourselves. Some tender, some harsh, all asking for witness.',
+ happening:'Appraisal aimed inward. Commonly reported as heat in the face, a collapse in posture, difficulty meeting a gaze, and a very precise internal accounting. Pride belongs here too, and runs in the opposite direction on the same machinery.',
+ pointing:'Toward a standard, usually one acquired from somewhere rather than chosen. The measurement may be careful and the ruler still wrong.',
+ seven:[
+ 'Uncurl. These states collapse posture. The counter-move is not confidence, only lengthening the spine and lifting the gaze to the horizon.',
+ 'Breathe where it feels blocked, usually chest or throat. Self-judgement constricts breath before it reaches thought.',
+ 'Hand on the heart, with the sentence this is a moment of suffering. This is Neff\u2019s self-compassion break, built for exactly this family.',
+ 'Separate the act from the self. I did something bad, versus I am bad. The first can be worked with; the second is not a fact.',
+ 'Write what I would say to someone I love in exactly this position. Then read it as addressed to me.',
+ 'Somewhere I am not being seen, or somewhere with no mirror, for ten minutes. A time-limited hiding place is not a failure.',
+ 'Make anonymously, or make badly on purpose. These states ease when expression carries no risk of exposure and no stakes.']},
+
+{id:'relational',label:'Relational',full:'Relational States',
+ gloss:'The emotions that live in the space between us. What we feel in relation to others, real or imagined, present or absent.',
+ happening:'Oriented toward a person, whether or not they are there. Commonly reported as an ache in the chest, a hollowness, heightened sensitivity to other people\u2019s closeness, and a mind that keeps returning to one figure.',
+ pointing:'Toward a real need rather than a defect. This family works like hunger. It reports a requirement, and it does not comment on the worth of the person having it.',
+ seven:[
+ 'Movement that puts me among people without requiring interaction. A walk where others exist. A shop. A library.',
+ 'Hum on the exhale. It makes a sound the body produces when it is not alone.',
+ 'Both hands around the upper arms, held. Self-touch is not a substitute for contact and is still worth doing.',
+ 'Name the person and the specific thing. This family gets vaguer and heavier the longer it stays unaddressed to anyone.',
+ 'Write to someone specific, in the second person. Send it or do not.',
+ 'Change the acoustic. A voice, music with words, a window open to street sound.',
+ 'Make something addressed to someone, even if it never arrives. Address is the medicine in this family.']},
+
+{id:'repair',label:'Repair',full:'Relational Repair States',
+ gloss:'The emotions that arrive after rupture. Fragile, essential, asking us to remain open.',
+ happening:'A guard being lowered on purpose. Commonly reported as a loosening through jaw and shoulders alongside a heightened sense of risk, because the two are happening at once and that is what makes this family hard.',
+ pointing:'Toward a relationship worth the exposure. Repair is a direction rather than a moment, and nothing here requires deciding today whether it worked.',
+ seven:[
+ 'Let the body be less braced. Check the jaw, the shoulders, the tongue, the abdomen. Repair happens in a body that has stopped defending.',
+ 'Breath that is not monitoring anything. No count.',
+ 'Contact with something that holds weight. A chair back, a wall, another body. Being held is part of this one.',
+ 'Name what is being repaired and what is not. Repair that overclaims tends to collapse; repair that is specific tends to hold.',
+ 'Write what made this trustworthy, in detail. The specifics transfer to the next time.',
+ 'Somewhere with a door I control, so that opening is a choice rather than a condition.',
+ 'Something that requires letting go of the outcome. Improvising, wet media, cooking without a recipe.']},
+
+{id:'mixed',label:'Mixed',full:'Complex + Mixed States',
+ gloss:'The emotions that resist simple naming. Layered, contradictory, often the most honest of all.',
+ happening:'Two or more things at once, which is why the body reads as noisy rather than as any one thing. Commonly reported as pressure, blankness, an inability to choose, or a sudden urge to stop entirely.',
+ pointing:'Toward genuine complexity rather than confusion about a simple thing. This family is usually accurate that the situation has more than one true description.',
+ seven:[
+ 'Stop before doing. Sit down, feet flat, four points of contact. This is the family where doing less is most often the intervention.',
+ 'Count only the exhale. Four exhales. Then stop counting.',
+ 'Weight. A heavy blanket, a hand pressing the thigh, a bag on the lap.',
+ 'Resist resolving it. Say both things. I want this and I do not. Both are true is a complete and accurate name.',
+ 'Write everything down without ordering it. This family is partly a working-memory problem, and the page is external memory.',
+ 'Shrink the field. One room, one cleared surface, one thing visible.',
+ 'Layer without deciding. Wet into wet. Let two colours meet and do not separate them.']},
+
+{id:'threshold',label:'Threshold',full:'Existential + Threshold States',
+ gloss:'The emotions that live at the edges of the self, where we meet time, mortality, mystery, and meaning.',
+ happening:'Attention pulled past the immediate. Commonly reported as a widening, a lifted gaze, sometimes vertigo, sometimes tears that are not sadness. Often arrives without a trigger and without an obvious end.',
+ pointing:'Toward a question rather than a problem. These states are not malfunctions of coping. They are what it feels like to be a finite thing paying attention.',
+ seven:[
+ 'Get outside if possible, and look at something older than me. Scale is the relevant move here rather than regulation.',
+ 'Deeper than usual, without effort, with the gaze on distance.',
+ 'Open hands, palms up, resting. Contact with something not made by a person. Stone, water, bark, ground.',
+ 'Say the thing plainly, including the part with no answer. These states get worse when the unanswerable part is left implied.',
+ 'Write the question rather than the resolution. Threshold states are questions, and treating them as problems distorts them.',
+ 'A long sightline. A window, a horizon, a night sky. Somewhere the edges of the room are not the edges of the world.',
+ 'Make without finishing. Leave it open. This is one of the few families where an unfinished thing is more accurate than a finished one.']},
+
+{id:'appetitive',label:'Appetitive',full:'Appetitive States',added:true,
+ gloss:'The emotions that pull us toward. Wanting, before it has been judged or acted on.',
+ happening:'Forward energy with an object. Commonly reported as restlessness, difficulty waiting, a lean toward, a heightened noticing of the wanted thing. Physiologically this overlaps heavily with anxiety, and what separates them experientially is often whether the energy has somewhere to go.',
+ pointing:'Toward what increases aliveness. Wanting is an assessment instrument before it is a demand, and it is the faculty most often lost first and recovered last.',
+ seven:[
+ 'Let the body lean toward. Approach states want approach, and interrupting the movement is what turns wanting into agitation.',
+ 'Slow, without dampening. Nothing here needs reducing.',
+ 'Hands together, pressed, or resting on the belly. Containment so the energy has a shape rather than a leak.',
+ 'Name what is actually wanted, underneath the nearest available substitute. Desire misnamed goes to whatever is closest.',
+ 'Write it down before it is tested by reality or by shame. This is the version worth keeping.',
+ 'Somewhere with room. Wanting in a confined space converts to pacing.',
+ 'Start immediately, badly. The energy is the resource; the plan is not.']},
+
+{id:'expansive',label:'Expansive',full:'Expansive States',
+ gloss:'The emotions that open outward, that enlarge us, that remind us what it feels like to be alive and glad of it.',
+ happening:'Opening. Commonly reported as deeper breath, taller posture, wider attention, sometimes chills or tears. It can also feel unsafe if good states have historically preceded loss. That reaction is common and is not a fault.',
+ pointing:'Toward something worth staying near. This family works as data about what to move toward, which is usable information rather than a mood to consume.',
+ seven:[
+ 'Let it move through the limbs. Stretch tall, move fast, one song. Expansive states that get no physical channel often pass without being registered.',
+ 'One deep breath taken deliberately at the peak, held a beat. Marking, not managing.',
+ 'Hand on the chest, not to settle but to note. This is what this feels like.',
+ 'Specifically enough to find it again. Not that was nice, but the light at four and nobody needing anything.',
+ 'Three sentences while it is still happening, in the present tense. Not afterwards.',
+ 'Notice what in the room is part of this. These states are often environmental and go unattributed.',
+ 'At the pitch of it. Colour, volume, speed, no purpose. If it tips into unease, go smaller. Five seconds is a complete dose.']},
+
+{id:'quiet',label:'Quiet',full:'Tender + Quiet States',
+ gloss:'The emotions that ask almost nothing. Only that we notice them, rest in them, let them be enough.',
+ happening:'No demand being made. Often quiet enough to be missed. Slower breath, softer jaw and hands, wider peripheral attention. For a system used to vigilance this can also feel like something is wrong, precisely because nothing is.',
+ pointing:'Toward sufficiency. The absence of threat rather than the presence of pleasure. Worth registering deliberately, because unmarked states leave little trace.',
+ seven:[
+ 'Do less. Lie down. Let the body be supported and notice where it is held.',
+ 'Count ten breaths without changing them. If the mind goes, start again. There is nothing to achieve.',
+ 'Hands resting, palms up. Notice the temperature of the air on them.',
+ 'Say what is absent. Nothing is being asked of me right now. Naming the absence is what makes it registerable.',
+ 'One line, dated. Proof, later, that this state occurs.',
+ 'Note the conditions. Light, temperature, sound, who is and is not here. Conditions are repeatable.',
+ 'Something with no stakes. Doodling, humming, arranging objects. Making that is not for anything.']}
+];
+
+/* ── the 58 named states ──────────────────────────────────────────
+   52 are cards from Other Bodies, each with its natural body.
+   6 belong to the two added constellations and have no card. ──── */
+const CARD={
+
+/* Activated */
+angry:{p:'activated',label:'Angry',card:'I feel angry.',
+ body:'A river in flood. Banks overtopped, waters rushing with a force that cannot be denied. Not blind rage: the river carries away what has gathered and blocked its path for too long, and it remembers its shape and seeks to find it again.',
+ happening:'Something I care about is being blocked, crossed, or damaged. Commonly reported as heat, a forward pull, gripped hands, a narrowing of attention onto one target.',
+ pointing:'Toward a standard of mine that has been violated, and an impulse to act on it. Anger carries no obligation to act now.',
+ tailor:'With this one, move before deciding anything. Anger is reliable about the boundary and unreliable about the remedy.'},
+anxious:{p:'activated',label:'Anxious',card:'I feel anxious.',
+ body:'A murmuration of starlings. No single bird knows the shape of what they make together. There is no fixed destination, only constant shifting and a willingness to stay close, to trust the movement even when the direction is uncertain.',
+ happening:'Fear about something that has not happened. A low continuous hum. Tight stomach, shallow breath, difficulty settling, thoughts that circle without resolving.',
+ pointing:'Toward uncertainty about something that matters. Prepared energy assigned to a task that has not arrived.',
+ tailor:'With this one, write the feared thing in full, in its worst version. Vagueness is what this runs on.'},
+urgency:{p:'activated',label:'Urgency',card:'I feel urgency.',
+ body:'Salmon running upstream. Muscle and will pressed against the rush. Not panic, not flight: an answer to a call sounded deep in the bones, urgency rising from the certainty of purpose rather than from fear.',
+ happening:'Compression of time. Everything feels like it must happen now. Fast speech, shallow breath, difficulty holding more than one thing.',
+ pointing:'Toward something that genuinely matters, or toward a deadline that has been internalised past its actual weight. Both feel identical from inside.',
+ tailor:'With this one, ask what is actually due today. Urgency is often accurate about importance and wrong about timing.'},
+frustrated:{p:'activated',label:'Frustrated',card:'I feel frustrated.',
+ body:'Water meeting a blocked path. It does not halt in defeat. It presses gently at every edge, pools with quiet patience, listens for a seam. If no way is offered it waits, learning the shape of what resists it.',
+ happening:'Effort meeting an obstacle and not getting through. A tight buzzing quality rather than heat. Restlessness, a held breath, repetitive movement.',
+ pointing:'Toward a goal that still matters. Frustration is the sound of unspent effort, which means the wanting is intact.',
+ tailor:'With this one, two columns. What is in my control, what is not. Nothing else on the page.'},
+restless:{p:'activated',label:'Restless',card:'I feel restless.',
+ body:'The tides. Ceaseless, never still, drawn onward and back by the silent gravity of distant moons. Not broken for moving: faithful to a rhythm larger than itself.',
+ happening:'Energy with no object. Difficulty staying seated, starting things and abandoning them, a physical itch to be elsewhere.',
+ pointing:'Sometimes toward a real unmet need, sometimes toward nothing but a body that has not moved enough. Both are worth taking literally first.',
+ tailor:'With this one, move before interpreting. Restlessness examined while sitting still tends to turn into self-criticism.'},
+
+/* Aversive — no cards yet */
+disgusted:{p:'aversive',label:'Disgusted',added:true,
+ happening:'A rejection reflex. Commonly reported as a curl at the nose or upper lip, nausea, a held breath, an urge to get away from or wash off.',
+ pointing:'Toward something registered as contaminating. Originally about food and illness, extended by every culture to people and ideas, which is where it becomes dangerous.',
+ tailor:'This constellation has no card yet. The natural body for it has not been written.'},
+contemptuous:{p:'aversive',label:'Contemptuous',added:true,
+ happening:'Disgust aimed at a person, with a judgement of lesser worth attached. Often cooler than anger and much longer-lasting. A one-sided lip movement, a dismissal that arrives before thought.',
+ pointing:'Toward a hierarchy I am enforcing. Contempt is the most corrosive state in the relationship literature, and it is the one most likely to feel justified from inside.',
+ tailor:'This one deserves suspicion rather than expression. Write what happened without the word about the person, and see what is left.'},
+repelled:{p:'aversive',label:'Repelled',added:true,
+ happening:'A whole-body no. Physical recoil, sometimes before any reason is available. Skin, throat and stomach usually report first.',
+ pointing:'Toward a boundary the body has already drawn. Worth taking seriously as data and checking separately as judgement.',
+ tailor:'With this one, honour the recoil first and interrogate it second. Reversing that order tends to override something accurate.'},
+
+/* Protective */
+ashamed:{p:'protective',label:'Ashamed',card:'I feel ashamed.',
+ body:'The octopus. Soft-bodied, many-armed, changing colour and pattern not as trickery but as a living reply to the world. What seems like hiding is exquisite sensitivity, a whole being tuned to the pulse of its surroundings.',
+ happening:'A judgement about the whole self rather than an action. Heat in the face, a collapse in posture, an urge to disappear, difficulty meeting a gaze.',
+ pointing:'Toward a belief about being fundamentally unacceptable. Shame\u2019s action tendency is to hide, which is also what keeps it intact.',
+ tailor:'With this one, separate guilt from shame. I did something bad, versus I am bad. The second is not a fact.'},
+afraid:{p:'protective',label:'Afraid',card:'I feel afraid.',
+ body:'A cave in the hillside. It does not turn its back on the world; it opens a mouth to the air and offers its darkness as sanctuary. What enters is not lost but held, given space to gather itself and wait for the return of light.',
+ happening:'Something being read as a threat, whether or not it is one. Heart rate commonly rises, attention narrows, breath moves higher in the chest. The prediction is made before there is a chance to reason about it.',
+ pointing:'Toward something that matters and feels unprotected. A forecast, not a verdict.',
+ tailor:'With this one, orient before analysing. Find the door, the light, five things in the room. The body settles the question the mind cannot.'},
+numb:{p:'protective',label:'Numb',card:'I feel numb.',
+ body:'Permafrost. Earth frozen season after season, not from lack but from careful keeping. Beneath the hard surface lie the roots of old grasses, seeds and bones and stories, all held in patient suspension. Not empty: a vault.',
+ happening:'Flatness, distance, watching from outside. Difficulty feeling anything including relief. A protective state rather than an absent one.',
+ pointing:'Toward too much, not too little. Numbness is usually the ceiling being handled rather than the absence of feeling.',
+ tailor:'With this one, do not try to feel more. Sensation before emotion. Temperature, texture, weight, taste. Small doses, stopping allowed at any point.'},
+withdrawn:{p:'protective',label:'Withdrawn',card:'I feel withdrawn.',
+ body:'A tide pool at low tide. When the water recedes it does not vanish or despair; it gathers itself and draws its small world closer, holding seaweed and anemone and shell, condensed and waiting.',
+ happening:'Pulling in. Less speech, fewer plans, a reduced appetite for other people that may or may not come with distress.',
+ pointing:'Toward a need for a smaller world for a while. Withdrawal is a strategy before it is a symptom, and the difference is duration.',
+ tailor:'With this one, set a soft edge in advance. An evening, a weekend. Withdrawal with a limit is rest; withdrawal without one tends to become residence.'},
+guarded:{p:'protective',label:'Guarded',card:'I feel guarded.',
+ body:'The pine cone in dry heat. Beneath the harsh glare it draws its scales tight, not as a denial of the world but as a quiet act of discernment. The seeds within are not lost. They are protected, waiting for the kindness of rain.',
+ happening:'Watchfulness in company. Measured speech, a held-back quality, monitoring how I am landing rather than what I am saying.',
+ pointing:'Toward an accurate read on conditions, or an outdated one. Guardedness is a skill; the question is only whether it is currently being aimed correctly.',
+ tailor:'With this one, ask what would need to be true to open a little. Naming the condition is more useful than trying to open without one.'},
+
+/* Heavy */
+grief:{p:'heavy',label:'Grief',card:'I feel grief.',
+ body:'Moss. A green hush spreading over stones and fallen logs. It does not rush to erase what has come undone; it gathers gently along the edges of ruin, softening splinters, cloaking the broken in velvet patience.',
+ happening:'Loss that is not going to be undone. Grief comes in waves rather than a plateau, and the waves are physical. Chest, throat, a catching breath, sudden exhaustion.',
+ pointing:'Toward the size of what mattered. Not a problem being solved slowly. Love continuing without its object.',
+ tailor:'With this one, say the name. The person, the relationship, the version of my life, the future that will not happen.'},
+sad:{p:'heavy',label:'Sad',card:'I feel sad.',
+ body:'Rain on still water. Each drop a brief insistence, a gentle shattering. The rain does not pause at the edge nor hesitate. There is no apology, no need to smooth what is stirred, each circle widening until the water settles again.',
+ happening:'Something is gone, or was never there. Heaviness through the chest and limbs, a pull inward, narrowed interest. Low energy, which is part of why it cannot easily be acted out of.',
+ pointing:'Toward loss and toward the value of what was lost. Sadness also functions as a signal for care, including care directed at myself.',
+ tailor:'With this one, name the loss rather than the mood. Not I feel low, but I miss ___.'},
+exhausted:{p:'heavy',label:'Exhausted',card:'I feel exhausted.',
+ body:'A river delta. After the long journey from distant mountains, the water slows, spreads, and divides itself into many channels. Not failure but fulfilment: the gentle unfolding at the journey\u2019s end, where the river makes new land.',
+ happening:'Depletion that sleep does not resolve. Heavy limbs, slowed thinking, reduced tolerance for input, tearfulness at small things.',
+ pointing:'Toward a debt that is real. Exhaustion is not a motivational problem and does not respond to being reasoned with.',
+ tailor:'With this one, subtract rather than add. The intervention is fewer demands, not better coping.'},
+despair:{p:'heavy',label:'Despair',card:'I feel despair.',
+ body:'A dormant volcano. Slopes softened by years of wind and rain, a mountain mistaken for calm. Yet beneath that stillness heat persists, not vanished, only waiting, tracing secret paths through stone.',
+ happening:'The loss of a future. Everything reads as permanent and unchangeable. Heaviness with a flat quality, and often a strange calm that is not peace.',
+ pointing:'Toward a system at the end of its resources. Despair makes accurate reports about how things feel and unreliable ones about how things are.',
+ tailor:'With this one, the honest move is to not act on any conclusion reached inside it. If this is constant across weeks, it is time to bring someone else in.'},
+heaviness:{p:'heavy',label:'Heaviness',card:'I feel heaviness.',
+ body:'Clay soil after rain. Dark and dense, holding tight to every drop long after the storm has wandered on. Not stubbornness but a kind of devotion. In time, with sun and air, what was held so tightly becomes nourishment for roots.',
+ happening:'Weight without a clear story attached. Physical rather than narrative. Limbs, chest, the effort of standing up.',
+ pointing:'Sometimes toward something not yet named, sometimes toward nothing but accumulated load. Heaviness does not always have a subject.',
+ tailor:'With this one, let it be physical first. Weight-bearing movement or lying flat, before any attempt to work out what it is about.'},
+
+/* Self-directed */
+doubt:{p:'selfdirected',label:'Doubt',card:'I feel doubt.',
+ body:'A young tree in wind. It bends, perhaps too far, trembling at the edge of what seems possible. But each gust presses the roots deeper. What looks like frailty is the slow work of strength being woven.',
+ happening:'Uncertainty aimed at myself. Second-guessing, rereading, delayed decisions, a persistent sense of not being sure I am right.',
+ pointing:'Toward a genuine gap in knowledge, or toward a habit of deferring to others. Worth checking which, because they need opposite responses.',
+ tailor:'With this one, note how quickly the doubt arrived relative to the evidence. Speed is the tell.'},
+inadequate:{p:'selfdirected',label:'Inadequate',card:'I feel inadequate.',
+ body:'Lichen on bare rock. No soil, no shelter, only stone and the uncertain promise of air and light. It does not wait for the world to become gentle. It begins with what little it has, and by patient work starts to turn the impossible into home.',
+ happening:'A specific comparison coming out badly. Often accompanied by very precise mental accounting of other people\u2019s competence.',
+ pointing:'Toward a standard, usually borrowed and rarely examined. The measurement may be careful and the ruler still wrong.',
+ tailor:'With this one, write down whose standard it is by name. Inadequacy usually has an author, and finding them changes the weight of it.'},
+proud:{p:'selfdirected',label:'Proud',card:'I feel proud.',
+ body:'A tree in the fullness of its canopy. This abundance was not hurried: no branch forced, no ring added by impatience. Now, in its season, it gives freely and loses nothing of itself in the giving.',
+ happening:'Recognition of something I did. Warmth, an upward lift in posture, and often an immediate impulse to minimise it.',
+ pointing:'Toward a standard of mine that has been met. Self-assessment, which is why it needs no external agreement to be accurate.',
+ tailor:'With this one, cut the qualifiers. Just, only, a bit of. Say the sentence without them and notice the resistance.'},
+regret:{p:'selfdirected',label:'Regret',card:'I feel regret.',
+ body:'A river that shifted its course, finding a new way through the land not out of error but in answer to change. The old channel remains, a quiet scar woven into the geography rather than erased. Both paths belong to the story of the river.',
+ happening:'Backward-facing pain about a choice. Replaying, revising, imagining the other version in unusual detail.',
+ pointing:'Toward values that were live at the time and may still be. Regret is evidence of caring about the outcome, which is not nothing.',
+ tailor:'With this one, distinguish what I knew then from what I know now. Regret almost always judges past me using present information.'},
+guilt:{p:'selfdirected',label:'Guilt',card:'I feel guilt.',
+ body:'A meadow after a storm. Branches bent, grass pressed flat. The storm did not linger to count what it disturbed, nor pause to apologise. It moved through and left what it left. Yet the meadow returns, slowly, to itself.',
+ happening:'Pain about an action rather than about the self. Tightness, an urge to fix, a pull toward the person affected.',
+ pointing:'Toward repair. Guilt is the more workable of the two self-directed pains, because it names something that can be done.',
+ tailor:'With this one, ask what repair would actually look like, and whether it is mine to make. Guilt that cannot convert to action needs a different response.'},
+
+/* Relational */
+lonely:{p:'relational',label:'Lonely',card:'I feel lonely.',
+ body:'The deep ocean, where darkness is near-total and companionship a rare and passing gift. Yet certain creatures begin to glow, a radiance not borrowed or reflected but born within. Loneliness does not extinguish what is luminous.',
+ happening:'The gap between the connection I have and the connection I need. An ache in the chest, a hollowness, heightened sensitivity to other people\u2019s closeness.',
+ pointing:'Toward a real need rather than a defect. Loneliness functions like hunger. It is a signal about a requirement, not a verdict on the person having it.',
+ tailor:'With this one, say I am lonely rather than nobody cares about me. The first is a state; the second is a conclusion loneliness generates and is not qualified to make.'},
+tender:{p:'relational',label:'Tender',card:'I feel tender.',
+ body:'Mycelium beneath the forest floor. Fine threads through earth and root, binding the living to the dead, the strong to the struggling. Nourishment passes quietly from what is abundant to what is in need. Silent, persistent, invisible yet essential.',
+ happening:'Softness with vulnerability in it. Gentle, unguarded, easily interrupted. Often reported around the eyes, throat and chest.',
+ pointing:'Toward care that includes the risk of care. Tenderness requires enough safety to lower a guard.',
+ tailor:'With this one, protect the conditions. Tenderness is the first state to close when something intrudes.'},
+longing:{p:'relational',label:'Longing',card:'I feel longing.',
+ body:'A lone migratory bird out of season, waiting beneath a sky that offers neither the warmth of return nor the promise of departure. The yearning is etched in bone and feather. The bird does not invent its longing; it is fidelity to a place, a time, a rhythm written into the body.',
+ happening:'An ache toward something wanted and out of reach. A person, a life, a version of things. Often physical in the chest and throat.',
+ pointing:'Toward desire, which is intact. Longing hurts precisely because the capacity to want has survived.',
+ tailor:'With this one, let it be about the wanting rather than the object. Longing named as desire is more usable than longing named as lack.'},
+love:{p:'relational',label:'Love',card:'I feel love.',
+ body:'A river journeying toward the sea, each bend shaped by the quiet force of longing. It does not choose to love the sea; the movement is written into its being. It carves new channels when the way is blocked, never doubting the direction.',
+ happening:'Attention that wants to move toward. Warmth, softening around the eyes and jaw, a reduction in defensiveness.',
+ pointing:'Toward another as themselves. Love is more accurately described as an action than a feeling, which is what makes it something to practise rather than await.',
+ tailor:'With this one, say it plainly, to them or to myself about them. Precision is not required. Presence is.'},
+jealous:{p:'relational',label:'Jealous',card:'I feel jealous.',
+ body:'A plant in a dim room, stretching toward the single window, leaves bending in patient pursuit of light. This reaching is not greed but honesty, a quiet declaration of need. Jealousy sometimes arises when longing has nowhere else to look.',
+ happening:'Wanting what someone else has, or fearing the loss of what I have to someone else. Heat, a pull in the stomach, comparison that will not stop.',
+ pointing:'Toward something I want and have not admitted wanting. Jealousy is one of the most reliable pointers to genuine desire, precisely because it is embarrassing.',
+ tailor:'With this one, read it as information about me rather than about them. What is the thing I want. Name it without the other person in the sentence.'},
+betrayed:{p:'relational',label:'Betrayed',card:'I feel betrayed.',
+ body:'Soil after wildfire, blackened and bare. At first glance all seems lost. Yet beneath the scorched surface the ground remembers how to hold moisture, how to cradle seeds. Not ruined, only changed, waiting, quietly alive.',
+ happening:'Trust that was extended has been used against me. Often a physical drop. Nausea, cold, a re-sorting of memory as past events are re-read.',
+ pointing:'Toward an injury to the capacity for trust itself, not only to this relationship. Which is why it takes longer than the size of the event suggests.',
+ tailor:'With this one, expect the mind to keep re-checking the past. That is not rumination for its own sake. It is a system updating a model it needs.'},
+
+/* Repair */
+forgiving:{p:'repair',label:'Forgiving',card:'I feel forgiving.',
+ body:'A river caressing the stones in its path. It does not set out to smooth the rock; it simply keeps moving, day after day. The stones yield not in a single instant but through the long patience of touch and time.',
+ happening:'A loosening of the grip on an injury. Not the same as the injury mattering less. Often reported as physical relief in the chest and jaw, followed by uncertainty.',
+ pointing:'Toward a direction rather than a verdict. Forgiveness does not require the other person, does not require contact, and does not oblige me to resume anything.',
+ tailor:'With this one, note that forgiving and reconciling are separate decisions. Doing the first does not commit me to the second.'},
+vulnerable:{p:'repair',label:'Vulnerable',card:'I feel vulnerable.',
+ body:'A hermit crab between shells. Soft-bodied and exposed, it has outgrown its old home and must journey across uncertain ground. This is the most dangerous moment, when all defences are gone, and yet it is the only way to grow.',
+ happening:'Exposure without cover. Heightened heart rate, a sense of being visible, an urge to retract that runs alongside a decision not to.',
+ pointing:'Toward something worth the risk. Vulnerability chosen is different from vulnerability imposed, and only the first belongs in this constellation.',
+ tailor:'With this one, check that the exposure is chosen. If it is not, this belongs under Protective and the response is different.'},
+trusting:{p:'repair',label:'Trusting',card:'I feel trusting.',
+ body:'A seed loosening its hold and yielding to the wind. There is no promise in this act, no map of where it will be carried. The seed does not release because it knows the destination, but because staying attached, however safe, would be the greater loss.',
+ happening:'Vigilance put down. Less bracing through jaw, shoulders and abdomen, breath that is not monitoring anything.',
+ pointing:'Toward an assessment that something is reliable. Trust built on evidence holds up better than trust built on hope, and the difference is worth knowing.',
+ tailor:'With this one, name the evidence. Trust that can say why is more durable than trust that cannot.'},
+repaired:{p:'repair',label:'Repaired',card:'I feel repaired.',
+ body:'The bald eagle returning year after year to the same nest, a tangle of sticks and memory. It does not abandon the eyrie when storms have weathered it thin. It returns, carrying new branches, weaving old with new. Some nests stand for decades.',
+ happening:'Something that was broken now holding. Often quieter than expected. Relief mixed with a residual carefulness that has not quite left.',
+ pointing:'Toward a relationship that survived a rupture, which is different from one that never had one and in some ways stronger.',
+ tailor:'With this one, do not test it to be sure. Repaired things hold better when they are used normally than when they are checked.'},
+
+/* Mixed */
+ambivalent:{p:'mixed',label:'Ambivalent',card:'I feel ambivalent.',
+ body:'The estuary, where river meets sea in restless mingling. Neither wholly fresh nor wholly salt. Each tide brings negotiation, each current a tension of opposites. Not a place of certainty, yet alive with possibility.',
+ happening:'Two true things at once. Often reported as pressure rather than as either feeling, plus an inability to settle on a position.',
+ pointing:'Toward genuine complexity. Ambivalence is not indecision about a simple thing. It is accuracy about a complicated one.',
+ tailor:'With this one, resist resolving. Say both. I want this and I do not. That is a complete and correct name.'},
+overwhelmed:{p:'mixed',label:'Overwhelmed',card:'I feel overwhelmed.',
+ body:'The forest floor after heavy snowfall, snow piled thick and white, weighing down branches. The trees do not resist; they bend, some branches break, yet beneath the burden roots hold firm, mycelium continues, seeds rest in patient waiting.',
+ happening:'More input than capacity. Noise, blankness, an inability to choose, or a sudden urge to stop entirely. Not a failure of will. A working-memory ceiling being hit.',
+ pointing:'Toward genuine excess. Overwhelm is usually accurate about the load and unreliable about what should be dropped.',
+ tailor:'With this one, too much is the accurate name. Say it. Do not itemise yet.'},
+confused:{p:'mixed',label:'Confused',card:'I feel confused.',
+ body:'A valley at dawn, where fog moves with quiet intent, softening the edges of field and forest. The fog does not come to make things difficult; it is water between states, searching for its shape. Boundaries slip away and the world waits for definition to return.',
+ happening:'Meaning not yet arrived. Often physical: a fuzziness, a slowed quality, rereading the same line.',
+ pointing:'Toward a mind midway through transformation rather than a failure of thought. Confusion reliably precedes learning and is difficult to distinguish from it while it is happening.',
+ tailor:'With this one, resist premature clarity. The first available explanation is usually the one that fits an old model, not the new information.'},
+hopeful:{p:'mixed',label:'Hopeful',card:'I feel hopeful.',
+ body:'A green shoot rising through cracked pavement. It is not naive; it does not mistake the hardness of its world nor pretend the odds are kind. Still it leans toward light with everything it has, making a path where none was given.',
+ happening:'A future becoming available. Lifted gaze, deeper breath, attention reaching past the present. Hope can feel risky in proportion to how often it has been disappointed.',
+ pointing:'Toward a possible outcome not yet ruled out. Hope is a stance rather than a prediction, which is why it can survive being wrong.',
+ tailor:'With this one, write the hoped-for thing and, separately, what would still be true if it does not happen. Hope holds better with a floor under it.'},
+disappointed:{p:'mixed',label:'Disappointed',card:'I feel disappointed.',
+ body:'A field after harvest, marked by the ragged stubble of what has been gathered and carried away. The earth is not barren, only spent. Its fullness given, its promise kept. The quiet emptiness is a pause, not an end.',
+ happening:'The gap between expected and actual. A deflation, a flatness that follows anticipation, sometimes with a delay.',
+ pointing:'Toward the fact that I wanted something and let myself want it. Disappointment is the cost of hope having been genuine.',
+ tailor:'With this one, do not retroactively decide I never wanted it. That protects against the next disappointment by removing the wanting, which is a poor trade.'},
+nostalgic:{p:'mixed',label:'Nostalgic',card:'I feel nostalgic.',
+ body:'An ancient tree, its centre hollowed by the slow hand of time. The tree did not lose its heart to weakness. The years carved out a chamber where birds might nest. The hollow is not absence but memory: the silent vault where each year once lived.',
+ happening:'Sweetness and loss arriving together. Warmth in the chest with an ache underneath. Often triggered by smell, music, or light at a particular angle.',
+ pointing:'Toward continuity of self across time, which is part of why it is comforting as well as painful.',
+ tailor:'With this one, let both halves stay. Nostalgia stripped of its ache becomes sentimentality; stripped of its warmth it becomes grief.'},
+
+/* Threshold */
+uncertain:{p:'threshold',label:'Uncertain',card:'I feel uncertain.',
+ body:'A shoreline at dusk, where the last light lingers and boundaries dissolve. Land meets water and neither claims the hour. This edge of all things, where definitions soften and the world holds its breath, is not a place of confusion but of possibility.',
+ happening:'Not knowing, held for longer than is comfortable. Restlessness, a pull toward premature decision, difficulty resting.',
+ pointing:'Toward a genuinely open situation. Uncertainty is the accurate response to an undetermined future and only feels like a fault because it is uncomfortable.',
+ tailor:'With this one, the practice is staying rather than resolving. Ask how long I can hold the question open, and then hold it a little longer.'},
+changed:{p:'threshold',label:'Changed',card:'I feel changed.',
+ body:'A forest in succession, where nothing stays the same and yet nothing is truly lost. Light calls up the pioneers, then these give way to others, taller, hungrier for sun. Each arrival makes space for what comes next. Not decline but transformation.',
+ happening:'Recognising I am not who I was. Sometimes disorienting, sometimes freeing, often both. A sense of distance from earlier versions of my own life.',
+ pointing:'Toward a self that is continuous but not identical. Change registered consciously is rarer than change itself and worth marking.',
+ tailor:'With this one, write what stayed as well as what moved. Continuity is harder to see than difference and is doing more work.'},
+worldgrief:{p:'threshold',label:'Grief for the world',card:'I feel grief for the world.',
+ body:'A glacier in retreat. Ancient ice withdrawing, not in defeat but in honest answer to a changing world. The glacier does not pretend; it melts openly, its sorrow written in streams among exposed stone. What remains is bare rock waiting for its first green.',
+ happening:'Mourning something collective and ongoing. Heaviness without a personal loss to point at, often with a component of helplessness or anger.',
+ pointing:'Toward moral perception rather than dysfunction. This is what caring about something larger than one life feels like from inside a body.',
+ tailor:'With this one, do not treat it as a problem in me. Grief proportionate to its object is not a symptom. Company matters here more than technique.'},
+notyet:{p:'threshold',label:'The ache of not yet',card:'I feel the ache of not yet.',
+ body:'A bud in late winter, small but certain, pressed tight against the branch. Within that hushed green casing sleeps all the colour of the flower to come, held patient, shaped not by hurry but by the slow accumulation of readiness.',
+ happening:'Wanting something that is not available yet. A held quality, a pressure, sometimes a mourning for a future that has not arrived.',
+ pointing:'Toward readiness that has outpaced conditions. Painful, and evidence of aliveness, and not a fault in either the wanting or the timing.',
+ tailor:'With this one, distinguish not yet from not ever. The ache is bearable in the first case and needs different care in the second.'},
+alive:{p:'threshold',label:'Alive',card:'I feel alive.',
+ body:'A seed in the exact moment of germination. The fragile cusp where possibility collapses into becoming. Not a slow unfolding but a single irrevocable act: the seed cracks open, shedding every alternative, committing wholly to one direction.',
+ happening:'Full presence. Heightened sensory detail, time slowing, a sense of the moment being unrepeatable. Can be joyful or not; aliveness is not the same as pleasure.',
+ pointing:'Toward contact with the actual present. Rare enough that it is worth recording when it happens, and impossible to produce on demand.',
+ tailor:'With this one, do not narrate it while it is happening. Mark it after. Aliveness examined in real time tends to end.'},
+
+/* Appetitive — no cards yet */
+craving:{p:'appetitive',label:'Craving',added:true,
+ happening:'Wanting with an urgent, narrow focus. The wanted thing occupies attention out of proportion to its size. Often physical in the mouth, chest or hands.',
+ pointing:'Sometimes at the thing itself, often at what the thing is standing in for. Craving is a poor reporter of its own object.',
+ tailor:'This constellation has no card yet. Ask what the craving would deliver if it were satisfied, and whether that is the actual want.'},
+desiring:{p:'appetitive',label:'Desiring',added:true,
+ happening:'Wanting with an open rather than narrow quality. A lean toward, a heightened noticing, energy that has somewhere it would like to go.',
+ pointing:'Toward what increases aliveness. This is Lorde\u2019s territory: desire as a source of knowledge and a measure of satisfaction, not a demand to be managed.',
+ tailor:'This constellation has no card yet. The move here is to let the wanting be known before deciding anything about it.'},
+anticipating:{p:'appetitive',label:'Anticipating',added:true,
+ happening:'Forward-leaning readiness. Difficulty waiting, checking, rehearsing. Physiologically close to anxiety, distinguished mostly by whether the expected thing is wanted.',
+ pointing:'Toward something specific and approaching. Anticipation is desire with a timeline attached.',
+ tailor:'This constellation has no card yet. Let the wanting be enough for a moment. Anticipation is usually rushed past on the way to its object.'},
+
+/* Expansive */
+joy:{p:'expansive',label:'Joy',card:'I feel joy.',
+ body:'A field of wildflowers after long soaking rain. Petals unfurling with no plan, no consultation, no signal but the long-awaited touch of water and light. Each blossom responds on its own, and yet the field blooms together, a chorus of arrival without rehearsal.',
+ happening:'Something good is here and the system registers it. Deeper breath, taller posture, wider attention. It can also feel unsafe if good states have preceded loss before.',
+ pointing:'Toward something worth staying near. Joy is an assessment instrument. It reports what increases aliveness.',
+ tailor:'With this one, if it tips into unease, go smaller. Five seconds is a complete dose and does not need to be extended.'},
+wonder:{p:'expansive',label:'Wonder',card:'I feel wonder.',
+ body:'A whale lifting its voice in the blue twilight, sending song through water thick with distance and silence. The notes travel, undiminished, until miles away another whale hears, recognises the pattern, and answers in turn.',
+ happening:'Encountering something that does not fit what I already know, in a way that opens rather than threatens. Stillness, widened eyes, a suspension of the usual commentary.',
+ pointing:'Toward the edge of my model of the world. Wonder is what curiosity feels like before it becomes a question.',
+ tailor:'With this one, delay the explanation. Wonder ends the moment it is accounted for, and the accounting can wait.'},
+grateful:{p:'expansive',label:'Grateful',card:'I feel grateful.',
+ body:'A tree in autumn loosening its grip. Leaves once held tightly drift down in quiet spirals, gold and crimson, returning to the earth without sorrow. The tree does not grieve what it lets go; holding on is not the measure of love.',
+ happening:'Registering that something good came from somewhere. Warmth in the chest, a softening, occasionally tears that are not sadness.',
+ pointing:'Toward relationship and dependence, which is why it can feel vulnerable as well as pleasant.',
+ tailor:'With this one, be specific. What, from whom, and what it cost them. Categorical gratitude does not land the way particular gratitude does.'},
+awe:{p:'expansive',label:'Awe',card:'I feel awe.',
+ body:'The edge of a canyon. Sheer, vast, carved by the endless quiet work of water moving through stone. Its grandeur is simply the patient accumulation of years, each storm and trickle contributing to the slow unveiling of depth and form.',
+ happening:'Meeting something vast enough to require adjusting my sense of scale. Chills, stillness, a sense of the self becoming small in a way that is not diminishing.',
+ pointing:'Toward perspective. Awe reliably reduces the felt size of personal concerns, which is useful and is also why it can feel destabilising.',
+ tailor:'With this one, stay past the first moment. Awe deepens with duration in a way most states do not.'},
+curious:{p:'expansive',label:'Curious',card:'I feel curious.',
+ body:'A root, pale and persistent, feeling its way through the dark. It does not begin with a map, nor fret over certainty. It follows moisture, warmth, a seam of possibility, changing direction without apology, finding nourishment in the least likely places.',
+ happening:'Attention pulled toward something not yet understood. Leaning in, a lightness, a willingness to be wrong.',
+ pointing:'Toward enough safety to not know. Curiosity is expensive under threat, so its presence says something about conditions.',
+ tailor:'With this one, follow it before evaluating whether it is useful. Curiosity assessed for productivity generally stops.'},
+excited:{p:'expansive',label:'Excited',card:'I feel excited.',
+ body:'The bee who stumbles on a field in full bloom and returns at once to the hive, carrying not just pollen but news. Its whole body alive with the urgency of translation, performing the waggle dance: direction, distance, abundance. A message too rich to hold alone.',
+ happening:'Anticipation with energy behind it. Fast heart, difficulty sitting still, speech that speeds up. Physiologically this overlaps heavily with anxiety.',
+ pointing:'Toward something wanted and approaching. Excitement is desire with a timeline.',
+ tailor:'With this one, let it out through the limbs before it turns into agitation. Movement is much of what separates this from anxiety.'},
+
+/* Quiet */
+still:{p:'quiet',label:'Still',card:'I feel still.',
+ body:'A deep lake in winter, its surface stilled beneath a skin of ice. Yet look past the brittle shimmer: the water moves at its own slow pace, fish drift and turn, the secret work of life endures. Not emptiness but aliveness turned inward.',
+ happening:'Movement stopped without effort. Slow breath, low muscular effort, present attention. Neither mobilised nor collapsed.',
+ pointing:'Toward the middle of the range, which is the hardest state to notice and the reference point everything else is measured against.',
+ tailor:'With this one, take a mental photograph. Still states are easy to lose and hard to find deliberately.'},
+peaceful:{p:'quiet',label:'Peaceful',card:'I feel peaceful.',
+ body:'A meadow after long soaking rain. The grass bowed but unbroken, the air alive with petrichor. No proclamation of relief, no spectacle; the meadow simply opens itself, pores wide, quietly absorbing what it has thirsted for.',
+ happening:'No demand being made. Softer jaw and hands, slower breath, wider peripheral attention. For a system used to vigilance this can feel like something is wrong, precisely because nothing is.',
+ pointing:'Toward sufficiency. The absence of threat rather than the presence of pleasure.',
+ tailor:'With this one, note the conditions that produced it. Peace usually has a set of causes and causes can be repeated.'},
+content:{p:'quiet',label:'Content',card:'I feel content.',
+ body:'A bear in late autumn, fur thick with the memory of sun and berry, body heavy with the patient labour of the season. It does not rush or strive now; it feels the fullness of enough. There is more to come, but here, in this pause, the bear has what it needs.',
+ happening:'Wanting gone quiet. Not excitement and not indifference. A settled attention on what is here.',
+ pointing:'Toward sufficiency in this moment. Contentment makes a claim about now, not about my life.',
+ tailor:'With this one, stay a little past the point where the mind starts looking for the next thing. That extra minute is the practice.'},
+safe:{p:'quiet',label:'Safe',card:'I feel safe.',
+ body:'The heart of an old growth forest, where towering trunks rise out of moss and shadow and the canopy weaves its own weather. Beneath the surface roots tangle and clasp, binding tree to tree, earth to earth. Safety here comes not from the absence of threat but from the depth of entanglement.',
+ happening:'Safety that is not being checked. Even breath, unguarded posture, attention free for other things.',
+ pointing:'Toward conditions that are genuinely reliable. Safety frees the attention that vigilance was using.',
+ tailor:'With this one, spend the freed attention on something. Safety is most useful as capacity rather than as a feeling to hold.'},
+belonging:{p:'quiet',label:'Belonging',card:'I feel belonging.',
+ body:'A river winding through cities and forests, sometimes lost from sight, sometimes breaking into sudden view. No matter how far it travels it is always claimed by its watershed. Belonging is not measured by how near it runs, but by the catchment that shaped it from the start.',
+ happening:'Being part of something without having to earn it in the moment. A settling, a reduction in self-monitoring, easier speech.',
+ pointing:'Toward a place I am already held, whether or not I feel it continuously. Belonging is structural more than emotional.',
+ tailor:'With this one, name the specific belonging. Belonging held as a general feeling fades; held as a particular place or people, it holds.'}
+};
+
+/* ── words other languages have and English does not ───────────── */
+const TONGUES=[
+{w:'saudade',lang:'Portuguese',c:'relational',d:'The presence of an absence. Longing for someone or something loved and gone, which may never return, and which one would not wish away.'},
+{w:'han',lang:'Korean \u00b7 \ud55c',c:'heavy',d:'Accumulated sorrow and unresolved injustice carried over time, often collectively rather than individually.',n:'Academically contested. Several scholars argue the concept was substantially shaped in the twentieth century rather than being ancient.'},
+{w:'amae',lang:'Japanese \u00b7 \u7518\u3048',c:'relational',d:'Presuming upon another\u2019s goodwill. The sweetness of being able to depend, and of being allowed to.',n:'Doi (1973). Behrens (2004) for a multifaceted review.'},
+{w:'litost',lang:'Czech',c:'selfdirected',d:'A state of torment produced by the sudden sight of one\u2019s own misery.',n:'Kundera\u2019s gloss, which is the one most quoted and is a novelist\u2019s rather than a lexicographer\u2019s.'},
+{w:'toska',lang:'Russian \u00b7 \u0442\u043e\u0441\u043a\u0430',c:'threshold',d:'Spiritual anguish without a specific cause. At its lightest, a longing with nothing to long for.',n:'Nabokov\u2019s gloss.'},
+{w:'hiraeth',lang:'Welsh',c:'threshold',d:'Homesickness for a home one cannot return to, or that never existed.'},
+{w:'mono no aware',lang:'Japanese \u00b7 \u7269\u306e\u54c0\u308c',c:'mixed',d:'The pathos of things. A gentle sadness at transience that is inseparable from finding it beautiful.'},
+{w:'gigil',lang:'Tagalog',c:'expansive',d:'The urge to squeeze something unbearably endearing. An unpleasant-feeling impulse produced by an entirely pleasant stimulus.'},
+{w:'liget',lang:'Ilongot',c:'activated',d:'High-energy anger, passion and vitality treated as one thing. Not straightforwardly negative and closely tied to being able to act at all.',n:'Rosaldo (1980).'},
+{w:'sisu',lang:'Finnish',c:'selfdirected',d:'Determination continuing past the point of reasonable endurance. A capacity rather than a mood.'},
+{w:'kama muta',lang:'Sanskrit-derived coinage',c:'repair',d:'Moved by love. The chills, tears and warmth of a sudden intensification of communal sharing.',n:'Fiske and colleagues. A research construct rather than a natural-language word.'},
+{w:'awumbuk',lang:'Baining, Papua New Guinea',c:'heavy',d:'The heaviness left in a house after guests depart.',n:'Watt Smith (2015).'},
+{w:'desabafar',lang:'Portuguese',c:'repair',d:'To unburden oneself by speaking. The relief is in the venting itself, not in being answered.'},
+{w:'fernweh',lang:'German',c:'appetitive',d:'An ache for far-off places. The opposite of homesickness, and just as physical.'},
+{w:'ya\u2019aburnee',lang:'Arabic \u00b7 \u064a\u0642\u0628\u0631\u0646\u064a',c:'relational',d:'You bury me. The wish to die before someone loved, so as not to live without them.'},
+{w:'ubuntu',lang:'Nguni Bantu',c:'quiet',d:'A person is a person through other people. Belonging treated as the condition of selfhood rather than as a feeling about it.'}
+];
+
+/* ── geometry ─────────────────────────────────────────────────── */
+const CX=310,CY=310,R=[52,140,252,288];
+const RC=[{c:'#86717a',o:.15,h:.24},{c:'#9a687e',o:.22,h:.31}];
+const SEL=.50,ANC=.33;
+const NS='http://www.w3.org/2000/svg';
+const svg=document.getElementById('svg');
+const pt=(d,r)=>[CX+r*Math.sin(d*Math.PI/180),CY-r*Math.cos(d*Math.PI/180)];
+function el(n,a){const e=document.createElementNS(NS,n);for(const k in a)e.setAttribute(k,a[k]);return e;}
+function arc(a0,a1,r0,r1){
+  const[x0,y0]=pt(a0,r0),[x1,y1]=pt(a1,r0),[x2,y2]=pt(a1,r1),[x3,y3]=pt(a0,r1);
+  const lg=(a1-a0)>180?1:0;
+  return `M ${x0} ${y0} L ${x3} ${y3} A ${r1} ${r1} 0 ${lg} 1 ${x2} ${y2} L ${x1} ${y1} A ${r0} ${r0} 0 ${lg} 0 ${x0} ${y0} Z`;
+}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');}
+
+/* ── my own words, kept on this device only ───────────────────── */
+let MINE=[];
+try{MINE=JSON.parse(localStorage.getItem('fc.mine')||'[]');}catch(e){MINE=[];}
+function saveMine(){try{localStorage.setItem('fc.mine',JSON.stringify(MINE));}catch(e){}}
+
+let segs={},current=null;
+
+function build(){
+  svg.innerHTML='';segs={};
+
+  /* open edge, drawn first so my words sit on top of it */
+  const band=el('g',{class:'bandg',tabindex:'0',role:'button','aria-label':'Open edge. Add a word of my own.'});
+  band.appendChild(el('circle',{cx:CX,cy:CY,r:R[2],class:'mineband'}));
+  band.appendChild(el('circle',{cx:CX,cy:CY,r:R[3],class:'mineband'}));
+  for(let i=0;i<24;i++){const[x1,y1]=pt(i*15,R[2]),[x2,y2]=pt(i*15,R[3]);
+    band.appendChild(el('line',{x1,y1,x2,y2,class:'mineband'}));}
+  band.addEventListener('click',showAdd);
+  band.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();showAdd();}});
+  svg.appendChild(band);
+
+  /* constellations sized by how many states they hold */
+  const kids={};CONST.forEach(c=>kids[c.id]=[]);
+  for(const k in CARD)kids[CARD[k].p].push(k);
+  const total=Object.values(kids).reduce((a,b)=>a+b.length,0);
+  const unit=360/total;
+
+  let a=0;
+  CONST.forEach(c=>{
+    const n=kids[c.id].length,w=n*unit;
+    seg(c.id,a,a+w,0,c.label);
+    kids[c.id].forEach((k,i)=>seg(k,a+i*unit,a+(i+1)*unit,1,CARD[k].label));
+    /* my words for this constellation, out on the open edge */
+    MINE.filter(m=>m.p===c.id).slice(0,n).forEach((m,i)=>
+      seg(m.id,a+i*unit,a+(i+1)*unit,2,m.label,true));
+    a+=w;
+  });
+
+  /* the hub: affect, not an emotion */
+  const hub=el('g',{class:'hub',tabindex:'0',role:'button','aria-label':'Affect. Start here if there is no word yet.'});
+  hub.appendChild(el('circle',{cx:CX,cy:CY,r:R[0]-5}));
+  const t1=el('text',{x:CX,y:CY-7});t1.textContent='affect';hub.appendChild(t1);
+  const t2=el('text',{x:CX,y:CY+9,'font-size':'8.5','font-weight':'400'});
+  t2.textContent='no word yet';hub.appendChild(t2);
+  hub.addEventListener('click',showAffect);
+  hub.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();showAffect();}});
+  svg.appendChild(hub);
+
+  const inv=el('text',{x:CX,y:CY-R[3]-10,class:'mineplus','font-size':'9.5'});
+  inv.textContent='+ a word of my own';
+  inv.addEventListener('click',showAdd);
+  svg.appendChild(inv);
+
+  if(current)paint(current);
+}
+
+function seg(key,a0,a1,ring,label,isMine){
+  const rr=ring===2?[R[2],R[3]]:[R[ring],R[ring+1]];
+  const col=ring===2?{c:'#9a687e',o:.30,h:.42}:RC[ring];
+  const g=el('g',{class:'seg r'+ring,tabindex:'0',role:'button','aria-label':label});
+  g.style.setProperty('--ho',col.h);
+  const p=el('path',{class:'sh',d:arc(a0,a1,rr[0],rr[1]),fill:col.c,'fill-opacity':col.o});
+  g.appendChild(p);
+
+  const mid=(a0+a1)/2,r=(rr[0]+rr[1])/2;
+  const[x,y]=pt(mid,r);
+  const t=el('text',{x,y});
+  const max=ring===0?15:19;
+  t.textContent=label.length>max?label.slice(0,max-1)+'\u2026':label;
+  t.setAttribute('transform',`rotate(${mid>180?mid+90:mid-90} ${x} ${y})`);
+  g.appendChild(t);
+
+  g.addEventListener('click',()=>select(key));
+  g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();select(key);}});
+  svg.appendChild(g);
+  segs[key]={g,p,ring,base:col.o};
+}
+
+function node(k){return CARD[k]||CONST.find(c=>c.id===k)||MINE.find(m=>m.id===k);}
+function chain(k){
+  const out=[k];let n=node(k);
+  if(n&&n.p){out.unshift(n.p);}
+  return out;
+}
+function paint(key){
+  for(const k in segs){segs[k].p.setAttribute('fill-opacity',segs[k].base);segs[k].g.classList.remove('sel');}
+  if(!key)return;
+  chain(key).forEach(k=>{const s=segs[k];if(!s)return;
+    s.p.setAttribute('fill-opacity',k===key?SEL:ANC);s.g.classList.add('sel');});
+}
+
+/* ── panels ───────────────────────────────────────────────────── */
+function sevenBlock(con,inherited){
+  let h=`<div class="sevenhead">Seven ways to be with it</div>`;
+  h+=`<p class="sevensub">${inherited?'Carried up from '+esc(con.full)+'. ':''}`;
+  h+=`None of these is aimed at ending the feeling. Any of them can be stopped partway.</p>`;
+  h+=`<ol class="seven">`+con.seven.map((s,i)=>
+    `<li><div class="k">${K[i]}</div><div class="v">${esc(s)}</div></li>`).join('')+`</ol>`;
+  h+=`<div class="closer">Nothing here has to work. Reading it and doing none of it is a complete use of this page.</div>`;
+  return h;
+}
+
+function select(key){
+  const d=node(key);if(!d)return;
+  current=key;paint(key);
+  const isCon=!d.p, con=isCon?d:CONST.find(c=>c.id===d.p);
+  const mine=MINE.find(m=>m.id===key);
+  let h='';
+
+  if(isCon){
+    h+=`<div class="crumb"><span>affect</span><span>${esc(d.full)}</span></div>`;
+    h+=`<h2 class="feel">${esc(d.label)}</h2>`;
+    h+=`<p class="glossline">${esc(d.gloss)}</p>`;
+    if(d.added)h+=`<div class="tailor"><p>Added here, not from the deck. This constellation has no cards yet.</p></div>`;
+  }else{
+    h+=`<div class="crumb"><span>affect</span><span>${esc(con.label)}</span><span>${esc(d.label)}</span></div>`;
+    h+=`<h2 class="feel">${esc(d.card||d.label)}</h2>`;
+    h+=`<p class="glossline">${esc(con.full)} \u2014 ${esc(con.gloss)}</p>`;
+  }
+
+  if(d.body){
+    h+=`<div class="companion"><div class="lab">other body</div><p>${esc(d.body)}</p>`;
+    h+=`<p class="attr">From the Other Bodies deck. Not a metaphor that explains the feeling away \u2014 a companion that has been carrying something adjacent to this, in its own way, for a very long time.</p></div>`;
+  }
+  if(mine&&mine.body){
+    h+=`<div class="companion"><div class="lab">the body I chose</div><p>${esc(mine.body)}</p></div>`;
+  }
+
+  h+=`<div class="block"><h3>What may be happening</h3><p>${esc(d.happening)}</p></div>`;
+  h+=`<div class="block"><h3>What it tends to point toward</h3><p>${esc(d.pointing)}</p></div>`;
+  if(d.tailor)h+=`<div class="tailor"><p>${esc(d.tailor)}</p></div>`;
+
+  const tw=TONGUES.filter(t=>t.c===con.id);
+  if(isCon&&tw.length){
+    h+=`<div class="block"><h3>Words other languages have here</h3></div><div class="grid2">`;
+    h+=tw.map(t=>`<div class="mini"><h4>${esc(t.w)}</h4><p>${esc(t.d)}</p></div>`).join('')+`</div>`;
+  }
+
+  h+=sevenBlock(con,!isCon);
+  if(mine)h+=`<div style="margin-top:22px"><button class="btn ghost" onclick="delMine('${key}')">Remove this word</button></div>`;
+  render(h);
+}
+
+function showAffect(){
+  current=null;paint(null);
+  let h=`<div class="crumb"><span>affect</span></div>`;
+  h+=`<h2 class="feel">Before there is a word</h2>`;
+  h+=`<p class="glossline">Two things are always available, even when nothing else is nameable. Whether this is pleasant or unpleasant, and whether the energy is high or low.</p>`;
+  h+=`<div class="grid2">
+    <div class="mini"><h4>Unpleasant, high energy</h4><p>Activated, Aversive, Protective. Something is pressing and the body is mobilised.</p></div>
+    <div class="mini"><h4>Unpleasant, low energy</h4><p>Heavy, Self-directed, some of Mixed. Something is pressing and the body has gone quiet.</p></div>
+    <div class="mini"><h4>Pleasant, high energy</h4><p>Appetitive, Expansive. Something is drawing me and there is fuel for it.</p></div>
+    <div class="mini"><h4>Pleasant, low energy</h4><p>Quiet, Repair. Nothing is being demanded and the body knows it.</p></div>
+  </div>`;
+  h+=`<div class="block"><h3>Why this is the centre and not an emotion</h3>
+    <p>Valence and arousal are the two properties that hold steady across languages and across theories. Everything outside this circle is a learned concept, which means it is useful, culturally shaped, and revisable. The centre is the part that does not need a vocabulary.</p></div>`;
+  h+=`<div class="block"><h3>Relational and Threshold do not fit the grid</h3>
+    <p>Two constellations sit across the whole space rather than in one quadrant. Relational states run from betrayal to love; Threshold states are often neither pleasant nor unpleasant. That is not a flaw in the grid. It is the reason the grid alone was never enough.</p></div>`;
+  h+=`<div class="closer">Naming the quadrant is a complete act. Nothing requires going further out.</div>`;
+  render(h);
+}
+
+function showAdd(){
+  current=null;paint(null);
+  let h=`<div class="crumb"><span>the open edge</span></div>`;
+  h+=`<h2 class="feel">A word of my own</h2>`;
+  h+=`<p class="glossline">For a distinction I can feel and this wheel has no word for. Kept on this device, in this browser, and nowhere else.</p>`;
+  h+=`<div class="block"><p>The deck's front matter says any materials you have are the right materials. The same applies to vocabulary. A word that only I use is not a lesser word.</p></div>`;
+  h+=`<label class="block"><h3>The word</h3></label>`;
+  h+=`<input class="wordin" id="w-label" maxlength="24" placeholder="one word, or a short phrase">`;
+  h+=`<label class="block"><h3>Which constellation it sits nearest</h3></label>`;
+  h+=`<select class="wordin" id="w-parent">`+CONST.map(c=>`<option value="${c.id}">${esc(c.full)}</option>`).join('')+`</select>`;
+  h+=`<label class="block"><h3>What may be happening</h3></label>`;
+  h+=`<textarea class="wordin" id="w-happening" rows="3" placeholder="the body, the texture, what it is like from inside"></textarea>`;
+  h+=`<label class="block"><h3>What it points toward</h3></label>`;
+  h+=`<textarea class="wordin" id="w-pointing" rows="2" placeholder="what it is about, or what it is asking for"></textarea>`;
+  h+=`<label class="block"><h3>Its other body, if one has arrived</h3></label>`;
+  h+=`<textarea class="wordin" id="w-body" rows="3" placeholder="an animal, a plant, a weather system, a geological formation — something that has been carrying this in its own way"></textarea>`;
+  h+=`<div style="margin-top:14px"><button class="btn" onclick="addMine()">Add to the edge</button>`;
+  h+=`<button class="btn ghost" onclick="showAffect()">Cancel</button></div>`;
+  if(MINE.length)h+=`<div class="closer">${MINE.length} word${MINE.length>1?'s':''} on the edge so far.</div>`;
+  render(h);
+}
+
+function addMine(){
+  const l=document.getElementById('w-label').value.trim();
+  if(!l){document.getElementById('w-label').focus();return;}
+  const m={id:'mine_'+Date.now(),label:l,p:document.getElementById('w-parent').value,
+    happening:document.getElementById('w-happening').value.trim()||'Not yet described. This is mine to fill in when the words arrive.',
+    pointing:document.getElementById('w-pointing').value.trim()||'Not yet named.',
+    body:document.getElementById('w-body').value.trim()};
+  MINE.push(m);saveMine();build();select(m.id);
+}
+function delMine(id){MINE=MINE.filter(m=>m.id!==id);saveMine();build();showAffect();}
+window.addMine=addMine;window.delMine=delMine;window.showAffect=showAffect;
+
+function render(h){
+  const p=document.getElementById('panel');p.innerHTML=h;
+  if(window.innerWidth<=1040)p.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+/* ── other tongues tab ────────────────────────────────────────── */
+document.getElementById('tonguelist').innerHTML=TONGUES.map(t=>{
+  const c=CONST.find(x=>x.id===t.c);
+  return `<div class="tw"><b>${esc(t.w)}</b><span class="lang">${esc(t.lang)} \u00b7 ${esc(c.full)}</span>`+
+    `<p>${esc(t.d)}</p>`+(t.n?`<i>${esc(t.n)}</i>`:'')+`</div>`;
+}).join('');
+
+/* ── tabs ─────────────────────────────────────────────────────── */
+document.querySelectorAll('nav button').forEach(b=>{
+  b.addEventListener('click',()=>{
+    document.querySelectorAll('nav button').forEach(x=>x.setAttribute('aria-selected','false'));
+    b.setAttribute('aria-selected','true');
+    document.querySelectorAll('.view').forEach(v=>v.classList.remove('on'));
+    document.getElementById('v-'+b.dataset.v).classList.add('on');
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+});
+
+build();
+</script>
+</body>
+</html>
