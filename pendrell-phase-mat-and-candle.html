@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A Mat and a Candle — The Pendrell Phase</title>
+<link href="https://fonts.googleapis.com/css2?family=ASAP:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #ffffff;
+    --sidebar-bg: #f7f6f4;
+    --text: #5d5a5b;
+    --accent: #a29f9f;
+    --border: #e8e5e3;
+    --card-bg: #faf9f8;
+    --active: #5d5a5b;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'ASAP', sans-serif;
+    background: var(--bg); color: var(--text);
+    line-height: 1.6; padding: 48px 32px 96px;
+  }
+  .wrap { max-width: 880px; margin: 0 auto; }
+
+  .eyebrow {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--accent); margin-bottom: 10px;
+  }
+  h1 { font-size: 34px; font-weight: 700; color: var(--active); line-height: 1.2; margin-bottom: 12px; }
+  .lede { font-size: 15px; max-width: 660px; }
+  hr.divider { border: none; border-top: 1px solid var(--border); margin: 32px 0; }
+
+  h2 {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--accent);
+    margin: 42px 0 14px; padding-bottom: 8px; border-bottom: 1px solid var(--border);
+  }
+  p { font-size: 14px; margin-bottom: 12px; }
+
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+
+  .card {
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: 4px; padding: 16px;
+  }
+  .card-num {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--accent); margin-bottom: 6px;
+  }
+  .card-title { font-size: 14px; font-weight: 600; color: var(--active); margin-bottom: 6px; }
+  .card p { font-size: 12.5px; margin: 0 0 7px; line-height: 1.5; }
+  .card p:last-child { margin-bottom: 0; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th {
+    text-align: left; font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--accent);
+    padding: 8px 10px; border-bottom: 1px solid var(--border);
+  }
+  td { padding: 9px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  td.place { font-weight: 600; color: var(--active); width: 30%; }
+  td.dist { width: 15%; white-space: nowrap; }
+  td.cost { width: 14%; white-space: nowrap; color: var(--accent); font-weight: 600; font-size: 12px; }
+
+  .block { border-left: 2px solid var(--border); padding-left: 18px; margin-bottom: 26px; }
+  .block-time {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
+    color: var(--accent); text-transform: uppercase; margin-bottom: 2px;
+  }
+  .block-desc { font-size: 13px; margin-bottom: 12px; }
+  .kit {
+    font-size: 11px; letter-spacing: 0.04em; color: var(--accent);
+    margin-bottom: 10px; font-weight: 600;
+  }
+
+  .tiers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .tier {
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: 4px; padding: 12px;
+  }
+  .tier-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--accent); margin-bottom: 5px;
+  }
+  .tier p { font-size: 12.5px; margin: 0; line-height: 1.5; }
+
+  ul { margin: 0 0 12px 18px; }
+  li { font-size: 13px; margin-bottom: 6px; }
+  li strong { color: var(--active); font-weight: 600; }
+
+  .callout {
+    background: var(--sidebar-bg); border: 1px solid var(--border);
+    border-radius: 4px; padding: 18px 20px; margin: 22px 0;
+  }
+  .callout-head {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--active); margin-bottom: 8px;
+  }
+  .callout p { font-size: 13px; margin-bottom: 8px; }
+  .callout p:last-child { margin-bottom: 0; }
+
+  ol.priority { margin: 0 0 12px 20px; }
+  ol.priority li { margin-bottom: 10px; }
+
+  @media (max-width: 720px) {
+    .grid-4, .grid-3, .grid-2, .tiers { grid-template-columns: 1fr; }
+    body { padding: 32px 18px 64px; }
+    h1 { font-size: 26px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="eyebrow">Nature Ritual — Zero-Gear Version</div>
+  <h1>A Mat and a Candle</h1>
+  <p class="lede">The Pendrell phase, rebuilt to run on what you already own. Nothing here requires a purchase. The gear list comes later, and it comes short.</p>
+
+  <hr class="divider">
+
+  <h2>The Inventory Is Better Than It Sounds</h2>
+  <p>A mat and a candle is the complete kit for the morning movement block. Walking needs nothing. The parks, the seawall, the ocean, and the trails are all free and always open. Your bath is already installed.</p>
+  <p>The one apparent gap is strength and vigorous effort. But you live in a highrise, which means you have unlimited free vertical — and stair climbing is not a compromise substitute for hill work, it <em>is</em> hill work. It's the most specific trail-running preparation available to anyone, and it costs nothing and doesn't care about weather.</p>
+
+  <div class="callout">
+    <div class="callout-head">What you actually have</div>
+    <p>A yoga mat · a candle · a bathtub · a stairwell · a body · Nelson Park at three minutes · Barclay Heritage Square at six · English Bay at ten · Stanley Park's entire trail network · the ocean · a public library · every sunrise.</p>
+  </div>
+
+  <h2>Four Principles For This Phase</h2>
+  <div class="grid-4">
+    <div class="card">
+      <div class="card-num">One</div>
+      <div class="card-title">Habituate, don't optimize</div>
+      <p>Consistency is the whole objective. Optimization is a Comox problem. Five days a week at half intensity is a success.</p>
+    </div>
+    <div class="card">
+      <div class="card-num">Two</div>
+      <div class="card-title">Free first, always</div>
+      <p>If a block requires a purchase, it isn't the version for this phase. Build the free version until it's automatic; buy things to make an existing habit better, never to start one.</p>
+    </div>
+    <div class="card">
+      <div class="card-num">Three</div>
+      <div class="card-title">Three sizes, always</div>
+      <p>Every block has a small, standard, and full version. A bad day takes the small one. The 70% rule lives in the structure, not in willpower.</p>
+    </div>
+    <div class="card">
+      <div class="card-num">Four</div>
+      <div class="card-title">Walk before you run</div>
+      <p>The aerobic base that trail running needs can be built entirely by walking, and walking needs no shoes you don't already own. Running arrives when footwear does.</p>
+    </div>
+  </div>
+
+  <h2>What Is Within Reach — And What It Costs</h2>
+  <table>
+    <thead>
+      <tr><th>Place</th><th>From Pendrell</th><th>Cost</th><th>What it's for</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="place">Nelson Park &amp; Community Garden</td><td class="dist">3 min walk</td><td class="cost">Free</td><td>Default morning loop. Garden plot waitlist worth joining now. Farmers market in season.</td></tr>
+      <tr><td class="place">Barclay Heritage Square</td><td class="dist">6 min walk</td><td class="cost">Free</td><td>Mature trees, benches, quiet enough for walking meditation.</td></tr>
+      <tr><td class="place">Your building's stairwell</td><td class="dist">0 min</td><td class="cost">Free</td><td>Vertical training. Weather-proof, dark-proof, excuse-proof.</td></tr>
+      <tr><td class="place">English Bay / Sunset Beach</td><td class="dist">9–10 min walk</td><td class="cost">Free</td><td>Water, horizon, sunsets. Ocean swimming in summer.</td></tr>
+      <tr><td class="place">Seawall</td><td class="dist">10 min walk</td><td class="cost">Free</td><td>Flat, lit, endless. The all-weather long walk.</td></tr>
+      <tr><td class="place">Stanley Park trails</td><td class="dist">20 min walk</td><td class="cost">Free</td><td>Bridle Path, Lost Lagoon, Beaver Lake. Hikeable in ordinary shoes.</td></tr>
+      <tr><td class="place">Second Beach</td><td class="dist">27 min walk</td><td class="cost">Free</td><td>Ocean swimming. The outdoor pool has a small seasonal fee.</td></tr>
+      <tr><td class="place">West End Community Centre</td><td class="dist">11 min walk</td><td class="cost">Varies</td><td>Fitness centre, steam room, library branch. Drop-in rates; free or reduced with Leisure Access.</td></tr>
+      <tr><td class="place">Vancouver Aquatic Centre</td><td class="dist">10 min walk</td><td class="cost">Varies</td><td>Indoor pool. Free public swim with Leisure Access. Confirm current status — renovation has been discussed.</td></tr>
+      <tr><td class="place">Stanley Park tennis courts</td><td class="dist">30 min walk</td><td class="cost">Free courts</td><td>Free to play — but needs a racquet. Park this one for now.</td></tr>
+      <tr><td class="place">AetherHaus sauna</td><td class="dist">10 min walk</td><td class="cost">Paid</td><td>Later. A long hot bath does real thermal work in the meantime.</td></tr>
+    </tbody>
+  </table>
+
+  <h2>The Weekday Rhythm</h2>
+
+  <div class="block">
+    <div class="block-time">5:00 AM — Morning routine</div>
+    <div class="kit">Kit: shoes you own, a mug</div>
+    <div class="block-desc">Tea first, then out before anything else can intervene. Early light is the highest-yield thing in the day and costs nothing. Protein and water on return.</div>
+    <div class="tiers">
+      <div class="tier"><div class="tier-label">Small · 15 min</div><p>Nelson Park loop. Out, around the garden, back, tea in hand.</p></div>
+      <div class="tier"><div class="tier-label">Standard · 30 min</div><p>Barclay Heritage Square, down through Nelson Park, home.</p></div>
+      <div class="tier"><div class="tier-label">Full · 45–50 min</div><p>Broughton down to English Bay, west along the seawall, back up through the Comox blocks.</p></div>
+    </div>
+  </div>
+
+  <div class="block">
+    <div class="block-time">6:15 AM — Movement on the mat</div>
+    <div class="kit">Kit: mat, candle — complete</div>
+    <div class="block-desc">This block is fully equipped already. Alternate between two shapes rather than stacking them: some mornings the slow candlelit practice, some mornings a strength circuit on the same mat. Free sequences are abundant online, and the library lends more.</div>
+    <div class="tiers">
+      <div class="tier"><div class="tier-label">Small · 20 min</div><p>Short sadhana and breathwork. Enough to change state.</p></div>
+      <div class="tier"><div class="tier-label">Standard · 40 min</div><p>Full sequence by candlelight, or a bodyweight circuit: squats, lunges, push-ups, hinges, planks, carries.</p></div>
+      <div class="tier"><div class="tier-label">Full · 60 min</div><p>The long candlelit hour. Best on days with nothing scheduled that evening.</p></div>
+    </div>
+  </div>
+
+  <div class="block">
+    <div class="block-time">11:30 AM — Midday break</div>
+    <div class="kit">Kit: none</div>
+    <div class="block-desc">Walking meditation in whatever green is nearest to where you're working. The break in cognitive load is the point, not the quality of the park.</div>
+    <div class="tiers">
+      <div class="tier"><div class="tier-label">Small · 10 min</div><p>Around the block, outside, phone left behind.</p></div>
+      <div class="tier"><div class="tier-label">Standard · 20 min</div><p>Nearest green space, slow, attention on feet and breath.</p></div>
+      <div class="tier"><div class="tier-label">Full · 30 min</div><p>Walk plus sitting under trees. Eat outside when weather allows.</p></div>
+    </div>
+  </div>
+
+  <div class="block">
+    <div class="block-time">5:00–6:30 PM — End stress cycles</div>
+    <div class="kit">Kit: shoes, stairwell, a backpack if you want load</div>
+    <div class="block-desc">The vigorous block. From Pendrell this always starts with a walk, which is the decompression between work and effort rather than overhead in front of it.</div>
+    <div class="tiers">
+      <div class="tier"><div class="tier-label">Small · 25 min</div><p>Stairwell intervals, or a brisk walk to English Bay and back.</p></div>
+      <div class="tier"><div class="tier-label">Standard · 50 min</div><p>Fast seawall walk, or the day's activity from the rotation below.</p></div>
+      <div class="tier"><div class="tier-label">Full · 80 min</div><p>Walk to Stanley Park, hike the trails hard, walk home.</p></div>
+    </div>
+  </div>
+
+  <div class="block">
+    <div class="block-time">7:30 PM — Reset</div>
+    <div class="block-desc">Tidy, prep tomorrow, stop. Cognitive work ends here so sleep can do its job. Holding this line now is the practice; it gets easier at Comox, not harder.</div>
+  </div>
+
+  <div class="block">
+    <div class="block-time">8:00 PM — Evening routine</div>
+    <div class="kit">Kit: bathtub, candle, tea</div>
+    <div class="block-desc">Tea, bath, book, journal, sleep. Entirely free, entirely already available, and unchanged by the move — which is why a real tub is the first thing to check in any Comox unit.</div>
+  </div>
+
+  <h2>The Vigorous Rotation — Free Version</h2>
+  <p>Two fixed anchors you can always do, plus one slot that gets a little more ambitious as the base builds.</p>
+  <div class="grid-3">
+    <div class="card">
+      <div class="card-num">Anchor · 2× weekly</div>
+      <div class="card-title">Stairwell + hills</div>
+      <p>Ten to twenty minutes of continuous climbing, walking down to recover. Add a backpack with water bottles or books when it gets easy.</p>
+      <p>This builds exactly the capacity trail running demands, and it happens in the dark, in the rain, in February.</p>
+    </div>
+    <div class="card">
+      <div class="card-num">Anchor · 2× weekly</div>
+      <div class="card-title">Mat strength</div>
+      <p>Bodyweight circuit on the yoga mat. Squats, lunges, push-ups, glute bridges, planks, loaded carries with a backpack.</p>
+      <p>This is the kettlebell block until there's a kettlebell, and honestly it's most of what a kettlebell would have given you.</p>
+    </div>
+    <div class="card">
+      <div class="card-num">Building · 1–2× weekly</div>
+      <div class="card-title">Long walk becoming a hike</div>
+      <p>Seawall walks now, Stanley Park trail hikes as the base grows, hiking the trails at pace after that. Running is simply the next step on this ladder, taken when shoes exist.</p>
+      <p>Free, social if you want it, and the direct on-ramp to the thing you actually want to be doing.</p>
+    </div>
+  </div>
+
+  <div class="callout">
+    <div class="callout-head">On the social slot</div>
+    <p>Tennis, climbing and rowing all need equipment or fees, so they wait. What doesn't wait: walking and hiking groups. Vancouver has a lot of free ones, and a group hike costs the same as a solo hike. Start there and the social piece stays in the plan without a budget.</p>
+  </div>
+
+  <h2>The Weekend</h2>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-num">Saturday</div>
+      <div class="card-title">Long day out</div>
+      <p>Morning routine as usual, then the farmers market at Nelson Park in season — three minutes away, and it doubles as the food shopping block.</p>
+      <p>Then the long walk. Build toward the five-hour version rather than starting there: the Stanley Park trail network first, in the shoes you have, at hiking pace. That's a real training day and it costs nothing.</p>
+      <p>Evening: dinner with friends, or an early night if the day was big. Both count.</p>
+    </div>
+    <div class="card">
+      <div class="card-num">Sunday</div>
+      <div class="card-title">Plants, studio, heat, water</div>
+      <p>Morning with the plants. Then the studio day.</p>
+      <p>Late afternoon: the long bath, by candlelight, for as long as you want it. The sauna is an upgrade to this ritual, not a prerequisite for it.</p>
+      <p>No training. Sunday is the recovery day that lets the other six survive.</p>
+    </div>
+  </div>
+
+  <h2>Free Access Worth Setting Up</h2>
+  <ul>
+    <li><strong>Leisure Access Program.</strong> If you're income-eligible, this gives free public swim and skate admission at all Park Board pools and rinks, plus reduced rates at fitness centres and racquet courts. It's now issued as a three-year pass and you apply in person at a community centre — the West End Community Centre on Denman is eleven minutes away. If it applies to you, this single item unlocks swimming and the fitness centre at no cost.</li>
+    <li><strong>Nelson Park community garden waitlist.</strong> Free to join, long wait, and the plot may well come up around the time you move. Three minutes from here and still walkable from Comox. The most time-sensitive thing on this page.</li>
+    <li><strong>Vancouver Public Library.</strong> There's a branch inside the West End Community Centre. Free books on movement, plants, and everything else — and a warm indoor place that isn't home.</li>
+    <li><strong>Buy Nothing and local gear groups.</strong> Yoga blocks, kettlebells, racquets, packs and rain shells move through West End buy-nothing groups constantly. Post what you're looking for and wait; most of the gear list can arrive this way.</li>
+    <li><strong>Free group walks and hikes.</strong> Meetup and community centre boards both carry them. No fee, no equipment, and it covers the social anchor.</li>
+  </ul>
+
+  <h2>The Gear List, In Order</h2>
+  <p>Short, and ordered by what actually protects the ritual rather than what's most exciting.</p>
+  <ol class="priority">
+    <li><strong>A rain shell.</strong> Not shoes — a shell. This is a Vancouver ritual and it lives or dies between October and March. The single highest-value purchase for adherence, and thrift stores here are full of them.</li>
+    <li><strong>A headlamp.</strong> In December it's dark until nearly eight. A cheap headlamp is the difference between the 5 AM walk surviving winter and quietly dying in November.</li>
+    <li><strong>Shoes that fit.</strong> Walking and hiking work in whatever you own; running doesn't. This is the only item that's a genuine injury question, so it's the one to buy properly rather than second-hand.</li>
+    <li><strong>A thermos.</strong> Makes the tea walk work in the cold, which is most of the year.</li>
+    <li><strong>One kettlebell, second-hand.</strong> Somewhere in the 12–16 kg range. Only after the mat circuit has been happening reliably for a couple of months.</li>
+    <li><strong>Everything else.</strong> Racquet, climbing shoes, sauna membership, rower. These are Comox-phase questions.</li>
+  </ol>
+
+  <div class="callout">
+    <div class="callout-head">The measure of success</div>
+    <p>Not intensity, and not completeness. The question at the end of this phase is whether these blocks have stopped feeling like decisions. If the 5 AM walk happens the way brushing your teeth happens, the phase worked — and everything you buy afterward makes an existing practice better instead of trying to start one.</p>
+  </div>
+
+</div>
+</body>
+</html>
