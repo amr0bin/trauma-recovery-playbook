@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Herbs &amp; Spices Atlas — The Seasonal Kitchen</title>
+<link href="https://fonts.googleapis.com/css2?family=ASAP:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --white: #ffffff;
+    --cream: #f7f6f6;
+    --parchment: #e7e5e5;
+    --grey: #a29f9f;
+    --grey-light: #d7d5d5;
+    --grey-pale: #f3f2f2;
+    --text-dark: #4c4a4b;
+    --text-mid: #5d5a5b;
+    --text-light: #8f8c8d;
+    --accent-dark: #565354;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'ASAP', sans-serif; background: var(--white); color: var(--text-dark); }
+
+  .wrap { max-width: 960px; margin: 0 auto; padding: 3rem; }
+
+  .top-nav {
+    position: sticky; top: 0; z-index: 10;
+    background: rgba(255,255,255,0.95);
+    border-bottom: 1px solid var(--parchment);
+  }
+  .top-nav-inner {
+    max-width: 960px; margin: 0 auto; padding: 0.75rem 3rem;
+    display: flex; flex-wrap: wrap; gap: 0.35rem; align-items: center;
+  }
+  .brand { font-size: 1rem; font-weight: 500; letter-spacing: 0.02em; margin-right: auto; color: var(--text-dark); }
+  .chip {
+    font-size: 0.74rem; padding: 0.3rem 0.65rem; border-radius: 20px;
+    background: var(--cream); color: var(--text-mid); text-decoration: none;
+    border: 1px solid var(--parchment); transition: all 0.15s;
+  }
+  .chip:hover { background: var(--parchment); color: var(--text-dark); }
+
+  .page-header { margin-bottom: 2.5rem; padding-bottom: 2rem; border-bottom: 1px solid var(--parchment); }
+  .badge {
+    display: inline-block; font-size: 0.7rem; font-weight: 500; letter-spacing: 0.12em;
+    text-transform: uppercase; padding: 0.3rem 0.8rem; border-radius: 20px;
+    background: var(--grey-light); color: var(--accent-dark); margin-bottom: 1rem;
+  }
+  .page-title { font-size: 2.8rem; font-weight: 400; line-height: 1.1; margin-bottom: 0.5rem; }
+  .page-subtitle { font-size: 0.95rem; color: var(--text-light); font-weight: 300; line-height: 1.6; max-width: 620px; }
+
+  .overview { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.75rem; margin-bottom: 2rem; }
+  .ov-card {
+    background: var(--white); border: 1px solid var(--parchment); border-radius: 12px;
+    padding: 1.1rem; text-decoration: none; color: inherit; position: relative; overflow: hidden;
+    transition: all 0.2s;
+  }
+  .ov-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--grey); }
+  .ov-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.06); }
+  .ov-icon { font-size: 1.3rem; margin-bottom: 0.4rem; }
+  .ov-title { font-size: 1.05rem; font-weight: 500; color: var(--text-dark); margin-bottom: 0.2rem; }
+  .ov-desc { font-size: 0.75rem; color: var(--text-light); line-height: 1.5; }
+
+  .callout {
+    border-radius: 8px; padding: 1rem 1.25rem; margin: 1.25rem 0 2.5rem;
+    font-size: 0.84rem; line-height: 1.7; display: flex; gap: 0.75rem;
+    background: var(--grey-pale); color: var(--accent-dark); border-left: 3px solid var(--grey);
+  }
+  .callout-icon { font-size: 1rem; flex-shrink: 0; }
+
+  .region { padding-top: 1rem; margin-bottom: 3.5rem; scroll-margin-top: 5rem; }
+  .region-header { margin-bottom: 1.5rem; }
+  .region-title { font-size: 2rem; font-weight: 400; color: var(--text-dark); margin-bottom: 0.25rem; }
+  .region-sub { font-size: 0.82rem; color: var(--text-light); letter-spacing: 0.03em; }
+
+  .section { margin-bottom: 2rem; }
+  .section-title {
+    font-size: 1.25rem; font-weight: 500; color: var(--text-dark); margin-bottom: 1rem;
+    display: flex; align-items: center; gap: 0.75rem;
+  }
+  .section-title::after { content: ''; flex: 1; height: 1px; background: var(--parchment); }
+
+  .pantry-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 0.6rem; }
+  .pantry-item {
+    display: flex; align-items: flex-start; gap: 0.75rem; padding: 0.75rem 0.9rem;
+    background: var(--cream); border-radius: 8px; font-size: 0.875rem; line-height: 1.5; color: var(--text-mid);
+  }
+  .pantry-item strong { color: var(--text-dark); font-weight: 500; }
+  .pantry-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 0.05rem; }
+  .note {
+    display: inline-block; margin-top: 0.35rem; font-size: 0.68rem; color: var(--accent-dark);
+    background: var(--white); border: 1px solid var(--parchment); border-radius: 6px; padding: 0.1rem 0.5rem;
+  }
+  .gis {
+    display: inline-block; font-size: 0.62rem; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--white); background: var(--grey); border-radius: 10px; padding: 0.05rem 0.45rem; vertical-align: 0.1em;
+  }
+  .gg { background: var(--white); color: var(--accent-dark); border: 1px solid var(--grey); }
+  .new { font-size: 0.62rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-light); margin-left: 0.2rem; }
+  .star { color: var(--text-light); font-size: 0.8rem; }
+
+  .footer { margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--parchment); font-size: 0.75rem; color: var(--text-light); line-height: 1.6; }
+
+  @media (max-width: 760px) {
+    .wrap { padding: 2rem 1.25rem; }
+    .top-nav-inner { padding: 0.75rem 1.25rem; }
+    .overview { grid-template-columns: repeat(2, 1fr); }
+    .ov-card:last-child { grid-column: span 2; }
+    .page-title { font-size: 2.1rem; }
+  }
+  @media print {
+    .top-nav { position: static; }
+    .ov-card:hover { transform: none; box-shadow: none; }
+    .region { break-inside: auto; }
+    .pantry-item { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <div class="top-nav-inner">
+    <span class="brand">The Seasonal Kitchen</span>
+    <a class="chip" href="#north-europe">🌲 Northern Europe</a>
+    <a class="chip" href="#west-asia">🌿 West Asia</a>
+    <a class="chip" href="#east-asia">🎋 East Asia</a>
+    <a class="chip" href="#north-africa">🍋 North Africa</a>
+    <a class="chip" href="#broth-bases">🍵 Broth Bases</a>
+    <a class="chip" href="#basics">🧂 Salt &amp; Pepper</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <div class="page-header">
+    <span class="badge">Pantry reference</span>
+    <h1 class="page-title">🌿 Herbs &amp; Spices Atlas</h1>
+    <p class="page-subtitle">The herbs, spices and seasonings that define four regional kitchens — plus the salt and pepper basics that sit underneath them all.</p>
+  </div>
+
+  <div class="overview">
+    <a class="ov-card" href="#north-europe">
+      <div class="ov-icon">🌲</div>
+      <div class="ov-title">Northern Europe</div>
+      <div class="ov-desc">Dill, juniper, caraway, horseradish — cool, clean, pickled and cured</div>
+    </a>
+    <a class="ov-card" href="#west-asia">
+      <div class="ov-icon">🌿</div>
+      <div class="ov-title">West Asia</div>
+      <div class="ov-desc">Sumac, za'atar, saffron, mint — bright, tart, fragrant and warm</div>
+    </a>
+    <a class="ov-card" href="#east-asia">
+      <div class="ov-icon">🎋</div>
+      <div class="ov-title">East Asia</div>
+      <div class="ov-desc">Kombu, ginger, Sichuan pepper, shiso — umami, numbing, aromatic</div>
+    </a>
+    <a class="ov-card" href="#north-africa">
+      <div class="ov-icon">🍋</div>
+      <div class="ov-title">North Africa</div>
+      <div class="ov-desc">Rose harissa, preserved lemons, Moroccan blends — fiery, floral, salty-sour</div>
+    </a>
+    <a class="ov-card" href="#basics">
+      <div class="ov-icon">🧂</div>
+      <div class="ov-title">Salt &amp; Pepper</div>
+      <div class="ov-desc">Everyday, finishing and regional salts; true and "pepper-like" peppers</div>
+    </a>
+  </div>
+
+  <div class="callout">
+    <span class="callout-icon">💡</span>
+    <div><strong>Crossover flavours.</strong> Dill, cilantro, white pepper, cardamom and sesame turn up in more than one region — they're listed where each is most at home, so they're good bridges when you're mixing cuisines on one plate. <span class="star">✦</span> marks the starting examples: juniper, za'atar and kombu.</div>
+  </div>
+
+  <div class="callout" style="margin-top:-1.5rem">
+    <span class="callout-icon">🛒</span>
+    <div><strong>Where to buy.</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> = <a href="https://www.granvilleislandspiceco.com/" style="color:inherit">Granville Island Spice Co.</a> · <span class="gis gg" title="Available at Gaia Garden">Gaia Garden</span> = <a href="https://www.gaiagarden.com/collections/dried-herbs-heritage-teas" style="color:inherit">Gaia Garden</a> (dried herbs, sold by weight). Stock changes — a few (like rose harissa) are sometimes sold out.</div>
+  </div>
+
+  <!-- NORTHERN EUROPE -->
+  <section class="region" id="north-europe">
+    <div class="region-header">
+      <h2 class="region-title">🌲 Northern Europe</h2>
+      <div class="region-sub">Nordics · Baltics · British Isles · Northern Germany · Poland</div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Fresh Herbs</div>
+      <div class="pantry-grid">
+        <div class="pantry-item"><span class="pantry-icon">🌿</span><div><strong>Dill</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — gravlax, cucumber salad, eggs, celeriac</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🌿</span><div><strong>Chives</strong> — eggs, sour cream, smoked fish</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🌿</span><div><strong>Parsley</strong> — herb butters, sauces for fish, soups</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🌿</span><div><strong>Lovage</strong> — intense celery flavour; stews, broths, pork</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🍃</span><div><strong>Sorrel</strong> — sharp and lemony; sauce for salmon, spring soups</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🌿</span><div><strong>Chervil</strong> — delicate anise; eggs, fish, herb butter</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🧄</span><div><strong>Wild garlic (ramsons)</strong> — spring only; pesto, compound butter</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🥕</span><div><strong>Horseradish</strong> — grated fresh; beef, smoked fish, beetroot</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Seeds &amp; Spices</div>
+      <div class="pantry-grid">
+        <div class="pantry-item"><span class="pantry-icon">🫐</span><div><strong>Juniper berries</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> <span class="gis gg" title="Available at Gaia Garden">Gaia Garden</span> <span class="star">✦</span> — game, pork, sauerkraut, cured salmon</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🌾</span><div><strong>Caraway</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — sauerkraut, cabbage, pork, aged cheese</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🌼</span><div><strong>Dill seed</strong> — pickles, brines, cabbage</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🟡</span><div><strong>Mustard seed</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — pickling, homemade mustards, sauces</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🟤</span><div><strong>Allspice</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> <span class="gis gg" title="Available at Gaia Garden">Gaia Garden</span> — pickled herring, meatballs, braised meats</div></div>
+        <div class="pantry-item"><span class="pantry-icon">💚</span><div><strong>Cardamom</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — Nordic baking and coffee; lovely in keto buns and custards</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🍃</span><div><strong>Bay leaf</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> <span class="gis gg" title="Available at Gaia Garden">Gaia Garden</span> — stocks, pickles, slow braises</div></div>
+        <div class="pantry-item"><span class="pantry-icon">⚪</span><div><strong>White pepper</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — cream sauces, fish, pale dishes</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🌼</span><div><strong>Fennel seed</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — rye-style keto breads, pork, aquavit-style infusions</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🌰</span><div><strong>Nutmeg &amp; mace</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> <span class="gis gg" title="Available at Gaia Garden">Gaia Garden</span> — Nordic and Dutch meatballs, cream sauces, spinach</div></div>
+        <div class="pantry-item"><span class="pantry-icon">⚫</span><div><strong>Poppy seeds</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — Polish and German baking; keto-friendly crunch</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🌿</span><div><strong>Celery seed</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — pickles, brines, cabbage salads</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Blends, Condiments &amp; Foraged</div>
+      <div class="pantry-grid">
+        <div class="pantry-item"><span class="pantry-icon">🫙</span><div><strong>Pickling spice</strong> — mustard seed, dill seed, allspice, bay, peppercorns, clove</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🥄</span><div><strong>Dill-mustard sauce (hovmästarsås)</strong> — for gravlax and smoked fish<br><span class="note">Keto: traditionally sweetened — make with your usual sweetener</span></div></div>
+        <div class="pantry-item"><span class="pantry-icon">🟡</span><div><strong>Coarse-grain mustard</strong> — sausages, dressings, pork<br><span class="note">Keto: check the label for added sugar</span></div></div>
+        <div class="pantry-item"><span class="pantry-icon">🌲</span><div><strong>Spruce tips</strong> — spring; infused salt, vinegar, butter</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🌊</span><div><strong>Dulse</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — Irish and Icelandic seaweed; smoky, salty, good with eggs and butter</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🟠</span><div><strong>Sea buckthorn</strong> — very tart berry; a little goes far in sauces and dressings</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🍄</span><div><strong>Dried chanterelles</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — Nordic forest flavour; cream sauces, eggs, game</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🍄</span><div><strong>Dried porcini &amp; porcini powder</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — Polish and German soups, stews; powder as a meat rub</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🌱</span><div><strong>Nettle leaf</strong> <span class="gis gg" title="Available at Gaia Garden">Gaia Garden</span> — dried; Nordic and British nettle soup, stirred into eggs and broths</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🫐</span><div><strong>Elderberries</strong> <span class="gis gg" title="Available at Gaia Garden">Gaia Garden</span> — Northern European hedgerow berry; syrups, sauces for game<br><span class="note">Must be cooked — raw elderberries can make you sick. Keto: small amounts</span></div></div>
+        <div class="pantry-item"><span class="pantry-icon">🌹</span><div><strong>Rosehip</strong> <span class="gis gg" title="Available at Gaia Garden">Gaia Garden</span> — Swedish rosehip soup (nyponsoppa), tea; tart and vitamin C–rich</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🌿</span><div><strong>Mugwort</strong> <span class="gis gg" title="Available at Gaia Garden">Gaia Garden</span> — German Beifuß for roast goose and pork; also Korean ssuk<br><span class="note">Avoid in pregnancy</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WEST ASIA -->
+  <section class="region" id="west-asia">
+    <div class="region-header">
+      <h2 class="region-title">🌿 West Asia</h2>
+      <div class="region-sub">Levant · Turkey · Iran · Caucasus · Arabian Peninsula</div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Fresh Herbs</div>
+      <div class="pantry-grid">
+        <div class="pantry-item"><span class="pantry-icon">🌱</span><div><strong>Mint</strong> — salads, yoghurt sauces, lamb; dried mint in soups</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🌿</span><div><strong>Flat-leaf parsley</strong> — used as a green, not a garnish; tabbouleh with cauliflower</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🌿</span><div><strong>Cilantro</strong> — herb stews, green sauces, kebabs</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🌿</span><div><strong>Dill</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — Persian kuku (herb frittata), herbed cauliflower rice</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🌿</span><div><strong>Tarragon</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — Georgian and Persian fresh herb platters</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🍀</span><div><strong>Fenugreek leaf</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — the backbone of ghormeh sabzi; often used dried</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🌱</span><div><strong>Purslane</strong> — lemony succulent; fattoush-style salads</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🌿</span><div><strong>Summer savory</strong> — Georgian staple; meats, beans, stews</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🌱</span><div><strong>Dried mint (peppermint)</strong> <span class="gis gg" title="Available at Gaia Garden">Gaia Garden</span> — dried, not fresh, is the West Asian way; yoghurt, soups, salads</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Seeds &amp; Spices</div>
+      <div class="pantry-grid">
+        <div class="pantry-item"><span class="pantry-icon">🔴</span><div><strong>Sumac</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — tart and lemony; onions, kebabs, eggs, salads</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🟤</span><div><strong>Cumin</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — grilled meats, soups, roasted vegetables</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🟤</span><div><strong>Coriander seed</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — warm and citrusy; pairs with cumin</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🌶</span><div><strong>Aleppo, Urfa &amp; Maraş pepper</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — mild, fruity chilli flakes; eggs, butter, meats</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🧡</span><div><strong>Saffron</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — bloom in warm water; chicken, fish, cauliflower rice</div></div>
+        <div class="pantry-item"><span class="pantry-icon">⚫</span><div><strong>Nigella seed</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — oniony, peppery; cheese, flatbreads, salads</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🍋</span><div><strong>Dried lime (loomi)</strong> — sour, smoky; stews and braises, whole or ground</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🍒</span><div><strong>Mahlab</strong> — cherry-pit kernel; nutty, almond-like in baking</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🤍</span><div><strong>Sesame</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — whole seeds and tahini; dressings, sauces</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🪵</span><div><strong>Cinnamon</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — used savoury here; lamb, stews, spiced meat</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🌼</span><div><strong>Anise seed</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> <span class="gis gg" title="Available at Gaia Garden">Gaia Garden</span> — Turkish and Levantine baking, spiced drinks</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🟡</span><div><strong>Fenugreek seed</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — Yemeni hilbeh, Persian stews; maple-like when toasted</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Blends</div>
+      <div class="pantry-grid">
+        <div class="pantry-item"><span class="pantry-icon">🫙</span><div><strong>Za'atar</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> <span class="star">✦</span> — wild thyme/oregano, sumac, sesame, salt; eggs, labneh, chicken</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🫙</span><div><strong>Baharat</strong> — warm all-purpose blend; ground meat, kebabs, soups</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🫙</span><div><strong>Lebanese seven spice</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — allspice-led; kibbeh-style meat dishes</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🫙</span><div><strong>Advieh</strong> — Persian; rose, cardamom, cinnamon, cumin; stews and rice dishes</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🫙</span><div><strong>Khmeli suneli</strong> — Georgian; blue fenugreek, coriander, marigold; stews, walnut sauces</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🫙</span><div><strong>Hawaij</strong> — Yemeni; turmeric-cumin version for soups, cardamom-ginger version for coffee</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🫙</span><div><strong>Shawarma seasoning</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — chicken thighs, lamb, roasted cauliflower</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Aromatics &amp; Sour Notes</div>
+      <div class="pantry-grid">
+        <div class="pantry-item"><span class="pantry-icon">🌹</span><div><strong>Rosewater &amp; dried rose petals</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> <span class="gis gg" title="Available at Gaia Garden">Gaia Garden</span> — desserts, advieh, finishing</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🌸</span><div><strong>Orange blossom water</strong> — a few drops in desserts and drinks</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🔴</span><div><strong>Barberries</strong> — tiny, very sour dried berries; jewel-like garnish<br><span class="note">Keto: dried fruit — use as a garnish only</span></div></div>
+        <div class="pantry-item"><span class="pantry-icon">🍷</span><div><strong>Pomegranate molasses</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — sweet-sour glaze and dressing<br><span class="note">Keto: high in sugar — swap sumac + lemon for the sourness</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EAST ASIA -->
+  <section class="region" id="east-asia">
+    <div class="region-header">
+      <h2 class="region-title">🎋 East Asia</h2>
+      <div class="region-sub">China · Japan · Korea</div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Fresh Herbs &amp; Aromatics</div>
+      <div class="pantry-grid">
+        <div class="pantry-item"><span class="pantry-icon">🌱</span><div><strong>Scallion</strong> — the everyday aromatic; ginger-scallion oil, garnish</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🌱</span><div><strong>Garlic chives</strong> — flat and garlicky; eggs, stir-fries, dumpling fillings</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🍃</span><div><strong>Shiso / perilla</strong> — minty-anise; wraps for grilled meat, sashimi, salads</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🌿</span><div><strong>Cilantro</strong> — Chinese cooking; soups, cold dishes, fish</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🌿</span><div><strong>Mitsuba</strong> — Japanese parsley; clear soups, savoury custards</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🫚</span><div><strong>Ginger</strong> — fresh, grated, or pickled; fish, broths, marinades</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🧄</span><div><strong>Garlic</strong> — raw, fried, or black garlic; everything</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🪵</span><div><strong>Burdock root (gobo)</strong> <span class="gis gg" title="Available at Gaia Garden">Gaia Garden</span> — Japanese kinpira and soups; dried root for tea or broth</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Seeds &amp; Spices</div>
+      <div class="pantry-grid">
+        <div class="pantry-item"><span class="pantry-icon">🔴</span><div><strong>Sichuan pepper</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — citrusy, tingling, numbing; toast and grind</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🟢</span><div><strong>Sansho</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — Japanese cousin; brighter, lemony; grilled fish and eel</div></div>
+        <div class="pantry-item"><span class="pantry-icon">⭐</span><div><strong>Star anise</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — red-braised pork, beef broths</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🪵</span><div><strong>Cassia</strong> — Chinese cinnamon; braises and master stocks</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🌶</span><div><strong>Gochugaru</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — Korean chilli flakes; kimchi, stews, marinades</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🌶</span><div><strong>Dried chillies</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — whole in Sichuan stir-fries and chilli oil</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🍊</span><div><strong>Dried tangerine peel (chenpi)</strong> — braises, broths, duck</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🟤</span><div><strong>Black cardamom (tsaoko)</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — smoky; long-simmered beef and lamb</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🤍</span><div><strong>Sesame</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — toasted seeds and sesame oil; dressings, finishing</div></div>
+        <div class="pantry-item"><span class="pantry-icon">⚫</span><div><strong>Black sesame</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — Japanese and Chinese; dressings, crusts, keto desserts</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🟢</span><div><strong>Wasabi powder</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — mix with water; fish, steak, dressings</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Blends &amp; Condiments</div>
+      <div class="pantry-grid">
+        <div class="pantry-item"><span class="pantry-icon">🫙</span><div><strong>Five-spice</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — star anise, clove, cassia, Sichuan pepper, fennel; pork, duck</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🫙</span><div><strong>Shichimi togarashi</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — Japanese seven-spice; soups, grilled meat</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🫙</span><div><strong>Furikake</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — rice seasoning; great on eggs, fish, salads<br><span class="note">Keto: many contain sugar — check the label or make your own</span></div></div>
+        <div class="pantry-item"><span class="pantry-icon">🫙</span><div><strong>Gomasio</strong> — toasted sesame and salt; simple finishing seasoning</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🌶</span><div><strong>Chilli crisp</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — crunchy chilli oil; eggs, greens, fish<br><span class="note">Keto: check the label for sugar</span></div></div>
+        <div class="pantry-item"><span class="pantry-icon">🥣</span><div><strong>Miso &amp; doenjang</strong> — fermented soybean pastes; soups, glazes<br><span class="note">Keto: fine in small amounts; gochujang usually has rice and sugar</span></div></div>
+        <div class="pantry-item"><span class="pantry-icon">🍋</span><div><strong>Yuzu kosho (green &amp; red)</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — yuzu peel, chilli and salt; fish, chicken, soups</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🍋</span><div><strong>Yuzu juice &amp; yuzu ponzu</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — bright citrus for dressings and dipping<br><span class="note">Keto: ponzu may include mirin — check the label</span></div></div>
+        <div class="pantry-item"><span class="pantry-icon">🥢</span><div><strong>Tamari &amp; smoked shoyu</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — gluten-free tamari; smoked or black-garlic shoyu for finishing</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🌶</span><div><strong>Rayu &amp; toasted sesame oil</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — Japanese chilli-sesame oil; gyoza-style dips, eggs, greens</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🌶</span><div><strong>Okazu chilli miso</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — Japanese chilli condiment; eggs, grilled meat, vegetables<br><span class="note">Keto: small amounts</span></div></div>
+        <div class="pantry-item"><span class="pantry-icon">🦐</span><div><strong>XO sauce</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — dried seafood and chilli; stir-fried greens, eggs<br><span class="note">Keto: often contains sugar — check the label</span></div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Sea &amp; Umami</div>
+      <div class="pantry-grid">
+        <div class="pantry-item"><span class="pantry-icon">🌊</span><div><strong>Kombu</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> <span class="star">✦</span> — kelp; the base of dashi, cold-steeped or barely simmered</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🐟</span><div><strong>Katsuobushi</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — dried bonito flakes; with kombu for classic dashi</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🌊</span><div><strong>Nori</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — wraps, crumbled over eggs, fish and salads</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🌊</span><div><strong>Wakame</strong> — soups and cucumber-sesame salads</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🍄</span><div><strong>Dried shiitake</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — soaking liquid makes a vegan dashi; braises</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NORTH AFRICA -->
+  <section class="region" id="north-africa">
+    <div class="region-header">
+      <h2 class="region-title">🍋 North Africa</h2>
+      <div class="region-sub">Morocco · Tunisia · Algeria · Egypt — West Asia's neighbour across the Mediterranean</div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Pastes &amp; Preserves</div>
+      <div class="pantry-grid">
+        <div class="pantry-item"><span class="pantry-icon">🌹</span><div><strong>Rose harissa</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — Tunisian chilli paste with rose petals; lamb, eggs, roasted vegetables<br><span class="note">Keto: check the label for added sugar</span></div></div>
+        <div class="pantry-item"><span class="pantry-icon">🌶</span><div><strong>Harissa paste</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — classic version; stir into mayo, yoghurt, stews, marinades<br><span class="note">Keto: check the label for added sugar</span></div></div>
+        <div class="pantry-item"><span class="pantry-icon">🍋</span><div><strong>Preserved lemons</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — salt-cured whole lemons; chop the rind into tagines, salads, chicken, fish</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🫒</span><div><strong>Black olive tapenade</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — Mediterranean neighbour; eggs, fish, crudités</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Spices &amp; Blends</div>
+      <div class="pantry-grid">
+        <div class="pantry-item"><span class="pantry-icon">🫙</span><div><strong>Moroccan Nights spice</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — the shop's Moroccan blend; lamb, chicken, roasted vegetables</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🫙</span><div><strong>Ras el hanout</strong> — "head of the shop" blend; tagines and slow-cooked meat</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🫙</span><div><strong>Dukkah</strong> — Egyptian nut, seed and spice crumble; eggs, dips, salads</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🌿</span><div><strong>Chermoula</strong> — fresh herb, lemon and spice sauce; fish and chicken</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🍋</span><div><strong>Dried lemon zest</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — preserved-lemon brightness in dry rubs</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🟤</span><div><strong>Cumin, coriander, cinnamon &amp; saffron</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — the core warm spices — see West Asia for notes</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🌺</span><div><strong>Hibiscus</strong> <span class="gis gg" title="Available at Gaia Garden">Gaia Garden</span> — Egyptian karkade — tart iced tea; also a sour note in sauces</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TEA & BROTH BASES -->
+  <section class="region" id="broth-bases">
+    <div class="region-header">
+      <h2 class="region-title">🍵 Tea &amp; Broth Bases</h2>
+      <div class="region-sub">Steep a dried herb like tea, strain, and use it in place of water — or to stretch bone broth</div>
+    </div>
+
+    <div class="callout" style="margin-top:0">
+      <span class="callout-icon">💡</span>
+      <div><strong>How to use.</strong> Steep in just-boiled water for about 15 minutes, strain, then poach chicken or simmer vegetables in it. Season at the end — the tea carries the aroma, salt and fat carry the flavour.</div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Herbal Bases</div>
+      <div class="pantry-grid">
+        <div class="pantry-item"><span class="pantry-icon">🌾</span><div><strong>Lemongrass</strong> <span class="gis gg" title="Available at Gaia Garden">Gaia Garden</span> — bright, citrusy tea base for chicken soup; add ginger and makrut lime</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🍃</span><div><strong>Makrut lime leaves</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — dried or ground; with lemongrass for a tom yum–style broth</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🍋</span><div><strong>Dried lemon slices &amp; ginger</strong> <span class="gis gg" title="Available at Gaia Garden">Gaia Garden</span> — clean, bright chicken or fish broth; no added sugar</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🌱</span><div><strong>Nettle leaf</strong> <span class="gis gg" title="Available at Gaia Garden">Gaia Garden</span> — green, mineral base for spring soups and egg-drop broths</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🍄</span><div><strong>Dried porcini &amp; chanterelles</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — mushroom tea for beef, game and Nordic-style soups</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🌊</span><div><strong>Kombu &amp; dried shiitake</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — cold-steeped dashi; base for miso soup and hot pots</div></div>
+        <div class="pantry-item"><span class="pantry-icon">⭐</span><div><strong>Star anise, cassia &amp; coriander seed</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — toasted and steeped for a pho-style beef or chicken broth</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🪵</span><div><strong>Burdock root</strong> <span class="gis gg" title="Available at Gaia Garden">Gaia Garden</span> — earthy, slightly sweet; Japanese and Korean soups</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BASICS -->
+  <section class="region" id="basics">
+    <div class="region-header">
+      <h2 class="region-title">🧂 Salt &amp; Pepper</h2>
+      <div class="region-sub">The basics underneath everything — everyday, finishing and regional</div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Everyday &amp; Finishing Salts</div>
+      <div class="pantry-grid">
+        <div class="pantry-item"><span class="pantry-icon">🧂</span><div><strong>Fine sea salt</strong> — everyday cooking, baking, dressings</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🧂</span><div><strong>Kosher / coarse salt</strong> — seasoning meat, dry brining</div></div>
+        <div class="pantry-item"><span class="pantry-icon">❄️</span><div><strong>Flaky salt (Maldon)</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — finishing; crunch on meat, eggs, desserts</div></div>
+        <div class="pantry-item"><span class="pantry-icon">❄️</span><div><strong>Fleur de sel</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — delicate finishing salt; vegetables, fish</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🩶</span><div><strong>Sel gris</strong> — moist grey sea salt; salt crusts, roasting</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🩷</span><div><strong>Himalayan pink salt</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — mild; grinders, finishing</div></div>
+        <div class="pantry-item"><span class="pantry-icon">⚫</span><div><strong>Hawaiian black salt</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — sea salt with activated charcoal; striking finish on fish and eggs</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🪵</span><div><strong>Hickory &amp; Maldon smoked salt</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — smoky finishing salts for meat, eggs, butter</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🍋</span><div><strong>Flavoured fleur de sel</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — lemon zest, rosemary garlic, herbes de Provence, Pinot Noir and more</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🌿</span><div><strong>Celery salt</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — Bloody Caesar rims, eggs, coleslaw</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🍄</span><div><strong>Truffle salt</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — finishing eggs, steak, cauliflower mash</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Regional Salts</div>
+      <div class="pantry-grid">
+        <div class="pantry-item"><span class="pantry-icon">🌲</span><div><strong>Smoked salt</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — Danish and Nordic; fish, eggs, butter</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🌲</span><div><strong>Icelandic flaky salt</strong> — geothermally produced; finishing</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🌲</span><div><strong>Halen Môn</strong> — Welsh sea salt; plain or smoked</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🌿</span><div><strong>Persian blue salt</strong> — rare rock salt from Iran; finishing</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🌿</span><div><strong>Svanuri marili (Svan salt)</strong> — Georgian salt blend with garlic, chilli, fenugreek and coriander</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🎋</span><div><strong>Korean sea salt (cheonilyeom)</strong> — solar sea salt; kimchi, salting cabbage</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🎋</span><div><strong>Bamboo salt (jukyeom)</strong> — Korean; roasted in bamboo, savoury and eggy</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🎋</span><div><strong>Moshio</strong> — Japanese seaweed salt; mild umami, finishing</div></div>
+        <div class="pantry-item"><span class="pantry-icon">⚫</span><div><strong>Kala namak (black salt)</strong> — South Asian; sulphurous and eggy, used in chaats</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Everyday Dried Herbs</div>
+      <div class="pantry-grid">
+        <div class="pantry-item"><span class="pantry-icon">🌿</span><div><strong>Thyme</strong> <span class="gis gg" title="Available at Gaia Garden">Gaia Garden</span> — roasts, eggs, stews; the base of za'atar and herbes de Provence</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🌿</span><div><strong>Rosemary</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> <span class="gis gg" title="Available at Gaia Garden">Gaia Garden</span> — lamb, chicken, roasted vegetables</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🌿</span><div><strong>Sage</strong> <span class="gis gg" title="Available at Gaia Garden">Gaia Garden</span> — pork, brown butter, poultry</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🌿</span><div><strong>Oregano &amp; Mexican oregano</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — Mediterranean and Mexican cooking; meats, tomato-based sauces</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🌿</span><div><strong>Basil (dried)</strong> <span class="gis gg" title="Available at Gaia Garden">Gaia Garden</span> — soups, sauces, dressings — fresh is better for finishing</div></div>
+        <div class="pantry-item"><span class="pantry-icon">💜</span><div><strong>Lavender</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — herbes de Provence, lamb, desserts; use sparingly</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">True Peppercorns</div>
+      <div class="pantry-grid">
+        <div class="pantry-item"><span class="pantry-icon">⚫</span><div><strong>Black pepper</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — Tellicherry or Malabar; the everyday grind</div></div>
+        <div class="pantry-item"><span class="pantry-icon">⚪</span><div><strong>White pepper</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — skin removed; earthy and sharp; Nordic and Chinese cooking</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🟢</span><div><strong>Green peppercorns</strong> — unripe, brined or dried; steak and cream sauces</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🔴</span><div><strong>Red (ripe) peppercorns</strong> — fully ripened; fruity, rare</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🌿</span><div><strong>Long pepper</strong> — Piper relative; hotter, sweeter; braises and spiced meats</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🌿</span><div><strong>Cubeb</strong> — Piper relative; piney, slightly bitter; old European and game recipes</div></div>
+        <div class="pantry-item"><span class="pantry-icon">⚫</span><div><strong>Kampot black &amp; white pepper</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — Cambodian, protected origin; floral and complex</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🪵</span><div><strong>Smoked black peppercorns</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — steak, burgers, eggs, dry rubs</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🌈</span><div><strong>Five-colour peppercorns</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — black, white, green, pink and allspice; a grinder blend</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Pepper-Like &amp; Chilli</div>
+      <div class="pantry-grid">
+        <div class="pantry-item"><span class="pantry-icon">🩷</span><div><strong>Pink peppercorns</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — not true pepper; fruity, mild; fish, salads<br><span class="note">Related to cashew — avoid with tree-nut allergy</span></div></div>
+        <div class="pantry-item"><span class="pantry-icon">🔴</span><div><strong>Sichuan pepper &amp; sansho</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — citrus husks; tingling, numbing</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🟤</span><div><strong>Allspice</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> <span class="gis gg" title="Available at Gaia Garden">Gaia Garden</span> — "Jamaica pepper"; Nordic pickling, Levantine blends</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🟤</span><div><strong>Grains of paradise</strong> — West African; peppery with citrus and cardamom notes</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🌶</span><div><strong>Aleppo, Urfa &amp; Maraş</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — West Asian chilli flakes; mild, fruity, smoky</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🌶</span><div><strong>Gochugaru</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — Korean chilli flakes; bright and sweet-hot</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🍊</span><div><strong>Timut pepper</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — Nepali Sichuan-pepper relative; grapefruit notes; fish, salads</div></div>
+        <div class="pantry-item"><span class="pantry-icon">🍋</span><div><strong>Lemon pepper</strong> <span class="gis" title="Available at Granville Island Spice Co.">GI Spice</span> — chicken, fish, roasted vegetables<br><span class="note">Check the label — some blends add sugar</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="footer">The Seasonal Kitchen · Herbs &amp; Spices Atlas · Shop: <a href="https://www.granvilleislandspiceco.com/" style="color:inherit">Granville Island Spice Co.</a> · <a href="https://www.gaiagarden.com/collections/dried-herbs-heritage-teas" style="color:inherit">Gaia Garden</a> · Keto notes flag items that often contain sugar or starch — always check labels on blends and condiments.</div>
+
+</div>
+</body>
+</html>
