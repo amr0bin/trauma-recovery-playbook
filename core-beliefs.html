@@ -157,16 +157,10 @@
   <p class="section-sub">The same belief, read straight through from centre to edge.</p>
   <div class="thread" id="thread"></div>
 
-  <footer>Personal reference, part of the trauma recovery playbook. Not clinical guidance.</footer>
+  <footer>Personal notes.</footer>
 </div>
 
 <script>
-/* ─────────────────────────────────────────────────────────────
-   CONTENT
-   Edit the text here. Anything left empty shows as "Not yet mapped."
-   strategies: [ { text:"…", note:"optional second line" }, … ]
-   rules:      { self:[ "…", … ], others:[ "…", … ] }
-   ───────────────────────────────────────────────────────────── */
 const BELIEFS = [
   {
     short: "Broken",
@@ -217,7 +211,7 @@ const LAYERS = [
 let bi = 0, li = 1;
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[c]));
 const B = () => BELIEFS[bi];
-const QUIET = `<p class="quiet">Not yet mapped.</p>`;
+const QUIET = `<p class="quiet">—</p>`;
 
 function renderTabs(){
   document.getElementById("tabs").innerHTML = BELIEFS.map((b, i) =>
